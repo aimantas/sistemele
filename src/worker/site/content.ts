@@ -1,14 +1,13 @@
 /**
- * Default public website copy. Edit it to adapt the site to a business, or
- * publish a page with the address "home" in Website → Pages, which replaces
- * the home headline and adds its text without a code change.
+ * Default public website copy. Until a page with the address "home" is
+ * published in Website → Pages, "/" shows the starter home with a get-started
+ * guide (./starter-home.tsx); the published page then becomes the home page.
  * Business name, address and contacts come from Settings → Business.
  * Keep claims specific and true: no invented reviews, prices, reply times or guarantees.
  */
 export const siteContent = {
   home: {
-    /** Empty: the business name from Settings → Business is the headline. */
-    headline: "",
+    /** Fallback description for the home page and llms.txt. The headline comes from your published "home" page. */
     lead: "Products, services and news from our team. Send a message and we reply by email.",
     contactCta: { label: "Get in touch", href: "/contact" },
   },

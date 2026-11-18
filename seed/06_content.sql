@@ -48,14 +48,5 @@ By bank transfer. The invoice email has the account details and the payment refe
 
  ('cnt_demo_post_draft', 'post', 'finishes-for-outdoor-steel', 'Finishes for outdoor steel', '', 'Draft: compare galvanising and paint for gates and railings. Add facts from the workshop before publishing.', NULL, 'draft', NULL, strftime('%Y-%m-%dT%H:%M:%fZ','now','-1 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-1 days'));
 
--- The page with the address "home" replaces the default headline at "/" (title and summary) and adds its text below it.
-INSERT OR IGNORE INTO content_entries (id, type, slug, title, summary, body, menu_order, status, published_at, created_at, updated_at) VALUES
- ('cnt_demo_home', 'page', 'home', 'A demo business, built from ready modules', 'Northwind Workshop is fictional. Its website, products, contact form, quotes and invoices all come from the Sistemėlė starter kit. Look around as a customer, then open the dashboard.',
- '## Try it
-
-1. [Send a message](/contact). It arrives in the dashboard as a new lead.
-2. [Browse the products](/products). Prices and stock come from the catalog.
-3. [Open the dashboard](/app) to work the lead, convert it into a deal, send a quote and issue an invoice.
-4. Connect an AI agent over MCP from Settings → API & agents.
-
-> Demo content: edit it in Website → Pages → Home page.', NULL, 'published', strftime('%Y-%m-%dT%H:%M:%fZ','now','-40 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-45 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-40 days'));
+-- No page with the address "home": "/" shows the starter home with the get-started
+-- guide (src/worker/site/starter-home.tsx). Publish a "home" page to replace it.

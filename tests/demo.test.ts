@@ -62,12 +62,14 @@ describe("demo mode", () => {
     expect(await count("SELECT COUNT(*) AS n FROM sessions")).toBe(0);
     expect(await count("SELECT COUNT(*) AS n FROM contacts")).toBeGreaterThan(3);
     expect(await count("SELECT COUNT(*) AS n FROM invoices")).toBeGreaterThan(0);
-    expect(await count("SELECT COUNT(*) AS n FROM content_entries WHERE slug = 'home'")).toBe(1);
+    expect(await count("SELECT COUNT(*) AS n FROM content_entries WHERE slug = 'home'")).toBe(0);
     // The old session is gone; a reset is idempotent.
     expect((await t.request("/api/auth/session", { cookie }).then((r) => json<{ user: unknown }>(r))).user).toBeNull();
     await resetDemoData(t.db);
     expect(await count("SELECT COUNT(*) AS n FROM contacts WHERE id = 'ct_demo_baltic'")).toBe(1);
-    expect(await (await t.request("/")).text()).toContain("A demo business, built from ready modules");
+    const home = await (await t.request("/")).text();
+    expect(home).toContain("<h1>Don’t ask your agent to reinvent the wheel.</h1>");
+    expect(home).toContain("One click signs you in as the demo owner.");
   });
 });
 

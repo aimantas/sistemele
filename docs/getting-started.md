@@ -36,7 +36,7 @@ terminal. The first sign-in of an `ADMIN_EMAILS` address creates an owner.
 
 1. `sistemele.config.ts` — modules, locale, currency, timezone, defaults.
 2. Settings → Business — legal name, codes, address, bank details.
-3. `src/worker/site/content.ts` — default public website copy; or publish a page with the address `home` in Website → Pages.
+3. Website → Pages — publish a page with the address `home`. Until then, `/` shows the starter home with a get-started guide (`src/worker/site/starter-home.tsx`). Other default copy lives in `src/worker/site/content.ts`.
 4. Pipeline → Stages — the steps of your sales process and their win chances.
 5. Settings → Brand — logo, colours, corners (no code; [DESIGN.md](../DESIGN.md)).
 6. `public/favicon.svg` — your mark.
