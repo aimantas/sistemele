@@ -8,17 +8,17 @@
 INSERT OR IGNORE INTO invoices (id, number, contact_id, quote_id, status, issue_date, due_date, currency, subtotal_cents, vat_cents, total_cents, paid_cents, seller, buyer, notes, issued_at, paid_at, created_at, updated_at) VALUES
  -- Issued and overdue: due 16 days ago, nothing paid. 102000 + 22000 = 124000 net; 21% VAT = 26040.
  ('inv_demo_1', 'INV-' || strftime('%Y','now') || '-0001', 'ct_demo_baltic', NULL, 'issued', date('now','-30 days'), date('now','-16 days'), 'EUR', 124000, 26040, 150040, 0,
-  '{"name":"Northwind Workshop UAB","companyCode":"300000001","vatCode":"LT100000000017","address":"Example g. 1, LT-01100 Vilnius","email":"sales@northwind.example","phone":"+370 600 00000","bank":{"name":"Example Bank","iban":"LT12 1000 0111 0100 1000"},"footer":"Thank you for your business."}',
+  '{"name":"Sistemėlė demo","companyCode":"","vatCode":"","address":"","email":"","phone":"","bank":{"name":"Example Bank","iban":"LT12 1000 0111 0100 1000"},"footer":"Demo invoice with sample data."}',
   '{"name":"Baltic Build UAB","companyCode":"301111111","vatCode":"LT111111111","address":"Statybininkų g. 5, LT-44100 Kaunas, LT","email":"orders@balticbuild.example","phone":"+370 611 11111"}',
   '', strftime('%Y-%m-%dT%H:%M:%fZ','now','-30 days'), NULL, strftime('%Y-%m-%dT%H:%M:%fZ','now','-31 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-30 days')),
  -- Paid in full: invoiced from the accepted quote Q-…-0002 (same lines and totals).
  ('inv_demo_2', 'INV-' || strftime('%Y','now') || '-0002', 'ct_demo_greenhouse', 'qt_demo_2', 'paid', date('now','-7 days'), date('now','+7 days'), 'EUR', 382400, 80304, 462704, 462704,
-  '{"name":"Northwind Workshop UAB","companyCode":"300000001","vatCode":"LT100000000017","address":"Example g. 1, LT-01100 Vilnius","email":"sales@northwind.example","phone":"+370 600 00000","bank":{"name":"Example Bank","iban":"LT12 1000 0111 0100 1000"},"footer":"Thank you for your business."}',
+  '{"name":"Sistemėlė demo","companyCode":"","vatCode":"","address":"","email":"","phone":"","bank":{"name":"Example Bank","iban":"LT12 1000 0111 0100 1000"},"footer":"Demo invoice with sample data."}',
   '{"name":"Greenhouse Farms","companyCode":"302222222","vatCode":"LT222222222","address":"Ūkio g. 12, LT-35100 Panevėžys, LT","email":"hello@greenhouse.example","phone":"+370 633 33333"}',
   'Beams are cut to length and drilled for the anchor bolts.', strftime('%Y-%m-%dT%H:%M:%fZ','now','-7 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-2 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-8 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-2 days')),
  -- Issued, not yet due. 4000 net; 21% VAT = 840.
  ('inv_demo_3', 'INV-' || strftime('%Y','now') || '-0003', 'ct_demo_ona', NULL, 'issued', date('now','-3 days'), date('now','+11 days'), 'EUR', 4000, 840, 4840, 0,
-  '{"name":"Northwind Workshop UAB","companyCode":"300000001","vatCode":"LT100000000017","address":"Example g. 1, LT-01100 Vilnius","email":"sales@northwind.example","phone":"+370 600 00000","bank":{"name":"Example Bank","iban":"LT12 1000 0111 0100 1000"},"footer":"Thank you for your business."}',
+  '{"name":"Sistemėlė demo","companyCode":"","vatCode":"","address":"","email":"","phone":"","bank":{"name":"Example Bank","iban":"LT12 1000 0111 0100 1000"},"footer":"Demo invoice with sample data."}',
   '{"name":"Ona Petraitė","companyCode":"","vatCode":"","address":"Vilnius, LT","email":"ona@example.com","phone":"+370 622 22222"}',
   '', strftime('%Y-%m-%dT%H:%M:%fZ','now','-3 days'), NULL, strftime('%Y-%m-%dT%H:%M:%fZ','now','-3 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-3 days')),
  -- Draft: no number, no snapshots, still editable. 75600 + 22000 = 97600 net; 21% VAT = 20496.

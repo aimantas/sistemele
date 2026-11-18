@@ -1,22 +1,26 @@
--- Demo website content for the fictional metal workshop (local development only).
+-- Demo website content (local development and the public demo). The About page
+-- describes Sistemėlė itself; the posts are sample content for the blog.
 -- One page in the site menu, one live post, one scheduled post and one draft,
 -- so every status shows in the dashboard. The text describes how the demo
 -- system works; it makes no claims about prices, delivery times or quality.
 INSERT OR IGNORE INTO content_entries (id, type, slug, title, summary, body, menu_order, status, published_at, created_at, updated_at) VALUES
- ('cnt_demo_about', 'page', 'about', 'About us', 'A small metal workshop: steel products from stock and parts made to your drawing.',
- 'We are a small metal workshop. We sell steel products from our [catalogue](/products) and make gates, frames and brackets to your drawing.
+ ('cnt_demo_about', 'page', 'about', 'About Sistemėlė', 'An open-source starter kit and admin panel for AI-native projects, made by aimantas.com.',
+ 'Sistemėlė ("a little system" in Lithuanian) is a practical starter kit and admin panel for AI-native projects. It gives your coding agent the parts every business app needs, already built and tested, so the agent only builds what is specific to you.
 
-## How to order
+## What runs on this site
 
-1. [Send a request](/contact) with the products, quantities and dates you need.
-2. We reply with a priced quote. Open it from the email and accept it online.
-3. The invoice arrives by email with the bank transfer details.
+This site is the live demo. Its pages, blog, contact form and [products](/products) come from the same code you get. The products, quotes and invoices are sample data, and everything resets every hour.
 
-## Custom work
+## What you get
 
-Send a drawing or a sketch with the dimensions. We price it and send the quote the same way.
+- A public website with pages, a blog and a contact form that lands in a leads inbox
+- An admin panel: leads, contacts, a pipeline with your own stages, products and stock, quotes and invoices
+- An MCP endpoint, `AGENTS.md`, a README per module and an agent skill
+- One Cloudflare Worker and a D1 database, deployed from a button
 
-> This is demo content. Replace it in Website → Pages.', 1, 'published', strftime('%Y-%m-%dT%H:%M:%fZ','now','-40 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-45 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-40 days')),
+## Who made it
+
+Sistemėlė is made by [aimantas.com](https://aimantas.com) and published under the MIT licence. The code and guides are on [GitHub](https://github.com/aimantas/sistemele).', 1, 'published', strftime('%Y-%m-%dT%H:%M:%fZ','now','-40 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-45 days'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-40 days')),
 
  ('cnt_demo_post_request', 'post', 'what-to-include-in-a-quote-request', 'What to include in a quote request', 'Five details that let us price your order the first time.',
  'A complete request gets a complete quote. Include these details and we can price it without asking back:

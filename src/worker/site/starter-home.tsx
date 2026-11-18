@@ -1,4 +1,4 @@
-import { BookOpen, Bot, Boxes, Cloud, Database, FileText, Mail, Newspaper, Package, Plug, Receipt, Rocket, Scale, ShieldCheck, Sparkles, Terminal, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, Boxes, Cloud, Database, FileText, Newspaper, Package, Plug, Receipt, Rocket, Scale, ShieldCheck, Sparkles, Terminal, Users, type LucideIcon } from "lucide-react";
 import { Fragment, type ReactNode } from "react";
 import type { HomeSection, ServerModule } from "@/modules/types.server";
 
@@ -8,6 +8,9 @@ import type { HomeSection, ServerModule } from "@/modules/types.server";
  * screenshots, a get-started guide, the enabled modules, what agents get and
  * how to deploy your own copy. Edit the copy here, or replace the page without
  * code by publishing your own home page. Screenshots live in public/screenshots.
+ *
+ * Brand logos in public/logos are from Simple Icons (CC0 1.0); the trademarks
+ * belong to their owners and are shown only to say what the kit works with.
  */
 
 export const STARTER_REPO = "https://github.com/aimantas/sistemele";
@@ -19,10 +22,19 @@ const copy = {
   localCommands: ["npx degit aimantas/sistemele my-app", "cd my-app", "npm install", "npm run setup", "npm run dev"],
 };
 
-const platform: Array<{ label: string; icon: LucideIcon }> = [
-  { label: "Cloudflare Workers", icon: Cloud },
+/** A chip shows a brand logo (public/logos/<logo>.svg) or an icon, optionally as a link. */
+interface ChipItem {
+  label: string;
+  logo?: string;
+  icon?: LucideIcon;
+  href?: string;
+}
+
+const platform: ChipItem[] = [
+  { label: "Cloudflare Workers", logo: "cloudflareworkers" },
   { label: "D1 database", icon: Database },
-  { label: "MCP for agents", icon: Plug },
+  { label: "MCP for agents", logo: "modelcontextprotocol" },
+  { label: "Open source on GitHub", logo: "github", href: STARTER_REPO },
   { label: "MIT licence", icon: Scale },
 ];
 
@@ -43,7 +55,18 @@ const agentTools: Array<{ title: string; text: ReactNode; markdown: string; icon
   { title: "MCP endpoint", text: "Every module’s tools, limited by the API token’s role.", markdown: "Every module's tools, limited by the API token's role.", icon: Plug },
 ];
 
-const worksWith = ["Claude Code", "Codex", "Cursor", "Any MCP client"];
+const worksWith: ChipItem[] = [
+  { label: "Claude Code", logo: "claude" },
+  { label: "ChatGPT and Codex", logo: "openai" },
+  { label: "Cursor", logo: "cursor" },
+  { label: "Any MCP client", logo: "modelcontextprotocol" },
+];
+
+const deployStack: ChipItem[] = [
+  { label: "Cloudflare Workers", logo: "cloudflare" },
+  { label: "D1", icon: Database },
+  { label: "Resend email", logo: "resend" },
+];
 
 interface Step {
   title: string;
@@ -92,6 +115,29 @@ function steps(origin: string, demo: boolean): Step[] {
       markdown: `Coding agents start from \`AGENTS.md\` in the code. Running agents connect over MCP at \`${origin}/mcp\` with a token from Settings → API & agents.`,
     },
   ];
+}
+
+function Chips({ items, label }: { items: ChipItem[]; label?: string }) {
+  return (
+    <ul className="chips" aria-label={label}>
+      {items.map((item) => {
+        const mark = item.logo ? <img src={`/logos/${item.logo}.svg`} width={14} height={14} alt="" /> : item.icon ? <item.icon size={14} aria-hidden="true" /> : null;
+        return (
+          <li key={item.label} className="chip">
+            {item.href ? (
+              <a href={item.href}>
+                {mark} {item.label}
+              </a>
+            ) : (
+              <>
+                {mark} {item.label}
+              </>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
 }
 
 function Icon({ icon: Glyph }: { icon: LucideIcon }) {
@@ -163,7 +209,7 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
     "",
     ...agentTools.map((tool) => `- **${tool.title}**: ${tool.markdown}`),
     "",
-    `Works with: ${worksWith.join(", ")}.`,
+    `Works with: ${worksWith.map((item) => item.label).join(", ")}.`,
     "",
     ...sections.flatMap((section) => [section.markdown.trim(), ""]),
     "## Deploy on Cloudflare",
@@ -193,13 +239,7 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
                 <Rocket size={18} aria-hidden="true" /> Deploy your own
               </a>
             </div>
-            <ul className="chips" aria-label="Runs on">
-              {platform.map((item) => (
-                <li key={item.label} className="chip">
-                  <item.icon size={14} aria-hidden="true" /> {item.label}
-                </li>
-              ))}
-            </ul>
+            <Chips items={platform} label="Runs on" />
           </div>
           <Shot src="/screenshots/dashboard.webp" width={1920} height={1200} alt="The admin panel dashboard with KPI cards, pipeline, open tasks and low stock" eager />
         </div>
@@ -269,13 +309,7 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
             <pre className="terminal" aria-label="An MCP tool call">
               <code>{mcpExample}</code>
             </pre>
-            <ul className="chips" aria-label="Works with">
-              {worksWith.map((name) => (
-                <li key={name} className="chip">
-                  <Bot size={14} aria-hidden="true" /> {name}
-                </li>
-              ))}
-            </ul>
+            <Chips items={worksWith} label="Works with" />
           </div>
         </div>
       </section>
@@ -292,17 +326,7 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
               <Icon icon={Cloud} />
               <h3>One click</h3>
               <p className="muted">The button copies the code to your GitHub, creates the D1 database, asks for your email and a Resend key, and deploys. Every push redeploys.</p>
-              <ul className="chips">
-                {[
-                  { label: "Workers", icon: Cloud },
-                  { label: "D1", icon: Database },
-                  { label: "Resend email", icon: Mail },
-                ].map((item) => (
-                  <li key={item.label} className="chip">
-                    <item.icon size={14} aria-hidden="true" /> {item.label}
-                  </li>
-                ))}
-              </ul>
+              <Chips items={deployStack} label="Deploys to" />
               <p>
                 <a className="button primary" href={DEPLOY_URL}>
                   <Rocket size={18} aria-hidden="true" /> Deploy to Cloudflare
@@ -316,7 +340,10 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
                 <code>{copy.localCommands.map((line) => `$ ${line}`).join("\n")}</code>
               </pre>
               <p className="muted small">
-                Needs Node 22 or later. Guides: <a href={STARTER_REPO}>github.com/aimantas/sistemele</a>
+                Needs Node 22 or later. Guides:{" "}
+                <a className="inline-logo" href={STARTER_REPO}>
+                  <img src="/logos/github.svg" width={14} height={14} alt="" /> github.com/aimantas/sistemele
+                </a>
               </p>
             </div>
           </div>
@@ -326,7 +353,7 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
   );
 
   return {
-    title: businessName,
+    title: "Practical starter kit and admin panel for AI-native projects",
     description: `${businessName} runs on Sistemėlė, a practical starter kit and admin panel for AI-native projects: website, admin panel and MCP on one Cloudflare Worker.`,
     body,
     markdown,

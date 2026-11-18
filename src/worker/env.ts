@@ -16,6 +16,8 @@ export interface Env {
   TURNSTILE_SECRET_KEY?: string;
   /** "1" turns the installation into a public demo: one-click sign-in, no email, hourly reset. See docs/deployment.md. */
   DEMO_MODE?: string;
+  /** "1" lets search engines index public pages outside production (e.g. a public demo). The dashboard and private links stay noindex. */
+  ALLOW_INDEXING?: string;
 }
 
 export interface AppVariables {
@@ -32,6 +34,11 @@ export function isDevelopment(env: Pick<Env, "APP_ENV">): boolean {
 /** Public demo: anyone can open the dashboard as the demo owner; data is reset by the Cron Trigger. */
 export function isDemo(env: Pick<Env, "DEMO_MODE">): boolean {
   return env.DEMO_MODE === "1" || env.DEMO_MODE === "true";
+}
+
+/** Public pages may be indexed: production, or any environment with ALLOW_INDEXING=1. */
+export function isIndexable(env: Pick<Env, "APP_ENV" | "ALLOW_INDEXING">): boolean {
+  return env.APP_ENV === "production" || env.ALLOW_INDEXING === "1" || env.ALLOW_INDEXING === "true";
 }
 
 export function appOrigin(env: Pick<Env, "APP_URL">): string {

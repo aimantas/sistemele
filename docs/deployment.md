@@ -90,6 +90,8 @@ A demo is an installation anyone can open without an account. Set `DEMO_MODE` to
 - sends `X-Robots-Tag: noindex, nofollow` (every non-production `APP_ENV` does) and a disallow-all `robots.txt`;
 - on each Cron Trigger, empties every table (users and sessions included) and reloads `seed/*.sql` (`src/worker/demo.ts`).
 
+A demo is kept out of search engines unless you set `ALLOW_INDEXING` to `"1"`. The public demo at sistemele.aimantas.com is also the package's landing page, so it sets it; the dashboard, API and private quote/invoice links stay `noindex` either way.
+
 The `demo` environment in `wrangler.jsonc` defines a separate Worker, D1 database, custom domain and hourly trigger. Before running these commands, set `database_id` to a dedicated demo database and configure `routes` and `APP_URL` for your domain.
 
 ```bash

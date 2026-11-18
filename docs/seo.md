@@ -21,7 +21,7 @@ stale-while-revalidate.
 | --- | --- |
 | `/sitemap.xml` | Core pages + every module's `sitemap()` (e.g. public products, live pages and posts with `lastmod`). |
 | `/blog/feed.xml` | RSS for the latest 20 posts (content module). |
-| `/robots.txt` | Production: allow all, disallow `/app`, `/api/`, `/q/`, `/i/`, link to sitemap. Any other `APP_ENV`: disallow all. |
+| `/robots.txt` | Production, or any environment with `ALLOW_INDEXING=1` (e.g. a public demo): allow all, disallow `/app`, `/api/`, `/q/`, `/i/`, link to sitemap. Otherwise: disallow all, and every response carries `X-Robots-Tag: noindex, nofollow`. |
 | `/llms.txt` | Business summary, public pages, how to send a request, MCP tool list. |
 
 ## Rules for new pages

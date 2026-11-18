@@ -4,7 +4,7 @@ import { authRoutes } from "./auth/routes";
 import { userFromApiToken, userFromSession } from "./auth/sessions";
 import { createModuleContext } from "./context";
 import { coreRoutes } from "./core/routes";
-import { appOrigin, isDevelopment, type AppEnv } from "./env";
+import { appOrigin, isDevelopment, isIndexable, type AppEnv } from "./env";
 import { Db } from "./lib/db";
 import { forbidden, handleError, unauthorized } from "./lib/errors";
 import { mcpRoutes } from "./mcp/routes";
@@ -86,8 +86,8 @@ const securityHeaders: MiddlewareHandler<AppEnv> = async (c, next) => {
     }
   }
   if (isApi(c.req.path)) headers.set("Cache-Control", headers.get("Cache-Control") ?? "no-store");
-  // Demos, previews and development copies are never indexed (robots.txt also disallows them).
-  if (c.env.APP_ENV !== "production") headers.set("X-Robots-Tag", "noindex, nofollow");
+  // Previews and development copies are never indexed (robots.txt also disallows them), unless ALLOW_INDEXING is set.
+  if (!isIndexable(c.env)) headers.set("X-Robots-Tag", "noindex, nofollow");
 };
 
 /** The dashboard SPA shell for /app and /app/*. */

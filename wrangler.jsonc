@@ -15,7 +15,7 @@
     // The Worker decides: public pages are server-rendered, /app/* gets the SPA
     // shell, unknown paths get a real 404. Hashed build files skip the Worker.
     "not_found_handling": "none",
-    "run_worker_first": ["/*", "!/assets/*", "!/screenshots/*", "!/favicon.svg"]
+    "run_worker_first": ["/*", "!/assets/*", "!/screenshots/*", "!/logos/*", "!/favicon.svg"]
   },
   "d1_databases": [
     {
@@ -63,7 +63,9 @@
         "APP_ENV": "demo",
         "EMAIL_FROM": "Sistemėlė demo <demo@sistemele.invalid>",
         "ADMIN_EMAILS": "",
-        "DEMO_MODE": "1"
+        "DEMO_MODE": "1",
+        // The demo is also the package's landing page: let search engines index its public pages.
+        "ALLOW_INDEXING": "1"
       },
       // Empties every table and reloads seed/*.sql at the top of each hour.
       "triggers": { "crons": ["0 * * * *"] }
