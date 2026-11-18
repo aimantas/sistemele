@@ -13,6 +13,8 @@ export interface Env {
   ADMIN_EMAILS: string;
   RESEND_API_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
+  /** "1" turns the installation into a public demo: one-click sign-in, no email, hourly reset. See docs/deployment.md. */
+  DEMO_MODE?: string;
 }
 
 export interface AppVariables {
@@ -24,6 +26,11 @@ export type AppEnv = { Bindings: Env; Variables: AppVariables };
 
 export function isDevelopment(env: Pick<Env, "APP_ENV">): boolean {
   return env.APP_ENV === "development";
+}
+
+/** Public demo: anyone can open the dashboard as the demo owner; data is reset by the Cron Trigger. */
+export function isDemo(env: Pick<Env, "DEMO_MODE">): boolean {
+  return env.DEMO_MODE === "1" || env.DEMO_MODE === "true";
 }
 
 export function appOrigin(env: Pick<Env, "APP_URL">): string {

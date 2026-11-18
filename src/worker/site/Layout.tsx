@@ -20,11 +20,13 @@ export interface LayoutProps {
   logoUrl: string | null;
   links: SiteLink[];
   currentPath: string;
+  /** Public demo: a bar above the header says the data is sample data. */
+  demo?: boolean;
   children: ReactNode;
 }
 
 /** Full HTML document for public pages. Server-rendered, no client JavaScript. */
-export function Layout({ meta, origin, siteName, language, business, themeCss, logoUrl, links, currentPath, children }: LayoutProps) {
+export function Layout({ meta, origin, siteName, language, business, themeCss, logoUrl, links, currentPath, demo, children }: LayoutProps) {
   const canonical = `${origin}${meta.path}`;
   const fullTitle = meta.title === siteName ? siteName : `${meta.title} | ${siteName}`;
   return (
@@ -59,6 +61,11 @@ export function Layout({ meta, origin, siteName, language, business, themeCss, l
         <a className="skip" href="#main">
           Skip to content
         </a>
+        {demo ? (
+          <p className="demo-bar">
+            Demo site with sample data. <a href="/app/login">Open the dashboard</a>
+          </p>
+        ) : null}
         <header className="site-header">
           <div className="wrap header-row">
             <a className="brand" href="/">

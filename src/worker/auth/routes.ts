@@ -3,14 +3,17 @@ import { z } from "zod";
 import { newId } from "@/shared/ids";
 import { getContext } from "../context";
 import { renderEmail } from "../email/layout";
-import { appOrigin, isDevelopment, type AppEnv, type Env } from "../env";
+import { appOrigin, isDemo, isDevelopment, type AppEnv, type Env } from "../env";
 import { randomToken, sha256Hex } from "../lib/crypto";
-import { badRequest, unauthorized } from "../lib/errors";
+import { badRequest, notFound, unauthorized } from "../lib/errors";
 import { enforceRateLimit } from "../lib/rate-limit";
 import { readJson } from "../lib/validate";
 import { createSession, destroySession } from "./sessions";
 
 const LINK_MINUTES = 15;
+
+/** The shared account behind "Open the demo". `.invalid` can never receive email. */
+export const DEMO_EMAIL = "demo@sistemele.invalid";
 
 export function adminEmails(env: Pick<Env, "ADMIN_EMAILS">): string[] {
   return env.ADMIN_EMAILS.split(",").map((email) => email.trim().toLowerCase()).filter(Boolean);
@@ -33,6 +36,7 @@ const verifySchema = z.object({ token: z.string().min(20).max(200) });
  */
 export const authRoutes = new Hono<AppEnv>()
   .post("/link", async (c) => {
+    if (isDemo(c.env)) throw badRequest("This is a demo. Use Open the demo to sign in.");
     const ctx = getContext(c);
     const { email } = await readJson(c, requestSchema);
     const ip = c.req.header("cf-connecting-ip") ?? "local";
@@ -90,9 +94,25 @@ export const authRoutes = new Hono<AppEnv>()
     return c.json({ ok: true });
   })
 
+  /** Demo only: signs the visitor in as the shared demo owner. Data resets on the Cron Trigger. */
+  .post("/demo", async (c) => {
+    if (!isDemo(c.env)) throw notFound("Page");
+    const ctx = getContext(c);
+    await enforceRateLimit(ctx.db, `demo:ip:${c.req.header("cf-connecting-ip") ?? "local"}`, 30, 900);
+    let user = await ctx.db.first<{ id: string }>("SELECT id FROM users WHERE email = ?", [DEMO_EMAIL]);
+    if (!user) {
+      const id = newId("usr");
+      await ctx.db.run("INSERT OR IGNORE INTO users (id, email, name, role) VALUES (?, ?, 'Demo visitor', 'owner')", [id, DEMO_EMAIL]);
+      user = await ctx.db.first<{ id: string }>("SELECT id FROM users WHERE email = ?", [DEMO_EMAIL]);
+    }
+    if (!user) throw badRequest("The demo is resetting. Try again in a minute.");
+    await createSession(c, ctx.db, user.id);
+    return c.json({ ok: true });
+  })
+
   .post("/logout", async (c) => {
     await destroySession(c, getContext(c).db);
     return c.json({ ok: true });
   })
 
-  .get("/session", (c) => c.json({ user: c.get("user") }));
+  .get("/session", (c) => c.json({ user: c.get("user"), demo: isDemo(c.env) }));

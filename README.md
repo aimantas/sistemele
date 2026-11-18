@@ -39,6 +39,8 @@ Modules are switched on in `sistemele.config.ts`. They talk through typed
 events: an accepted quote wins the deal, an issued invoice deducts stock, a
 payment lands on the customer's timeline.
 
+Try it first: **[sistemele.aimantas.com](https://sistemele.aimantas.com)** is a public demo with sample data (it resets every hour; no email is sent).
+
 ## Quick start
 
 Requirements: Node 22+, a Cloudflare account for deployment (not needed locally).

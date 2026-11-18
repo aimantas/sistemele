@@ -7,7 +7,7 @@ import { siteThemeCss } from "@/shared/branding";
 import { getContext } from "../context";
 import { getBranding } from "../lib/settings";
 import { logoUrl } from "./brand";
-import { appOrigin, type AppEnv } from "../env";
+import { appOrigin, isDemo, type AppEnv } from "../env";
 import { Layout, type SiteLink } from "./Layout";
 import type { PageMeta } from "./seo";
 
@@ -87,6 +87,7 @@ export async function renderPage(c: Context<AppEnv>, options: RenderPageOptions)
       logoUrl={await logoUrl(branding.logoSvg)}
       links={links}
       currentPath={new URL(c.req.url).pathname}
+      demo={isDemo(c.env)}
     >
       {options.body}
     </Layout>,

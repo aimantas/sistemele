@@ -66,6 +66,27 @@ point a preview at production data:
 Deploy with `npx wrangler deploy --env preview` (after `CLOUDFLARE_ENV=preview npx vite build`).
 `robots.txt` disallows everything outside production.
 
+## Public demo
+
+A demo is an installation anyone can open without an account. Set `DEMO_MODE` to `"1"` and the Worker:
+
+- shows **Open the demo** on `/app/login` instead of the email form; it signs the visitor in as one shared owner account (`demo@sistemele.invalid`), rate-limited per IP;
+- refuses email sign-in and never sends email, even with `RESEND_API_KEY` set (every email is only logged);
+- shows a banner in the dashboard and a bar on public pages that say it is sample data;
+- sends `X-Robots-Tag: noindex, nofollow` (every non-production `APP_ENV` does) and a disallow-all `robots.txt`;
+- on each Cron Trigger, empties every table (users and sessions included) and reloads `seed/*.sql` (`src/worker/demo.ts`).
+
+The `demo` environment in `wrangler.jsonc` defines a separate Worker, D1 database, custom domain and hourly trigger. Before running these commands, set `database_id` to a dedicated demo database and configure `routes` and `APP_URL` for your domain.
+
+```bash
+export CLOUDFLARE_ACCOUNT_ID=<account that owns the domain>
+npm run db:migrate:demo   # migrations on the demo database
+npm run db:seed:demo      # demo data now (the trigger reloads it every hour)
+npm run deploy:demo       # CLOUDFLARE_ENV=demo build, then wrangler deploy
+```
+
+`db:seed:demo` only ever targets `--remote --env demo`. For your own demo, copy the block with your domain and a new database (`npx wrangler d1 create <name>`), or remove it.
+
 ## Continuous deployment
 
 Option A — **Cloudflare Workers Builds**: connect the GitHub repository in the

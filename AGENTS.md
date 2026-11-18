@@ -54,6 +54,7 @@ npm run db:migrate     # apply migrations to the LOCAL database
 npm run db:reset       # wipe local D1, migrate, seed
 npm run module:new <id> "<Name>"   # scaffold a module and register it
 npm run doctor         # config and wiring checks
+npm run deploy:demo    # the public demo (sistemele.aimantas.com); needs CLOUDFLARE_ACCOUNT_ID and approval
 ```
 
 Sign in locally with an address in `ADMIN_EMAILS` (`.dev.vars`). Without `RESEND_API_KEY`

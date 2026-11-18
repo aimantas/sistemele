@@ -4,6 +4,8 @@
 
 - Content module: website pages (`/<slug>`) and blog posts (`/blog/<slug>`) in Markdown, with drafts, scheduling, unpublish/archive, a site-menu position, RSS feed, `BlogPosting` structured data, sitemap entries, a dashboard editor with preview, a widget, a KPI metric and MCP tools. Members draft; owners and admins publish.
 - Starter home page: modules contribute a hero and sections through `home()`; a live content page with the address `home` replaces the default headline, and the newest posts show under “From the blog”. Demo data includes a home page, an About page and posts.
+- Demo mode (`DEMO_MODE=1`): one-click sign-in as a shared demo owner, no email ever sent, demo banners, noindex, and a Cron Trigger that empties every table and reloads the seed data. The public demo runs at https://sistemele.aimantas.com (`npm run deploy:demo`).
+- Non-production deployments (`APP_ENV` other than `production`) send `X-Robots-Tag: noindex, nofollow`.
 - Safe Markdown renderer (`src/modules/content/shared/markdown.tsx`): no raw HTML, allow-listed link schemes, linear parsing.
 - Core: `siteMenu` hook for data-driven header links; `PageMeta` article dates and alternate links; `slugify` moved to `src/shared/slug.ts`; `CheckboxField` moved to the UI kit.
 

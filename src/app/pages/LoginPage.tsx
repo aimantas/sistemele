@@ -29,12 +29,13 @@ function AuthFrame({ children }: { children: React.ReactNode }) {
 }
 
 export function LoginPage() {
-  const { user } = useSession();
+  const { user, demo } = useSession();
   const [params] = useSearchParams();
   const [email, setEmail] = useState("");
   const request = useMutation({ mutationFn: (value: string) => api.post<{ ok: true; devLink?: string }>("/api/auth/link", { email: value }) });
 
   if (user) return <Navigate to={params.get("next") ?? "/app"} replace />;
+  if (demo) return <DemoLogin />;
 
   if (request.isSuccess) {
     return (
@@ -78,6 +79,22 @@ export function LoginPage() {
           Email me a sign-in link
         </Button>
       </form>
+    </AuthFrame>
+  );
+}
+
+/** Public demo: one button, no email. */
+function DemoLogin() {
+  const queryClient = useQueryClient();
+  const open = useMutation({ mutationFn: () => api.post<{ ok: true }>("/api/auth/demo"), onSuccess: () => queryClient.invalidateQueries({ queryKey: ["session"] }) });
+  return (
+    <AuthFrame>
+      <h1 className="text-2xl font-semibold">Try the demo</h1>
+      <p className="mt-2 text-ink-soft">A sample business with customers, products, quotes, invoices and a website. Change anything: the data resets every hour, and no email is sent.</p>
+      <Button variant="primary" className="mt-6 w-full" loading={open.isPending || open.isSuccess} onClick={() => open.mutate()}>
+        Open the demo
+      </Button>
+      <FormError error={open.error} />
     </AuthFrame>
   );
 }

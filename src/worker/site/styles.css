@@ -120,6 +120,8 @@ p { margin: 0 0 1em; }
 .post-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 28px; }
 .post-list h2 { font-size: 1.25rem; margin: 4px 0 6px; }
 .post-list p { margin: 0; }
+.demo-bar { margin: 0; padding: 8px 16px; text-align: center; font-size: 0.875rem; background: var(--ink); color: #fff; }
+.demo-bar a { color: #fff; font-weight: 600; }
 .home-text { max-width: 68ch; }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
 .section-head h2 { margin: 0; }

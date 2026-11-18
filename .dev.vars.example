@@ -8,3 +8,5 @@ EMAIL_FROM=Sistemele <onboarding@resend.dev>
 RESEND_API_KEY=
 # Optional Cloudflare Turnstile secret for the public contact form.
 TURNSTILE_SECRET_KEY=
+# "1" turns this into a public demo: one-click sign-in, no email, data reset by the Cron Trigger.
+DEMO_MODE=

@@ -77,6 +77,8 @@ const securityHeaders: MiddlewareHandler<AppEnv> = async (c, next) => {
     }
   }
   if (isApi(c.req.path)) headers.set("Cache-Control", headers.get("Cache-Control") ?? "no-store");
+  // Demos, previews and development copies are never indexed (robots.txt also disallows them).
+  if (c.env.APP_ENV !== "production") headers.set("X-Robots-Tag", "noindex, nofollow");
 };
 
 /** The dashboard SPA shell for /app and /app/*. */

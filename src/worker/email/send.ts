@@ -1,5 +1,5 @@
 import { newId } from "@/shared/ids";
-import type { Env } from "../env";
+import { isDemo, type Env } from "../env";
 import type { Db } from "../lib/db";
 import type { RenderedEmail } from "./layout";
 
@@ -14,8 +14,9 @@ export interface OutgoingEmail extends RenderedEmail {
 
 export type EmailStatus = "sent" | "logged" | "failed";
 
-export function emailConfigured(env: Pick<Env, "RESEND_API_KEY">): boolean {
-  return Boolean(env.RESEND_API_KEY);
+/** True when email can really be sent. A demo never sends email, even with a key. */
+export function emailConfigured(env: Pick<Env, "RESEND_API_KEY" | "DEMO_MODE">): boolean {
+  return Boolean(env.RESEND_API_KEY) && !isDemo(env);
 }
 
 /**

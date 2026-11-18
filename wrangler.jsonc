@@ -32,7 +32,38 @@
     "EMAIL_FROM": "Sistemėlė <hello@example.com>",
     // Comma-separated. These addresses become owners on first sign-in.
     "ADMIN_EMAILS": "owner@example.com"
-  }
+  },
   // Secrets (never commit): `npx wrangler secret put RESEND_API_KEY`
   // Optional: TURNSTILE_SECRET_KEY for the public contact form.
+
+  // The public demo at https://sistemele.aimantas.com (fictional data, reset every hour).
+  // Deploy: `npm run deploy:demo` with CLOUDFLARE_ACCOUNT_ID set to the account that owns aimantas.com.
+  // Set database_id to a separate demo D1 database before deploying.
+  // Remove this block in your own project, or point it at your own demo domain. See docs/deployment.md.
+  "env": {
+    "demo": {
+      "name": "sistemele-demo",
+      "workers_dev": false,
+      "preview_urls": false,
+      "routes": [{ "pattern": "sistemele.aimantas.com", "custom_domain": true }],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "sistemele-demo",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "vars": {
+        "APP_NAME": "Sistemėlė demo",
+        "APP_URL": "https://sistemele.aimantas.com",
+        "APP_ENV": "demo",
+        "EMAIL_FROM": "Sistemėlė demo <demo@sistemele.invalid>",
+        "ADMIN_EMAILS": "",
+        "DEMO_MODE": "1"
+      },
+      // Empties every table and reloads seed/*.sql at the top of each hour.
+      "triggers": { "crons": ["0 * * * *"] }
+    }
+  }
 }
