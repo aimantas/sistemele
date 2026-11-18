@@ -6,11 +6,12 @@ export interface Env {
   DB: D1Database;
   ASSETS: Fetcher;
   APP_NAME: string;
-  /** Canonical origin without trailing slash, e.g. https://example.com */
+  /** Canonical origin without trailing slash, e.g. https://example.com. Empty: the address each request came to. */
   APP_URL: string;
   APP_ENV: "development" | "preview" | "production" | string;
   EMAIL_FROM: string;
-  ADMIN_EMAILS: string;
+  /** Comma-separated; these addresses become owners on first sign-in. A secret in production (`wrangler secret put ADMIN_EMAILS`). */
+  ADMIN_EMAILS?: string;
   RESEND_API_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
   /** "1" turns the installation into a public demo: one-click sign-in, no email, hourly reset. See docs/deployment.md. */

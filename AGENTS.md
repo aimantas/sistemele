@@ -3,9 +3,14 @@
 Applies to the whole repository. Read this file first, then the README of the
 module you touch (`src/modules/<id>/README.md`).
 
-Sistemėlė is a modular business system on Cloudflare Workers: one Worker
-serves the JSON API, an MCP endpoint, a server-rendered public website and a
-React dashboard. Data lives in D1. Email goes through Resend.
+Sistemėlė is a practical starter kit and admin panel for AI-native projects
+on Cloudflare Workers: one Worker serves the JSON API, an MCP endpoint, a
+server-rendered public website and a React dashboard. Data lives in D1. Email
+goes through Resend.
+
+**Don't reinvent the wheel.** Before writing code, check what already exists
+(core, CRM leads/contacts/pipeline stages, catalog, quotes, invoices, content,
+UI kit) and extend it. `docs/extending.md` maps common needs to existing pieces.
 
 ## Non-negotiables
 
@@ -39,7 +44,7 @@ React dashboard. Data lives in D1. Email goes through Resend.
 | `migrations/` | D1 migrations, one per module, applied in filename order. |
 | `seed/` | Local demo data (`npm run db:seed`). Fictional only. |
 | `tests/` | Vitest against a real in-memory D1 with all migrations (`tests/helpers.ts`). |
-| `docs/` | Guides: architecture, modules, dashboard, AI agents, deployment, email, SEO, security. |
+| `docs/` | Guides: getting started, extending (best practices), architecture, modules, dashboard, AI agents, deployment, email, SEO, security. |
 | `skills/sistemele/` | Installable agent skill for this project. |
 | `website/` | Marketing site for Sistemėlė itself (static, separate Worker). Delete it in your own project. |
 
@@ -76,6 +81,10 @@ Each recipe lists the files to touch. Follow the CRM module as the reference.
 
 **Add a dashboard template** — append to `src/app/dashboard/templates.ts`.
 
+**Change the sales process** — no code: Pipeline → Stages (owners/admins) or the `crm_create_stage` / `crm_update_stage` tools. Stage ids are permanent slugs; deals store them. A sent quote moves a deal to `proposal` when that stage exists.
+
+**Assign records to people** — `ownerId` columns plus `assertTeamMember` (`src/worker/lib/team.ts`); the dashboard reads `GET /api/team`, agents `core_list_team`.
+
 **React to another module** — add the event to `src/modules/events.ts` if new, `ctx.emit` it after the write, handle it in the other module's `events`. Handlers must be idempotent.
 
 **Add a text page or blog post** — no code: create it in the content module (dashboard Website → Pages/Posts, or the `content_*` MCP tools). Members and member tokens draft; an owner or admin publishes.
@@ -88,7 +97,7 @@ Each recipe lists the files to touch. Follow the CRM module as the reference.
 
 ## Conventions
 
-- IDs: `newId("<prefix>")` → `ct_01jd…`. Prefixes: usr, ses, tok, ct, dl, act, prd, mv, qt, ql, inv, il, pay, aud, eml, cnt.
+- IDs: `newId("<prefix>")` → `ct_01jd…`. Prefixes: usr, ses, tok, ct, ld, dl, act, prd, mv, qt, ql, inv, il, pay, aud, eml, cnt. Pipeline stages use readable slugs (`qualified`).
 - API JSON is camelCase (alias columns in SQL: `company_name AS companyName`). Errors are `{ error: { code, message, issues? } }` via `AppError` helpers.
 - PATCH schemas use `patchSchema(createSchema)` from `src/shared/zod.ts` — Zod 4 keeps `.default()` inside `.partial()`, which would reset unsent fields.
 - Brand colours and logo come from Settings → Brand (`src/shared/branding.ts`); never hard-code colours in components.

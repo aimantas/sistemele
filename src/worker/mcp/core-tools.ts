@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { SearchResult } from "@/shared/api";
 import { roleAtLeast } from "@/shared/auth";
 import { defineTool, type ServerModule, type ToolDefinition } from "@/modules/types.server";
+import { listTeam } from "../lib/team";
 
 /** Tools every installation has, whatever modules are enabled. */
 export function coreTools(modules: readonly ServerModule[]): ToolDefinition[] {
@@ -27,9 +28,20 @@ export function coreTools(modules: readonly ServerModule[]): ToolDefinition[] {
       },
     }),
     defineTool({
+      name: "core_list_team",
+      title: "List team members",
+      description: "Lists active users (id, name, email). Use an id as `ownerId` when assigning leads, deals or tasks.",
+      input: z.object({}),
+      readOnly: true,
+      async run(_input, ctx) {
+        ctx.requireRole("member");
+        return { items: await listTeam(ctx.db) };
+      },
+    }),
+    defineTool({
       name: "core_search",
       title: "Search everything",
-      description: "Searches contacts, products, quotes and invoices by name, email, SKU or number. Returns ids you can pass to the module tools.",
+      description: "Searches leads, contacts, products, quotes and invoices by name, email, SKU or number. Returns ids you can pass to the module tools.",
       input: z.object({ query: z.string().min(2).max(100) }),
       readOnly: true,
       async run({ query }, ctx) {

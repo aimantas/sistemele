@@ -4,17 +4,31 @@ Sistemėlė deploys as one Cloudflare Worker with static assets and one D1
 database. The Workers free plan is enough to start; check
 [Cloudflare's pricing](https://developers.cloudflare.com/workers/platform/pricing/) for limits.
 
-## First deploy
+## One click: Deploy to Cloudflare
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele)
+
+The button copies the repository to your GitHub or GitLab account, creates the
+D1 database (and writes its id into the copy's `wrangler.jsonc`), asks for the
+secrets in `.dev.vars.example` — `ADMIN_EMAILS` (your email; it becomes the
+owner on first sign-in) and `RESEND_API_KEY` — and deploys with Workers Builds.
+The `deploy` script applies D1 migrations before every deploy, and every push
+to the copy redeploys.
+
+After the first deploy: open `<your Worker URL>/app/login`, sign in, and fill in
+Settings → Business. Until you verify a domain in Resend, `EMAIL_FROM` uses
+Resend's test sender, which only delivers to your Resend account's email.
+
+## First deploy from a terminal
 
 ```bash
 npx wrangler login
 ```
 
-1. **Configure** `wrangler.jsonc`:
+1. **Configure** `wrangler.jsonc` (the defaults work for a first deploy):
    - `name` — the Worker name (becomes `<name>.<account>.workers.dev`).
-   - `vars.APP_URL` — the public origin, e.g. `https://office.example.com` (no trailing slash).
-   - `vars.ADMIN_EMAILS` — who becomes an owner on first sign-in.
-   - `vars.EMAIL_FROM` — sender on your verified Resend domain.
+   - `vars.APP_URL` — empty uses the address the Worker is served from; set the public origin, e.g. `https://office.example.com`, once you add a custom domain.
+   - `vars.EMAIL_FROM` — sender on your verified Resend domain (the default test sender reaches only your Resend account's email).
    - `vars.APP_ENV` — `production` (robots.txt allows indexing only here).
 2. **Database**: `npm run setup:cloudflare` creates the D1 database, writes its id into `wrangler.jsonc` and applies migrations remotely. Manual equivalent:
 
@@ -26,12 +40,13 @@ npx wrangler login
 3. **Secrets**:
 
    ```bash
+   npx wrangler secret put ADMIN_EMAILS           # your email; it becomes the owner on first sign-in
    npx wrangler secret put RESEND_API_KEY
    npx wrangler secret put TURNSTILE_SECRET_KEY   # optional, protects the contact form
    ```
 
-4. **Deploy**: `npm run deploy` (builds the client and Worker, then `wrangler deploy`).
-5. **Sign in** at `APP_URL/app/login` with an `ADMIN_EMAILS` address. Fill in Settings → Business (legal name, VAT code, IBAN) before issuing invoices.
+4. **Deploy**: `npm run deploy` (builds the client and Worker, applies D1 migrations, then `wrangler deploy`).
+5. **Sign in** at `<your Worker URL>/app/login` with an `ADMIN_EMAILS` address. Fill in Settings → Business (legal name, VAT code, IBAN) before issuing invoices.
 
 ## Custom domain
 
@@ -42,8 +57,7 @@ email links and cookies use it).
 ## Updates
 
 ```bash
-npm run db:migrate:remote   # when migrations/ changed — before deploying code that needs them
-npm run deploy
+npm run deploy   # applies new migrations, then deploys the code that needs them
 ```
 
 Migrations are append-only. Never edit a migration that production has applied.
@@ -111,7 +125,7 @@ npx wrangler d1 export sistemele --remote --output backup.sql   # store it somew
 
 ## Checklist before going live
 
-- [ ] `APP_URL`, `APP_ENV=production`, `ADMIN_EMAILS`, `EMAIL_FROM` set.
+- [ ] `APP_ENV=production` and `EMAIL_FROM` set; `APP_URL` empty or your domain; secrets `ADMIN_EMAILS` and `RESEND_API_KEY` set.
 - [ ] Resend domain verified (SPF, DKIM) and `RESEND_API_KEY` set; test a sign-in email.
 - [ ] Settings → Business complete (legal name, codes, address, IBAN).
 - [ ] `src/worker/site/content.ts` rewritten for the business; privacy page checked.

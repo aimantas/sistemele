@@ -1,6 +1,6 @@
 # AI agents
 
-Sistemėlė is built to be worked on by coding agents and operated by AI agents.
+Sistemėlė is a practical starter kit and admin panel for AI-native projects: coding agents extend it, and AI agents operate a running installation. Don't ask them to reinvent the wheel; point them at what exists. Best practices for extending: [extending.md](extending.md).
 
 ## 1. Agents that change the code
 
@@ -55,6 +55,7 @@ Tools come from enabled modules (`core_*`, `crm_*`, `catalog_*`, `quotes_*`,
 `invoices_*`, `content_*`). `GET /llms.txt` lists them with descriptions. Things an agent
 can do once connected:
 
+- “Go through this week's new leads, mark the spam disqualified, assign the rest to me with a follow-up date, and convert the ones that asked for a price into deals.”
 - “Find everyone who asked for a quote this week and draft quotes from our price list.”
 - “Which invoices are overdue more than 14 days? Add a follow-up task for each customer.”
 - “Receive 200 pcs of SKU BR-12 into stock and tell me what is still below reorder point.”
@@ -66,7 +67,7 @@ Writes are audited under the token owner's name, with the token's role.
 
 - `GET /llms.txt` — what the business offers and how to send a request.
 - Any public page with `Accept: text/markdown` returns Markdown.
-- `POST /api/public/crm/inquiries` (JSON: name, email, phone, company, message) creates a request — the same as the contact form.
+- `POST /api/public/crm/inquiries` (JSON: name, email, phone, company, message) sends a message that arrives as a lead — the same as the contact form.
 
 ## Writing tools well
 

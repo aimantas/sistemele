@@ -3,7 +3,7 @@ import { createTestApp, json, type TestApp } from "./helpers";
 
 /**
  * End-to-end business flow across modules, through the public API only:
- * website request → contact + lead → quote → customer accepts → deal won →
+ * website request → lead → contact + deal → quote → customer accepts → deal won →
  * invoice from quote → issue (stock deducted) → paid (timeline) → void (stock back).
  */
 let t: TestApp;
@@ -18,13 +18,14 @@ afterAll(() => t.dispose());
 
 describe("lead to cash", () => {
   it("runs the whole flow and keeps every module consistent", async () => {
-    // Website request
-    await t.request("/api/public/crm/inquiries", { method: "POST", json: { name: "Rasa", email: "rasa@buyer.test", company: "Buyer UAB", message: "10 brackets please" } });
-    const contacts = await json<{ items: Array<{ id: string }> }>(await t.request("/api/crm/contacts?q=rasa@buyer.test", { cookie: owner }));
-    const contactId = contacts.items[0].id;
-    const deals = await json<{ items: Array<{ id: string; stage: string }> }>(await t.request(`/api/crm/deals?contactId=${contactId}`, { cookie: owner }));
-    const dealId = deals.items[0].id;
-    expect(deals.items[0].stage).toBe("lead");
+    // Website request → lead → qualified → converted into a contact and a deal
+    const inquiry = await json<{ reference: string }>(await t.request("/api/public/crm/inquiries", { method: "POST", json: { name: "Rasa", email: "rasa@buyer.test", company: "Buyer UAB", message: "10 brackets please" } }));
+    const leadId = inquiry.reference;
+    await t.request(`/api/crm/leads/${leadId}`, { method: "PATCH", cookie: owner, json: { status: "qualified" } });
+    const converted = await json<{ contact: { id: string }; deal: { id: string; stage: string } }>(await t.request(`/api/crm/leads/${leadId}/convert`, { method: "POST", cookie: owner, json: { dealTitle: "Brackets" } }));
+    const contactId = converted.contact.id;
+    const dealId = converted.deal.id;
+    expect(converted.deal.stage).toBe("qualified");
 
     // Product with stock
     const product = await json<{ id: string }>(

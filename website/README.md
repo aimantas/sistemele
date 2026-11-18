@@ -1,6 +1,9 @@
 # Sistemėlė website
 
 The public landing page for Sistemėlė, in English (`/`) and Lithuanian (`/lt/`).
+It presents Sistemėlė as a practical starter kit and admin panel for AI-native
+projects ("Don't ask your agent to reinvent the wheel."): the demo and local start, the modules, the
+agent setup prompt, how to extend it, and how to deploy it.
 It is plain HTML, CSS and a small script with no build step, deployed as a
 static-assets-only Cloudflare Worker. It sets no cookies and makes no
 third-party requests.
@@ -12,7 +15,7 @@ third-party requests.
 | `public/index.html` | English page |
 | `public/lt/index.html` | Lithuanian page (same sections and ids as the English one) |
 | `public/styles.css` | All styles; design tokens at the top |
-| `public/main.js` | Progressive enhancement only: the module run highlight, copy buttons, closing the phone menu |
+| `public/main.js` | Progressive enhancement only: the module run highlight, copy buttons (command lines, or the whole setup prompt), closing the phone menu |
 | `public/404.html` | Served for any missing path |
 | `public/robots.txt`, `public/sitemap.xml`, `public/llms.txt` | Crawlers and agents |
 | `public/og.png`, `public/og-lt.png` | 1200 × 630 share images |
@@ -57,7 +60,7 @@ matches what the files contain.
 | --- | --- | --- | --- |
 | Site origin | `https://sistemele.dev` | Unconfirmed: the domain is not verified as registered or pointed at this Worker | canonical, `hreflang`, Open Graph, JSON-LD, `sitemap.xml`, `robots.txt`, `llms.txt` |
 | GitHub owner | `aimantas` | Confirmed GitHub organisation, 2026-11-18 | repository links, `npx degit`, `npx skills add`, JSON-LD |
-| Contact email | `hello@sistemele.dev` | Placeholder: the mailbox is not verified | "Have it set up" section, footer, JSON-LD, `llms.txt` |
+| Contact email | `hello@sistemele.dev` | Placeholder: the mailbox is not verified | "Can you set it up for us?" answer, footer, JSON-LD, `llms.txt` |
 
 Change any of them everywhere at once:
 
@@ -70,7 +73,8 @@ node scripts/configure.mjs --owner your-github-user --dry-run   # show what woul
 
 - Keep the two languages in step: the same sections, ids and links. Lithuanian copy uses lowercase "jūs".
 - Colours, type and radii follow the repository's `DESIGN.md` (paper, ink, brand green `#1f5f4a`, system font stack). Change them in the `:root` block of `styles.css`; no colour or font is written anywhere else.
-- The dashboard, the four sale records and the template boards are built in HTML with sample data (Example Kitchen, round amounts). Each sits in a `data-slot` container. To show a real screenshot instead, put an `<img src="/shots/dashboard.png" width="…" height="…" alt="…">` as the first child of the slot; the CSS hides the built sample. Then drop the `role="img"` and `aria-label` from that figure.
-- The FAQ uses `<details>`, the template switcher uses radio inputs, and the phone menu uses `<details>`, so every part works without JavaScript.
+- The dashboard and the four sale records are built in HTML with sample data (Example Kitchen, round amounts). Each sits in a `data-slot` container. To show a real screenshot instead, put an `<img src="/shots/dashboard.png" width="…" height="…" alt="…">` as the first child of the slot; the CSS hides the built sample. Then drop the `role="img"` and `aria-label` from that figure.
+- The FAQ and the phone menu use `<details>`, so every part works without JavaScript. Copy buttons are added by `main.js`; without it the commands and the prompt stay selectable.
 - The CSP in `_headers` allows same-origin scripts and styles only. Keep scripts in `main.js` and styles in `styles.css`, or update the policy.
-- If the hero changes, re-capture `og.png` and `og-lt.png` at 1200 × 630.
+- If the hero changes, re-capture `og.png` and `og-lt.png` at 1200 × 630. They still show the previous headline ("The business system you own, not rent."); their `og:image:alt` describes only the dashboard in them until they are re-captured.
+- Facts on the page come from the repository (`AGENTS.md`, `README.md`, module READMEs, `docs/`). Do not add user counts, testimonials, benchmarks or prices.

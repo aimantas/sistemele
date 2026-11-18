@@ -1,38 +1,81 @@
 # Sistemėlė
 
-> Sistemėlė ("a little system" in Lithuanian) is an open-source, MIT-licensed starter for running a small business, or building client systems as an agency, on Cloudflare Workers. One Worker serves the API, a server-rendered public website, an MCP endpoint and a React dashboard. Data lives in Cloudflare D1 (SQLite); email goes through Resend.
+> Sistemėlė ("a little system" in Lithuanian) is an open-source, MIT-licensed, practical starter kit and admin panel for AI-native projects. Motto: "Don't ask your agent to reinvent the wheel." Every business app needs the same parts: sign-in, roles, an audit log, a CRM, quotes, invoices with correct VAT and gap-free numbers, stock, a website with SEO, a dashboard and an MCP endpoint. Sistemėlė ships them built, tested and documented, so an agent builds only what is specific to the business. One Cloudflare Worker serves the API, a server-rendered public website, the MCP endpoint and a React dashboard; data lives in Cloudflare D1 (SQLite); email goes through Resend.
 
-## Get started
+## Start
 
-- [Source code](https://github.com/aimantas/sistemele): repository with `AGENTS.md`, a README per module and the full setup guide
-- Install: `npx degit aimantas/sistemele my-business && cd my-business && npm install && npm run setup && npm run dev`, then `npm run deploy`
-- Agent skill: `npx skills add aimantas/sistemele`
-- Requirements: Node 22 and a Cloudflare account; a Resend account for email
+- Deploy to Cloudflare in one click: https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele (copies the code to your GitHub, creates the D1 database, asks for ADMIN_EMAILS and RESEND_API_KEY, deploys; every push redeploys).
+- Demo: https://sistemele.aimantas.com (public site) and https://sistemele.aimantas.com/app (dashboard). One click signs you in as the demo owner. Sample data, reset every hour; no email is sent.
+- Run locally (Node 22 or later): `npx degit aimantas/sistemele my-app && cd my-app && npm install && npm run setup && npm run dev`, then open http://localhost:5173/app and sign in as owner@example.com. Locally, the sign-in link shows on screen and in the terminal.
+- [Source code](https://github.com/aimantas/sistemele): repository with `AGENTS.md`, a README per module and the guides below
 
 ## Modules
 
-Switch modules on or off in `sistemele.config.ts`. Modules talk through typed events: an accepted quote marks the deal won; an issued invoice deducts stock.
+Switch modules on or off in `sistemele.config.ts`. Modules never import each other's server code; they talk through typed events: an accepted quote marks the deal won, an issued invoice deducts stock.
 
-- CRM: contacts, drag-and-drop deal pipeline, notes, tasks, website requests
-- Catalog and stock: products and services, stock ledger, low-stock alerts, public product pages with Product structured data
-- Quotes: priced offers customers open and accept from a private link
-- Invoices: gap-free numbering, VAT per rate, payments, overdue tracking, bank-transfer instructions, public invoice link
+- CRM: a leads inbox (new, contacted, qualified, or disqualified with a reason; owner, follow-up date, source; convert a lead into a contact and a deal in one step), contacts, notes, tasks, and pipeline stages you add, rename and reorder, each with a win probability for a weighted pipeline value
+- Catalog and stock: products and services, stock ledger with receipts, counts and adjustments, low-stock alerts, public product pages with Product structured data
+- Quotes: numbered quotes with VAT per rate that customers accept or decline from a private link
+- Invoices: gap-free numbering, immutable once issued (correct with a void and a new invoice), VAT per rate, partial payments, overdue tracking, bank-transfer details, public invoice link
+- Website pages and blog: Markdown pages and posts with drafts, scheduling and RSS; members and agents draft, owners and admins publish
+- Dashboard: drag-and-drop cards, KPI metrics from every module, templates (Owner, Sales, Operations, Minimal), layouts saved per person
 
-## Dashboard
+## Give an agent the setup
 
-Drag-and-drop dashboard with per-user layouts saved in D1, KPI cards from any module, and templates (Owner, Sales, Operations, Minimal). `AGENTS.md` documents how to add widgets and templates.
+Paste into a coding agent (Claude Code, Codex, Cursor or similar):
 
-## For AI agents
+> Set up Sistemėlė for <business>. Clone it with npx degit aimantas/sistemele my-app and read AGENTS.md first. Run npm run setup and adapt sistemele.config.ts: modules, locale, currency and business defaults. Switch off the modules we don't need. Finish with npm run check. Ask me before any remote command.
 
-- MCP endpoint at `/mcp` on every installation (Streamable HTTP, JSON-RPC). Authenticate with `Authorization: Bearer <API token>`; the token's role (owner, admin or member) limits which tools it can call.
+- `AGENTS.md`: rules, a map of the code and recipes. Claude Code reads it through `CLAUDE.md`.
+- Module READMEs (`src/modules/<id>/README.md`): API, MCP tools, events and rules for each module
+- Agent skill: `npx skills add aimantas/sistemele`
+- Claude Code slash commands: `/new-module`, `/add-widget`, `/add-dashboard-template`, `/add-mcp-tool`, `/seo-check`, `/ship-check`
+
+## Extend it
+
+- Start from `npm run module:new <id> "<Name>"` and follow the shape of the CRM module.
+- One module: a migration, Zod schemas, services that validate, call `ctx.requireRole` and `ctx.audit`, thin routes, MCP tools, pages and widgets, a README and tests.
+- Modules never import each other's server code; react to typed events in `src/modules/events.ts`.
+- Money is integer cents; VAT and discounts are integer basis points (2100 = 21%). The server computes every total.
+- Never edit an applied migration; add a new one.
+- No invented business facts in copy, seeds or structured data.
+- Done means `npm run check` (typecheck, lint, tests against a real local D1) and `npm run build` pass, and the change is checked in the browser.
+
+## Deploy
+
+One click: https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele
+
+From a terminal:
+
+1. `npx wrangler login`
+2. `npm run setup:cloudflare` creates the D1 database and applies migrations.
+3. `npx wrangler secret put ADMIN_EMAILS` (your email; it becomes the owner)
+4. `npx wrangler secret put RESEND_API_KEY`
+5. `npm run deploy` (builds, applies migrations, deploys)
+
+`APP_URL` can stay empty: the Worker uses the address it is served from. Set it once you add a custom domain.
+
+Agents must ask a person before any remote command (`--remote`, `wrangler deploy`, `wrangler secret put`); `AGENTS.md` sets this rule. `npm run dev` uses a local D1 only.
+
+## For AI agents at runtime
+
+- MCP endpoint at `/mcp` on every installation (Streamable HTTP, JSON-RPC). Authenticate with `Authorization: Bearer <API token>` from Settings → API & agents; the token's role (owner, admin or member) limits which tools it can call.
 - Each installation publishes `/llms.txt`, and its public pages answer `Accept: text/markdown`.
 
 ## Built in
 
-- Passwordless magic-link sign-in; owner, admin and member roles; audit log
+- Passwordless magic-link sign-in; owner, admin and member roles; API tokens; audit log
 - CSRF protection, security headers, rate limits, server-authoritative totals
 - Server-rendered public pages with unique titles, canonical URLs, Open Graph, JSON-LD, sitemap.xml and robots.txt; preview deployments are never indexed
 - Stack: Hono, React 19, React Router, TanStack Query, Tailwind CSS v4, Zod, Vite with the Cloudflare plugin, Vitest with a real local D1
+
+## Guides
+
+- [Getting started](https://github.com/aimantas/sistemele/blob/main/docs/getting-started.md)
+- [Modules](https://github.com/aimantas/sistemele/blob/main/docs/modules.md)
+- [Extending](https://github.com/aimantas/sistemele/blob/main/docs/extending.md)
+- [AI agents](https://github.com/aimantas/sistemele/blob/main/docs/ai-agents.md)
+- [Deployment](https://github.com/aimantas/sistemele/blob/main/docs/deployment.md)
 
 ## Pages
 

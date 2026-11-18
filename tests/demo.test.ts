@@ -44,7 +44,9 @@ describe("demo mode", () => {
   it("marks the public site as a demo and keeps it out of search engines", async () => {
     const home = await t.request("/");
     expect(home.headers.get("x-robots-tag")).toBe("noindex, nofollow");
-    expect(await home.text()).toContain('<p class="demo-bar">Demo site with sample data. <a href="/app/login">Open the dashboard</a></p>');
+    const homeHtml = await home.text();
+    expect(homeHtml).toContain('<p class="demo-bar">Demo site with sample data. <a href="/app/login">Open the dashboard</a> · <a href="https://github.com/aimantas/sistemele">Get the code on GitHub</a></p>');
+    expect(homeHtml).toContain('Made by <a href="https://aimantas.com">aimantas.com</a>');
     expect(await (await t.request("/robots.txt")).text()).toBe("User-agent: *\nDisallow: /\n");
   });
 
@@ -65,7 +67,7 @@ describe("demo mode", () => {
     expect((await t.request("/api/auth/session", { cookie }).then((r) => json<{ user: unknown }>(r))).user).toBeNull();
     await resetDemoData(t.db);
     expect(await count("SELECT COUNT(*) AS n FROM contacts WHERE id = 'ct_demo_baltic'")).toBe(1);
-    expect(await (await t.request("/")).text()).toContain("Steel products from stock");
+    expect(await (await t.request("/")).text()).toContain("A demo business, built from ready modules");
   });
 });
 
@@ -79,7 +81,10 @@ describe("outside demo mode", () => {
   it("has no demo sign-in", async () => {
     expect((await t.request("/api/auth/demo", { method: "POST", json: {} })).status).toBe(404);
     expect(await json(await t.request("/api/auth/session"))).toEqual({ user: null, demo: false });
-    expect(await (await t.request("/")).text()).not.toContain("demo-bar");
+    const html = await (await t.request("/")).text();
+    expect(html).not.toContain("demo-bar");
+    expect(html).not.toContain("aimantas.com");
+    expect(html).toContain('Runs on <a href="https://github.com/aimantas/sistemele">Sistemėlė</a>');
   });
 });
 

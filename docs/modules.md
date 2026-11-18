@@ -19,6 +19,11 @@ seed/NN_<id>.sql
 tests/<id>.test.ts
 ```
 
+A larger module may split its services by entity, as CRM does
+(`server/leads.ts`, `server/stages.ts` next to `server/service.ts`). Keep one
+direction of imports between them. Before creating a module, check
+[extending.md](extending.md): the need may already be covered.
+
 ## Create one
 
 ```bash

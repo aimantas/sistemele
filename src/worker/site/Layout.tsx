@@ -25,6 +25,11 @@ export interface LayoutProps {
   children: ReactNode;
 }
 
+/** The open-source project, linked from the footer ("Runs on Sistemėlė") and the demo bar. */
+const SISTEMELE_REPO = "https://github.com/aimantas/sistemele";
+/** The author's credit, shown on the public demo only; your own site keeps its footer to itself. */
+const AUTHOR_URL = "https://aimantas.com";
+
 /** Full HTML document for public pages. Server-rendered, no client JavaScript. */
 export function Layout({ meta, origin, siteName, language, business, themeCss, logoUrl, links, currentPath, demo, children }: LayoutProps) {
   const canonical = `${origin}${meta.path}`;
@@ -63,7 +68,7 @@ export function Layout({ meta, origin, siteName, language, business, themeCss, l
         </a>
         {demo ? (
           <p className="demo-bar">
-            Demo site with sample data. <a href="/app/login">Open the dashboard</a>
+            Demo site with sample data. <a href="/app/login">Open the dashboard</a> · <a href={SISTEMELE_REPO}>Get the code on GitHub</a>
           </p>
         ) : null}
         <header className="site-header">
@@ -111,7 +116,14 @@ export function Layout({ meta, origin, siteName, language, business, themeCss, l
               <p>
                 <a href="/privacy">Privacy policy</a>
               </p>
-              <p className="muted">Runs on Sistemėlė</p>
+              <p className="muted">
+                Runs on <a href={SISTEMELE_REPO}>Sistemėlė</a>
+              </p>
+              {demo ? (
+                <p className="muted">
+                  Made by <a href={AUTHOR_URL}>aimantas.com</a>
+                </p>
+              ) : null}
             </div>
           </div>
         </footer>
