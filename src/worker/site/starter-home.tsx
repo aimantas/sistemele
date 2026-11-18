@@ -326,7 +326,7 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
   );
 
   return {
-    title: businessName,
+    title: "Practical starter kit and admin panel for AI-native projects",
     description: `${businessName} runs on Sistemėlė, a practical starter kit and admin panel for AI-native projects: website, admin panel and MCP on one Cloudflare Worker.`,
     body,
     markdown,

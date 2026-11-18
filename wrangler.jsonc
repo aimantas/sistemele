@@ -63,7 +63,9 @@
         "APP_ENV": "demo",
         "EMAIL_FROM": "Sistemėlė demo <demo@sistemele.invalid>",
         "ADMIN_EMAILS": "",
-        "DEMO_MODE": "1"
+        "DEMO_MODE": "1",
+        // The demo is also the package's landing page: let search engines index its public pages.
+        "ALLOW_INDEXING": "1"
       },
       // Empties every table and reloads seed/*.sql at the top of each hour.
       "triggers": { "crons": ["0 * * * *"] }

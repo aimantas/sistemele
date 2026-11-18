@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { ServerModule, SitemapEntry } from "@/modules/types.server";
 import { getContext } from "../context";
-import { appOrigin, type AppEnv } from "../env";
+import { appOrigin, isIndexable, type AppEnv } from "../env";
 import { allTools } from "../mcp/routes";
 import { siteContent } from "./content";
 
@@ -28,9 +28,8 @@ export function discoveryRoutes(modules: readonly ServerModule[]) {
 
     .get("/robots.txt", (c) => {
       const origin = appOrigin(c.env);
-      const isProduction = c.env.APP_ENV === "production";
-      // Preview and development deployments are never indexed.
-      const body = isProduction
+      // Preview and development deployments are never indexed, unless ALLOW_INDEXING is set (a public demo).
+      const body = isIndexable(c.env)
         ? `User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /api/\nDisallow: /q/\nDisallow: /i/\n\nSitemap: ${origin}/sitemap.xml\n`
         : "User-agent: *\nDisallow: /\n";
       return c.body(body, 200, { "Content-Type": "text/plain; charset=utf-8" });

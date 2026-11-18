@@ -27,7 +27,7 @@ Browser ─┬─ /            server-rendered public site (SEO, no client JS)
 
 **Deploy to Cloudflare:** the button copies the code to your GitHub, creates the D1 database, asks for your email (the owner) and a [Resend](https://resend.com) key, and deploys. Every push redeploys.
 
-**Try the demo:** [sistemele.aimantas.com](https://sistemele.aimantas.com). One-click sign-in as the demo owner, sample data, resets every hour, no email sent.
+**Website and live demo:** [sistemele.aimantas.com](https://sistemele.aimantas.com). The site runs on Sistemėlė itself; one click opens the admin panel as the demo owner, with sample data that resets every hour. No email is sent.
 
 **Run it locally** (Node 22+):
 

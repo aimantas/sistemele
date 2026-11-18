@@ -73,6 +73,27 @@ describe("demo mode", () => {
   });
 });
 
+describe("indexing", () => {
+  it("lets search engines index a public demo with ALLOW_INDEXING, but never the dashboard", async () => {
+    const t = await createTestApp({ env: { DEMO_MODE: "1", APP_ENV: "demo", ADMIN_EMAILS: "", ALLOW_INDEXING: "1" } });
+    const robots = await (await t.request("/robots.txt")).text();
+    expect(robots).toContain("Allow: /");
+    expect(robots).toContain("Disallow: /app");
+    const home = await t.request("/");
+    expect(home.headers.get("x-robots-tag")).toBeNull();
+    expect(await home.text()).toContain('<meta name="robots" content="index, follow, max-image-preview:large"/>');
+    expect((await t.request("/app/login")).headers.get("x-robots-tag")).toContain("noindex");
+    await t.dispose();
+  });
+
+  it("keeps a demo without ALLOW_INDEXING out of search engines", async () => {
+    const t = await createTestApp({ env: { DEMO_MODE: "1", APP_ENV: "demo", ADMIN_EMAILS: "" } });
+    expect(await (await t.request("/robots.txt")).text()).toBe("User-agent: *\nDisallow: /\n");
+    expect((await t.request("/")).headers.get("x-robots-tag")).toContain("noindex");
+    await t.dispose();
+  });
+});
+
 describe("outside demo mode", () => {
   let t: TestApp;
   beforeAll(async () => {
