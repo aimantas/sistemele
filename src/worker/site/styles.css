@@ -137,3 +137,15 @@ p { margin: 0 0 1em; }
   .doc { border: 0; padding: 0; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Starter home */
+.plain { list-style: none; padding: 0; }
+.grid.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.card h3 { margin: 0; }
+.card p { margin: 0; }
+.code { margin: 0; overflow-x: auto; background: rgba(22, 25, 29, 0.06); padding: 14px 16px; border-radius: calc(var(--radius) * 0.66); font: 0.875rem/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.steps code, .card code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; background: rgba(22, 25, 29, 0.06); padding: 0.1em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+.code code { background: none; padding: 0; border-radius: 0; font-size: inherit; }
+.steps.four { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 560px) { .steps.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .steps.four { grid-template-columns: repeat(4, minmax(0, 1fr)); } }

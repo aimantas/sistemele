@@ -2,16 +2,18 @@ import { Hono } from "hono";
 import { Fragment } from "react";
 import type { HomeContribution, ServerModule } from "@/modules/types.server";
 import { getContext } from "../context";
-import { appOrigin, type AppEnv } from "../env";
+import { appOrigin, isDemo, type AppEnv } from "../env";
 import { siteContent } from "./content";
 import { renderPage } from "./render";
 import { breadcrumbJsonLd, organizationJsonLd } from "./seo";
+import { starterHome } from "./starter-home";
 
 /**
- * Core public pages: home, contact, privacy. The home page shows the
- * business name and the copy from ./content.ts unless a module supplies a
- * hero (the content module's "home" page), then sections modules add, with
- * actions for the contact form and every module's public section.
+ * Core public pages: home, contact, privacy. Until a module supplies a hero
+ * (a published "home" page in the content module), "/" is the starter home
+ * with a get-started guide (./starter-home.tsx). After that it shows the hero,
+ * the sections modules add, and actions for the contact form and every
+ * module's public section.
  */
 export function sitePages(modules: readonly ServerModule[]) {
   const hasCrm = modules.some((module) => module.id === "crm");
@@ -24,7 +26,7 @@ export function sitePages(modules: readonly ServerModule[]) {
       const origin = appOrigin(c.env);
       const business = await ctx.business();
       const home = siteContent.home;
-      // Modules add sections (e.g. latest posts) and may replace the hero text (a "home" page in the content module).
+      // Modules add sections (e.g. latest posts) and may supply the hero (a published "home" page in the content module).
       const contributions = await Promise.all(
         modules.map((module) =>
           (module.home?.(ctx) ?? Promise.resolve<HomeContribution>({})).catch((error: unknown) => {
@@ -35,22 +37,27 @@ export function sitePages(modules: readonly ServerModule[]) {
       );
       const hero = contributions.find((contribution) => contribution.hero)?.hero;
       const sections = contributions.flatMap((contribution) => contribution.sections ?? []);
-      const headline = hero?.title ?? (home.headline || business.name);
-      const lead = hero?.lead ?? home.lead;
-      const actions = [...(hasCrm ? [{ ...home.contactCta, primary: true }] : []), ...moduleLinks.map((link) => ({ ...link, primary: false }))];
+      const jsonLd = [organizationJsonLd(business, origin), { "@context": "https://schema.org", "@type": "WebSite", name: business.name, url: origin }];
 
+      // No home page published yet: the general-purpose starter page with a get-started guide.
+      if (!hero) {
+        const starter = starterHome({ businessName: business.name, origin, demo: isDemo(c.env), modules, sections });
+        return renderPage(c, { meta: { title: starter.title, description: starter.description, path: "/", jsonLd }, markdown: starter.markdown, body: starter.body });
+      }
+
+      const actions = [...(hasCrm ? [{ ...home.contactCta, primary: true }] : []), ...moduleLinks.map((link) => ({ ...link, primary: false }))];
       return renderPage(c, {
         meta: {
           title: business.name,
-          description: hero?.description || home.lead,
+          description: hero.description || home.lead,
           path: "/",
-          ogImage: hero?.image ? (hero.image.startsWith("/") ? `${origin}${hero.image}` : hero.image) : undefined,
-          jsonLd: [organizationJsonLd(business, origin), { "@context": "https://schema.org", "@type": "WebSite", name: business.name, url: origin }],
+          ogImage: hero.image ? (hero.image.startsWith("/") ? `${origin}${hero.image}` : hero.image) : undefined,
+          jsonLd,
         },
         markdown: [
-          `# ${headline}`,
+          `# ${hero.title}`,
           "",
-          ...(lead ? [lead, ""] : []),
+          ...(hero.lead ? [hero.lead, ""] : []),
           ...sections.flatMap((section) => [section.markdown.trim(), ""]),
           ...actions.map((action) => `- [${action.label}](${origin}${action.href})`),
         ].join("\n"),
@@ -58,8 +65,8 @@ export function sitePages(modules: readonly ServerModule[]) {
           <>
             <section className="hero">
               <div className="wrap">
-                <h1>{headline}</h1>
-                {lead ? <p className="lead">{lead}</p> : null}
+                <h1>{hero.title}</h1>
+                {hero.lead ? <p className="lead">{hero.lead}</p> : null}
                 {actions.length ? (
                   <div className="actions">
                     {actions.map((action) => (

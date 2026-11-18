@@ -73,7 +73,7 @@ and `client.ts`, and enables it in `sistemele.config.ts`. Then:
 | `events` | Reactions to other modules' events. |
 | `search` | Command palette and `core_search` tool. |
 | `sitemap` | `/sitemap.xml` entries. |
-| `home` | Public home page: an optional hero (headline, lead, description) and sections below it, e.g. the content module's latest posts. |
+| `home` | Public home page: an optional hero (headline, lead, description) and sections below it, e.g. the content module's latest posts. Without a hero, `/` is the starter home (`src/worker/site/starter-home.tsx`) and the sections show inside it. |
 
 `ClientModule`: `nav`, `routes` (relative to `/app`, use `lazy`), `widgets`,
 `quickActions`.
