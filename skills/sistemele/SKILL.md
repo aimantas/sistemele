@@ -1,13 +1,18 @@
 ---
 name: sistemele
-description: Build, extend and operate Sistemėlė business systems on Cloudflare Workers (Hono + D1 + React dashboard + MCP). Use when creating a new Sistemėlė project, adding or changing a module (CRM, catalog/stock, quotes, invoices, content pages/blog, or a new one such as bookings), adding dashboard widgets, KPI metrics, dashboard templates, MCP tools, public SEO pages or emails, deploying to Cloudflare, or connecting an AI agent to a running installation over MCP.
+description: Build, extend and operate Sistemėlė, a practical starter kit and admin panel for AI-native projects on Cloudflare Workers (Hono + D1 + React dashboard + MCP). Use when creating a new Sistemėlė project, adding or changing a module (CRM leads/contacts/pipeline stages, catalog/stock, quotes, invoices, content pages/blog, or a new one such as bookings), adding dashboard widgets, KPI metrics, dashboard templates, MCP tools, public SEO pages or emails, deploying to Cloudflare, or connecting an AI agent to a running installation over MCP.
 ---
 
 # Sistemėlė
 
-Sistemėlė is a modular business-system starter: one Cloudflare Worker serves a
-JSON API, an MCP endpoint (`/mcp`), a server-rendered public site and a React
+Sistemėlė is a practical starter kit and admin panel for AI-native projects: one Cloudflare Worker serves
+a JSON API, an MCP endpoint (`/mcp`), a server-rendered public site and a React
 dashboard (`/app`); data in D1; email through Resend.
+
+**Don't reinvent the wheel.** Sign-in, roles, audit, CRM (leads inbox,
+contacts, configurable pipeline stages), catalog/stock, quotes, invoices,
+content, dashboard and MCP exist. Extend them; build new modules in the CRM
+module's shape. `docs/extending.md` maps needs to existing pieces.
 
 ## First, orient
 
@@ -36,7 +41,9 @@ dashboard (`/app`); data in D1; email through Resend.
 
 | Task | Read |
 | --- | --- |
+| Reuse first | `docs/extending.md` in the repo |
 | New module | [references/module.md](references/module.md) — or `npm run module:new <id> "<Name>"` then fill in |
+| Sales process (stages) | No code: Pipeline → Stages, or `crm_create_stage` / `crm_update_stage` |
 | Dashboard widget, KPI metric, template | [references/dashboard.md](references/dashboard.md) |
 | MCP tool | [references/mcp.md](references/mcp.md) |
 | Public page / SEO | [references/seo.md](references/seo.md) |

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sistemėlė: atviro kodo verslo sistema Cloudflare Workers platformai</title>
-<meta name="description" content="MIT licencijos pagrindas mažam verslui valdyti Cloudflare Workers platformoje: CRM, katalogas ir sandėlis, pasiūlymai, sąskaitos, tempiamų kortelių suvestinė ir MCP įrankiai AI agentams.">
+<title>Sistemėlė: praktiškas pradinis rinkinys ir administravimo skydelis AI projektams</title>
+<meta name="description" content="Neprašykite savo agento išradinėti dviračio. Praktiškas, MIT licencijos pradinis rinkinys ir administravimo skydelis AI projektams: prisijungimas, CRM, pasiūlymai, sąskaitos, sandėlis, svetainė ir MCP Cloudflare Workers platformoje.">
 <link rel="canonical" href="https://sistemele.dev/lt/">
 <link rel="alternate" hreflang="en" href="https://sistemele.dev/">
 <link rel="alternate" hreflang="lt" href="https://sistemele.dev/lt/">
@@ -15,19 +15,19 @@
 <script src="../main.js" defer></script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sistemėlė">
-<meta property="og:title" content="Sistemėlė: verslo sistema, kurią turite, o ne nuomojatės">
-<meta property="og:description" content="Atviro kodo CRM, sandėlis, pasiūlymai ir sąskaitos viename Cloudflare Worker, su suvestine ir MCP įrankiais AI agentams.">
+<meta property="og:title" content="Sistemėlė: neprašykite savo agento išradinėti dviračio">
+<meta property="og:description" content="Praktiškas pradinis rinkinys ir administravimo skydelis AI projektams: prisijungimas, CRM, pasiūlymai, sąskaitos, sandėlis, svetainė ir MCP viename Cloudflare Worker. MIT licencija.">
 <meta property="og:url" content="https://sistemele.dev/lt/">
 <meta property="og:locale" content="lt_LT">
 <meta property="og:locale:alternate" content="en_GB">
 <meta property="og:image" content="https://sistemele.dev/og-lt.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Sistemėlė: verslo sistema, kurią turite, o ne nuomojatės. Suvestinė su pavyzdiniais duomenimis ir apmokėta sąskaita.">
+<meta property="og:image:alt" content="Sistemėlės suvestinė su pavyzdiniais duomenimis: pajamos, neapmokėta suma, sandoriai pagal etapą ir apmokėta sąskaita INV-0042.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://sistemele.dev/og-lt.png">
-<meta name="twitter:title" content="Sistemėlė: verslo sistema, kurią turite, o ne nuomojatės">
-<meta name="twitter:description" content="Atviro kodo CRM, sandėlis, pasiūlymai ir sąskaitos viename Cloudflare Worker, su MCP įrankiais AI agentams.">
+<meta name="twitter:title" content="Sistemėlė: neprašykite savo agento išradinėti dviračio">
+<meta name="twitter:description" content="Praktiškas pradinis rinkinys ir administravimo skydelis AI projektams viename Cloudflare Worker. MIT licencija.">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -53,7 +53,7 @@
       "@type": "SoftwareSourceCode",
       "@id": "https://sistemele.dev/lt/#code",
       "name": "Sistemėlė",
-      "description": "Atviro kodo pagrindas mažam verslui valdyti arba klientų sistemoms kurti Cloudflare Workers platformoje: CRM, katalogas ir sandėlis, pasiūlymai, sąskaitos, tempiamų kortelių suvestinė ir MCP įrankiai AI agentams.",
+      "description": "Atviro kodo praktiškas pradinis rinkinys ir administravimo skydelis AI projektams: prisijungimas ir rolės, CRM su potencialių klientų sąrašu, katalogas ir sandėlis, pasiūlymai, sąskaitos, svetainės puslapiai ir tinklaraštis, suvestinė ir MCP prieiga viename Cloudflare Worker su D1.",
       "inLanguage": "lt",
       "url": "https://sistemele.dev/lt/",
       "codeRepository": "https://github.com/aimantas/sistemele",
@@ -77,10 +77,11 @@
         <span>Sistemėlė</span>
       </a>
       <ul class="nav__links">
+        <li><a href="#start">Pradėti</a></li>
         <li><a href="#modules">Moduliai</a></li>
-        <li><a href="#dashboard">Suvestinė</a></li>
-        <li><a href="#agents">Agentai</a></li>
-        <li><a href="#questions">Klausimai</a></li>
+        <li><a href="#agents">Agentams</a></li>
+        <li><a href="#extend">Plėtimas</a></li>
+        <li><a href="#deploy">Diegimas</a></li>
       </ul>
       <div class="nav__end">
         <a class="nav__lang" href="../" hreflang="en" lang="en">English</a>
@@ -89,10 +90,11 @@
       <details class="nav__menu">
         <summary>Meniu</summary>
         <ul>
+          <li><a href="#start">Pradėti</a></li>
           <li><a href="#modules">Moduliai</a></li>
-          <li><a href="#dashboard">Suvestinė</a></li>
-          <li><a href="#agents">Agentai</a></li>
-          <li><a href="#questions">Klausimai</a></li>
+          <li><a href="#agents">Agentams</a></li>
+          <li><a href="#extend">Plėtimas</a></li>
+          <li><a href="#deploy">Diegimas</a></li>
           <li><a href="https://github.com/aimantas/sistemele">Gauti kodą</a></li>
           <li><a href="../" hreflang="en" lang="en">English</a></li>
         </ul>
@@ -105,13 +107,18 @@
   <section class="hero" aria-labelledby="hero-title">
     <div class="container hero__grid">
       <div class="hero__text">
-        <h1 id="hero-title">Verslo sistema, kurią turite, o ne nuomojatės.</h1>
-        <p class="lead">Atviro kodo CRM, sandėlis, pasiūlymai ir sąskaitos Cloudflare Workers platformoje.</p>
+        <h1 id="hero-title">Neprašykite savo agento išradinėti dviračio.</h1>
+        <p class="lead">Praktiškas pradinis rinkinys ir administravimo skydelis AI projektams. Prisijungimas, CRM, pasiūlymai, sąskaitos, sandėlis ir svetainė jau sukurti, padengti testais ir aprašyti.</p>
         <div class="actions">
-          <a class="btn btn--primary" href="https://github.com/aimantas/sistemele">Gauti kodą</a>
-          <a class="btn btn--secondary" href="#companies">Užsakyti įdiegimą</a>
+          <a class="btn btn--primary" href="https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele">Įdiegti Cloudflare</a>
+          <a class="btn btn--secondary" href="#start">Greita pradžia</a>
         </div>
-        <p class="terms">MIT licencija. Veikia jūsų Cloudflare paskyroje.</p>
+        <ul class="runs-on" aria-label="Veikia su">
+          <li>Cloudflare Workers</li>
+          <li>D1</li>
+          <li>Resend</li>
+          <li>MCP</li>
+        </ul>
       </div>
 
       <figure class="shot" data-slot="hero" data-kind="product" data-alt="Sistemėlės suvestinė su pavyzdiniais duomenimis ir apmokėta sąskaita" role="img" aria-label="Sistemėlės suvestinė su pavyzdiniais duomenimis: pajamos, neapmokėta suma ir atviri sandoriai, sandoriai pagal etapą ir apmokėta sąskaita INV-0042 klientui Example Kitchen. Programos sąsaja anglų kalba.">
@@ -159,12 +166,91 @@
     </div>
   </section>
 
+  <section class="section" id="start" aria-labelledby="start-title">
+    <div class="container">
+      <div class="head">
+        <h2 id="start-title">Pradėkite per 2 minutes.</h2>
+      </div>
+      <div class="paths paths--3">
+        <div class="path">
+          <h3>Įdiekite Cloudflare</h3>
+          <p>Vienu paspaudimu kodas nukopijuojamas į jūsų GitHub, sukuriama D1 duomenų bazė, paklausiama jūsų el. pašto ir Resend rakto, ir viskas įdiegiama. Kiekvienas „push“ įdiegia iš naujo.</p>
+          <a class="btn btn--primary" href="https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele">Įdiegti Cloudflare</a>
+        </div>
+        <div class="path">
+          <h3>Paleiskite savo kompiuteryje</h3>
+          <figure class="code" data-copy>
+            <pre tabindex="0"><code><span class="prompt">npx degit aimantas/sistemele my-app</span>
+<span class="prompt">cd my-app</span>
+<span class="prompt">npm install</span>
+<span class="prompt">npm run setup</span>
+<span class="prompt">npm run dev</span>
+<span class="tok-c"># http://localhost:5173/app, prisijunkite kaip owner@example.com</span></code></pre>
+          </figure>
+          <p>Reikia Node 22 ar naujesnės versijos. Vietoje prisijungimo nuoroda rodoma ekrane.</p>
+        </div>
+        <div class="path">
+          <h3>Išbandykite demo</h3>
+          <p>Vienu paspaudimu prisijungiate kaip demo savininkas. Pavyzdiniai duomenys atkuriami kas valandą, laiškai nesiunčiami.</p>
+          <a class="btn btn--secondary" href="https://sistemele.aimantas.com/app">Atidaryti demo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="modules" aria-labelledby="modules-title">
+    <div class="container">
+      <div class="head">
+        <h2 id="modules-title">Dviratis jau išrastas.</h2>
+      </div>
+      <ul class="wheels">
+        <li>
+          <h3>Prisijungimas ir sauga</h3>
+          <p>Vienkartinės nuorodos el. paštu, savininko, administratoriaus ir nario rolės, audito žurnalas, CSRF patikros, saugumo antraštės ir užklausų ribojimas.</p>
+        </li>
+        <li>
+          <h3>CRM</h3>
+          <p>Potencialių klientų sąrašas su atsakingais asmenimis, kito kontakto datomis ir šaltiniais; vienu žingsniu potencialus klientas tampa kontaktu ir sandoriu. Sandorių etapus pridedate, pervadinate ir rikiuojate, kiekvienam nurodote laimėjimo tikimybę.</p>
+        </li>
+        <li>
+          <h3>Pasiūlymai</h3>
+          <p>Numeruoti pasiūlymai su PVM pagal tarifą. Klientas priima arba atmeta pasiūlymą privačioje nuorodoje, o sandoris tampa laimėtu.</p>
+        </li>
+        <li>
+          <h3>Sąskaitos</h3>
+          <p>Numeriai be tarpų, PVM pagal tarifą ir daliniai mokėjimai. Išrašyta sąskaita nesikeičia: ją taiso anuliavimas ir nauja sąskaita.</p>
+        </li>
+        <li>
+          <h3>Katalogas ir sandėlis</h3>
+          <p>Prekės ir paslaugos, sandėlio žurnalas su pajamavimais ir inventorizacijomis, įspėjimai apie mažą likutį ir vieši produktų puslapiai.</p>
+        </li>
+        <li>
+          <h3>Svetainė ir tinklaraštis</h3>
+          <p>Puslapiai ir įrašai Markdown formatu su juodraščiais, planavimu ir RSS. Agentai rašo juodraščius, savininkai ir administratoriai publikuoja.</p>
+        </li>
+        <li>
+          <h3>Paieška</h3>
+          <p>Serveryje generuojami puslapiai su unikaliais pavadinimais, kanoniniais URL, Open Graph, JSON-LD ir svetainės žemėlapiu. Peržiūros versijos neindeksuojamos.</p>
+        </li>
+        <li>
+          <h3>Suvestinė</h3>
+          <p>Tempiamos kortelės, KPI rodikliai iš visų modulių, keturi šablonai ir kiekvieno žmogaus išsaugotas išdėstymas.</p>
+        </li>
+        <li>
+          <h3>MCP prieiga</h3>
+          <p>Visų modulių įrankiai adresu <code>/mcp</code>. API rakto rolė riboja, ką agentas gali kviesti.</p>
+        </li>
+      </ul>
+      <p class="config-note">Modulius įjunkite ar išjunkite faile <code>sistemele.config.ts</code>.</p>
+    </div>
+  </section>
+
+  <section class="section--l" id="flow" aria-labelledby="flow-title">
     <div class="container split split--5-7">
       <div>
         <div class="head">
-          <h2 id="modules-title">Vienas priimtas pasiūlymas pajudina keturis modulius.</h2>
-          <p class="lead">Moduliai keičiasi tipizuotais įvykiais, todėl to paties įrašo niekas nesuveda du kartus.</p>
+          <h2 id="flow-title">Vienas priimtas pasiūlymas pajudina keturis modulius.</h2>
+          <p class="lead">Moduliai keičiasi tipizuotais įvykiais, o ne vienas kito kodu.</p>
         </div>
         <ol class="steps" data-steps>
           <li>
@@ -175,20 +261,19 @@
           <li>
             <svg class="module-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1" y="1" width="10" height="10" rx="2.5"/><rect class="is-on" x="13" y="1" width="10" height="10" rx="2.5"/><rect x="1" y="13" width="10" height="10" rx="2.5"/><rect x="13" y="13" width="10" height="10" rx="2.5"/></svg>
             <h3>CRM</h3>
-            <p>Sandoris pažymimas laimėtu; šalia jo matote kontaktą, pastabas, užduotis ir užklausas iš svetainės. Sandorių etapus keičiate tempdami korteles.</p>
+            <p>Sandoris pažymimas laimėtu, šalia kontakto, jo pastabų ir užduočių.</p>
           </li>
           <li>
             <svg class="module-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1" y="1" width="10" height="10" rx="2.5"/><rect x="13" y="1" width="10" height="10" rx="2.5"/><rect class="is-on" x="1" y="13" width="10" height="10" rx="2.5"/><rect x="13" y="13" width="10" height="10" rx="2.5"/></svg>
             <h3>Sąskaitos</h3>
-            <p>Sąskaita gauna kitą numerį be tarpų, PVM pagal tarifą, banko pavedimo rekvizitus ir viešą nuorodą. Mokėjimai ir vėluojančios sąskaitos stebimi.</p>
+            <p>Sąskaita gauna kitą numerį be tarpų, PVM pagal tarifą, banko pavedimo rekvizitus ir viešą nuorodą.</p>
           </li>
           <li>
             <svg class="module-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1" y="1" width="10" height="10" rx="2.5"/><rect x="13" y="1" width="10" height="10" rx="2.5"/><rect x="1" y="13" width="10" height="10" rx="2.5"/><rect class="is-on" x="13" y="13" width="10" height="10" rx="2.5"/></svg>
             <h3>Katalogas ir sandėlis</h3>
-            <p>Išrašyta sąskaita nurašo prekes sandėlio žurnale. Kai prekių lieka mažai, gaunate įspėjimą, o kiekvienas produktas turi viešą puslapį su Product struktūriniais duomenimis.</p>
+            <p>Išrašyta sąskaita nurašo prekes sandėlio žurnale, o mažas likutis sukelia įspėjimą.</p>
           </li>
         </ol>
-        <p class="config-note">Bet kurį modulį išjunkite faile <code>sistemele.config.ts</code>.</p>
       </div>
 
       <div class="chain-wrap">
@@ -233,98 +318,66 @@
     </div>
   </section>
 
-  <section class="section--l" id="dashboard" aria-labelledby="dashboard-title">
-    <div class="container split split--5-7 switch">
-      <div>
-        <div class="head">
-          <h2 id="dashboard-title">Suvestinę susidėliojate patys.</h2>
-          <p class="lead">Kiekvieno žmogaus išdėstymas saugomas D1, o KPI kortelės ima duomenis iš bet kurio modulio.</p>
-        </div>
-        <fieldset class="seg">
-          <legend class="visually-hidden">Suvestinės šablonas</legend>
-          <input type="radio" name="tpl" id="tpl-owner" value="owner" checked><label for="tpl-owner">Savininkas</label>
-          <input type="radio" name="tpl" id="tpl-sales" value="sales"><label for="tpl-sales">Pardavimai</label>
-          <input type="radio" name="tpl" id="tpl-operations" value="operations"><label for="tpl-operations">Operacijos</label>
-          <input type="radio" name="tpl" id="tpl-minimal" value="minimal"><label for="tpl-minimal">Minimalus</label>
-        </fieldset>
-        <p class="recipe">Keturi šablonai pradžiai. AI agentai prideda naujų šablonų ir valdiklių pagal receptą faile <code>AGENTS.md</code>.</p>
-      </div>
-
-      <div class="boards" data-slot="templates" data-kind="product" data-alt="Suvestinė su pasirinktu šablonu">
-        <ul class="board board--owner" aria-label="Savininko šablonas, pavyzdiniai duomenys">
-          <li class="w w--4"><span class="w__t">Getting started</span><span>3 of 5 steps done</span><span class="progress" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="done"></i><i></i><i></i></span></li>
-          <li class="w"><span class="w__t">Revenue, 30 days</span><span class="w__v">€8,400</span></li>
-          <li class="w"><span class="w__t">Outstanding</span><span class="w__v">€1,150</span></li>
-          <li class="w"><span class="w__t">Open pipeline</span><span class="w__v">€11,900</span></li>
-          <li class="w"><span class="w__t">Open quotes</span><span class="w__v">€3,000</span></li>
-          <li class="w w--2"><span class="w__t">Pipeline</span><span class="bars" aria-hidden="true"><span><i class="b3"></i><span>Lead</span></span><span><i class="b2"></i><span>Qualified</span></span><span><i class="b2"></i><span>Proposal</span></span><span><i class="b1"></i><span>Won</span></span></span></li>
-          <li class="w w--2"><span class="w__t">Overdue invoices</span><ul class="w__rows"><li><span class="ref">INV-0039</span><span class="money">€350.00</span></li></ul></li>
-          <li class="w w--2 w--tall"><span class="w__t">Open tasks</span><ul class="w__rows"><li><span>Call Example Bakery</span></li><li><span>Send quote <span class="ref">Q-0008</span></span></li><li><span>Order brackets</span></li></ul></li>
-          <li class="w w--2"><span class="w__t">Low stock</span><ul class="w__rows"><li><span>Oak shelving unit</span><span class="num">10</span></li></ul></li>
-          <li class="w w--2"><span class="w__t">Quick actions</span><span class="w__chips"><span>New quote</span><span>New invoice</span></span></li>
-        </ul>
-        <ul class="board board--sales" aria-label="Pardavimų šablonas, pavyzdiniai duomenys">
-          <li class="w"><span class="w__t">Open pipeline</span><span class="w__v">€11,900</span></li>
-          <li class="w"><span class="w__t">Win rate, 90 days</span><span class="w__v">40%</span></li>
-          <li class="w"><span class="w__t">Open quotes</span><span class="w__v">€3,000</span></li>
-          <li class="w"><span class="w__t">New contacts, 30 days</span><span class="w__v">6</span></li>
-          <li class="w w--4"><span class="w__t">Pipeline</span><span class="bars" aria-hidden="true"><span><i class="b4"></i><span>Lead</span></span><span><i class="b3"></i><span>Qualified</span></span><span><i class="b2"></i><span>Proposal</span></span><span><i class="b1"></i><span>Won</span></span></span></li>
-          <li class="w w--2 w--tall"><span class="w__t">Quotes awaiting an answer</span><ul class="w__rows"><li><span class="ref">Q-0008</span><span class="money">€2,100.00</span></li><li><span class="ref">Q-0009</span><span class="money">€900.00</span></li></ul></li>
-          <li class="w w--2 w--tall"><span class="w__t">Open tasks</span><ul class="w__rows"><li><span>Call Example Bakery</span></li><li><span>Send quote <span class="ref">Q-0008</span></span></li></ul></li>
-          <li class="w w--2"><span class="w__t">Recent contacts</span><ul class="w__rows"><li><span>Example Studio</span></li></ul></li>
-          <li class="w w--2"><span class="w__t">Quick actions</span><span class="w__chips"><span>New contact</span><span>New quote</span></span></li>
-        </ul>
-        <ul class="board board--operations" aria-label="Operacijų šablonas, pavyzdiniai duomenys">
-          <li class="w"><span class="w__t">Low stock items</span><span class="w__v">3</span></li>
-          <li class="w"><span class="w__t">Stock value</span><span class="w__v">€18,900</span></li>
-          <li class="w"><span class="w__t">Overdue amount</span><span class="w__v">€350</span></li>
-          <li class="w"><span class="w__t">Outstanding</span><span class="w__v">€1,150</span></li>
-          <li class="w w--2 w--tall"><span class="w__t">Low stock</span><ul class="w__rows"><li><span>Oak shelving unit</span><span class="num">10</span></li><li><span>Wall bracket</span><span class="num">6</span></li><li><span>Glass shelf</span><span class="num">2</span></li></ul></li>
-          <li class="w w--2 w--tall"><span class="w__t">Recent stock movements</span><ul class="w__rows"><li><span class="ref">INV-0042</span><span class="num">−2</span></li><li><span>Received</span><span class="num">+10</span></li></ul></li>
-          <li class="w w--4"><span class="w__t">Overdue invoices</span><ul class="w__rows"><li><span><span class="ref">INV-0039</span> Example Bakery</span><span class="money">€350.00</span></li></ul></li>
-        </ul>
-        <ul class="board board--minimal" aria-label="Minimalus šablonas, pavyzdiniai duomenys">
-          <li class="w"><span class="w__t">Revenue, 30 days</span><span class="w__v">€8,400</span></li>
-          <li class="w"><span class="w__t">Outstanding</span><span class="w__v">€1,150</span></li>
-          <li class="w"><span class="w__t">Open pipeline</span><span class="w__v">€11,900</span></li>
-          <li class="w"><span class="w__t">Note</span><span class="w__note">Write a note for your team here.</span></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
   <section class="section--l" id="agents" aria-labelledby="agents-title">
     <div class="container split split--6-6">
       <div>
         <div class="head">
-          <h2 id="agents-title">Agentai irgi išrašo pasiūlymus ir sąskaitas.</h2>
+          <h2 id="agents-title">Perduokite įdiegimą agentui.</h2>
         </div>
         <dl class="facts">
-          <div><dt>MCP prieiga</dt><dd>Visų modulių įrankiai adresu <code>/mcp</code>. Bearer rakto rolė nustato, ką jis gali kviesti.</dd></div>
-          <div><dt>Dokumentacija agentams</dt><dd><code>AGENTS.md</code> ir README kiekviename modulyje.</dd></div>
-          <div><dt>Įgūdis agentui</dt><dd><code class="inline-cmd">npx skills add aimantas/sistemele</code></dd></div>
-          <div><dt>Grynas tekstas</dt><dd><code>llms.txt</code>, o viešieji puslapiai atsako į <code>Accept: text/markdown</code>.</dd></div>
+          <div><dt><code>AGENTS.md</code></dt><dd>Taisyklės, kodo žemėlapis ir receptai. Claude Code jį skaito per <code>CLAUDE.md</code>.</dd></div>
+          <div><dt>Modulių README</dt><dd>Kiekvieno modulio API, MCP įrankiai, įvykiai ir taisyklės.</dd></div>
+          <div><dt>Įgūdis</dt><dd><code class="inline-cmd">npx skills add aimantas/sistemele</code></dd></div>
+          <div><dt>Komandos</dt><dd>Claude Code: <code>/new-module</code>, <code>/add-widget</code>, <code>/add-dashboard-template</code>, <code>/add-mcp-tool</code>, <code>/seo-check</code>, <code>/ship-check</code>.</dd></div>
+          <div><dt>MCP</dt><dd>Visų modulių įrankiai adresu <code>/mcp</code>, su API raktu iš Settings → API &amp; agents.</dd></div>
+          <div><dt>Grynas tekstas</dt><dd><code>llms.txt</code>, o vieši puslapiai atsako į <code>Accept: text/markdown</code>.</dd></div>
         </dl>
       </div>
-      <div class="codes">
-        <figure class="code">
-          <pre tabindex="0"><code><span class="tok-c">POST /mcp
-Authorization: Bearer sk_…</span>
+      <figure class="code code--prose" data-copy aria-label="Įdiegimo užduotis AI agentui">
+        <pre tabindex="0"><code>Įdiek Sistemėlę verslui &lt;pavadinimas&gt;.
+Nusiklonuok ją su npx degit aimantas/sistemele my-app ir pirmiausia perskaityk AGENTS.md.
+Paleisk npm run setup ir pritaikyk sistemele.config.ts: modulius, kalbą, valiutą ir verslo numatytąsias reikšmes.
+Išjunk mums nereikalingus modulius.
+Pabaigoje paleisk npm run check. Prieš bet kokią nuotolinę komandą paklausk manęs.</code></pre>
+      </figure>
+    </div>
+  </section>
 
-{ <span class="tok-k">"method"</span>: <span class="tok-s">"tools/call"</span>,
-  <span class="tok-k">"params"</span>: {
-    <span class="tok-k">"name"</span>: <span class="tok-s">"crm_list_deals"</span>,
-    <span class="tok-k">"arguments"</span>: { <span class="tok-k">"stage"</span>: <span class="tok-s">"proposal"</span> } } }</code></pre>
-        </figure>
-        <figure class="code">
-          <pre tabindex="0"><code>{ <span class="tok-k">"structuredContent"</span>: {
-    <span class="tok-k">"items"</span>: [ {
-      <span class="tok-k">"title"</span>: <span class="tok-s">"Display counter"</span>,
-      <span class="tok-k">"contactName"</span>: <span class="tok-s">"Example Bakery"</span>,
-      <span class="tok-k">"stage"</span>: <span class="tok-s">"proposal"</span>,
-      <span class="tok-k">"valueCents"</span>: 210000 } ] } }</code></pre>
-          <figcaption>Atsakymas, pavyzdiniai duomenys</figcaption>
-        </figure>
+  <section class="section" id="extend" aria-labelledby="extend-title">
+    <div class="container">
+      <div class="head">
+        <h2 id="extend-title">Plėskite neišradinėdami dviračio.</h2>
+      </div>
+      <div class="split split--5-7 split--below">
+        <div>
+          <figure class="code">
+            <pre tabindex="0"><code><span class="prompt">npm run module:new bookings "Bookings"</span>
+created migrations/…_bookings.sql
+created src/modules/bookings/shared/schema.ts
+created src/modules/bookings/server/service.ts
+created src/modules/bookings/server/tools.ts
+<span class="tok-c">…</span>
+created src/modules/bookings/README.md
+created tests/bookings.test.ts
+enabled in sistemele.config.ts</code></pre>
+          </figure>
+          <ul class="doclinks">
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/getting-started.md" hreflang="en">Pradžios gidas</a></li>
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/modules.md" hreflang="en">Modulių gidas</a></li>
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/extending.md" hreflang="en">Plėtimo gidas</a></li>
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/ai-agents.md" hreflang="en">AI agentų gidas</a></li>
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/deployment.md" hreflang="en">Diegimo gidas</a></li>
+          </ul>
+        </div>
+        <dl class="facts facts--flush">
+          <div><dt>Pradėkite nuo karkaso</dt><dd><code>npm run module:new &lt;id&gt; "&lt;Name&gt;"</code>, o struktūrą perimkite iš CRM modulio.</dd></div>
+          <div><dt>Visi sluoksniai viename aplanke</dt><dd>Migracija, Zod schemos, servisai, kurie tikrina duomenis, kviečia <code>ctx.requireRole</code> ir <code>ctx.audit</code>, ploni maršrutai, MCP įrankiai, puslapiai ir valdikliai, README ir testai.</dd></div>
+          <div><dt>Įvykiai, ne importai</dt><dd>Moduliai neimportuoja vienas kito serverio kodo. Jie reaguoja į tipizuotus įvykius.</dd></div>
+          <div><dt>Pinigai centais</dt><dd>Sveiki centai, PVM baziniais punktais (2100 = 21 %). Visas sumas skaičiuoja serveris.</dd></div>
+          <div><dt>Tik naujos migracijos</dt><dd>Pritaikytos migracijos neredaguokite; pridėkite naują.</dd></div>
+          <div><dt>Tik tikri faktai</dt><dd>Jokių išgalvotų verslo faktų tekstuose, pavyzdiniuose duomenyse ar struktūriniuose duomenyse.</dd></div>
+          <div><dt>Baigta, kai patikrinta</dt><dd><code>npm run check</code> ir <code>npm run build</code> praeina, o pakeitimas patikrintas naršyklėje.</dd></div>
+        </dl>
       </div>
     </div>
   </section>
@@ -428,24 +481,6 @@ Authorization: Bearer sk_…</span>
     </div>
   </section>
 
-  <section class="section--l" id="basics" aria-labelledby="basics-title">
-    <div class="container">
-      <div class="head">
-        <h2 id="basics-title">Prisijungimas, rolės ir SEO jau veikia.</h2>
-      </div>
-      <table class="table">
-        <tbody>
-          <tr><th scope="row">Prisijungimas</th><td>Vienkartinės nuorodos el. paštu, todėl nėra slaptažodžių, kuriuos reikėtų saugoti.</td></tr>
-          <tr><th scope="row">Rolės</th><td>Savininkas, administratorius ir narys. Pakeitimai įrašomi į audito žurnalą.</td></tr>
-          <tr><th scope="row">Užklausos</th><td>CSRF apsauga, saugumo antraštės ir užklausų ribojimas.</td></tr>
-          <tr><th scope="row">Prekės ženklas</th><td>Nustatymuose įklijuojate SVG logotipą kaip tekstą (be failų įkėlimo), pasirenkate spalvą su kontrasto patikra, foną ir kampus. Taikoma valdymo skydui, svetainei ir sąskaitoms.</td></tr>
-          <tr><th scope="row">Pinigai</th><td>Visas sumas skaičiuoja serveris. Sąskaitų numeriai eina be tarpų.</td></tr>
-          <tr><th scope="row">Paieška</th><td>Serveryje generuojami puslapiai su unikaliais pavadinimais, kanoniniais URL, Open Graph, JSON-LD ir svetainės žemėlapiu. Peržiūros versijos neindeksuojamos.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
   <section class="section" id="questions" aria-labelledby="questions-title">
     <div class="container split split--4-8">
       <div class="head">
@@ -453,47 +488,50 @@ Authorization: Bearer sk_…</span>
       </div>
       <div class="qa">
         <details>
-          <summary>Kiek kainuoja ją išlaikyti?</summary>
-          <p>Kodas nemokamas. Mažam naudojimui pakanka nemokamo Cloudflare Workers plano; jį viršijus, Cloudflare ima mokestį pagal naudojimą (žr. <a class="link" href="https://developers.cloudflare.com/workers/platform/pricing/">Workers kainas</a>). Laiškai siunčiami per jūsų Resend paskyrą.</p>
+          <summary>Kurie AI agentai gali ją naudoti?</summary>
+          <p>Bet kuris agentas, kuris skaito saugyklos failus: <code>AGENTS.md</code> yra paprastas Markdown. Claude Code dar gauna komandas, o įgūdžius palaikantys agentai įsidiegia <code>npx skills add aimantas/sistemele</code>.</p>
         </details>
         <details>
-          <summary>Kuo tai skiriasi nuo SaaS CRM?</summary>
-          <p>Kodas ir duomenys priklauso jums. Sistema veikia jūsų Cloudflare paskyroje; D1 duomenų bazę eksportuokite ar bet ką pakeiskite, kada tik norite.</p>
+          <summary>Ar galiu išjungti modulius?</summary>
+          <p>Taip. Išbraukite modulio id iš <code>sistemele.config.ts</code>, ir dings jo maršrutai, ekranai, valdikliai ir MCP įrankiai. Lentelės lieka.</p>
+        </details>
+        <details>
+          <summary>Kiek kainuoja ją išlaikyti?</summary>
+          <p>Kodas nemokamas, su MIT licencija. Mažam naudojimui pakanka nemokamo Cloudflare Workers plano; jį viršijus, Cloudflare ima mokestį pagal naudojimą (žr. <a class="link" href="https://developers.cloudflare.com/workers/platform/pricing/">Workers kainas</a>). Laiškai siunčiami per jūsų Resend paskyrą.</p>
         </details>
         <details>
           <summary>Ar ji paruošta realiam darbui?</summary>
           <p>Kartu pateikiami testai su tikra vietine D1, rolės, audito žurnalas, CSRF apsauga ir serveryje skaičiuojamos sumos. Peržiūrėkite kodą kaip ir bet kurį kitą, kurį diegiate.</p>
         </details>
-        <details>
-          <summary>Kaip pridedami moduliai?</summary>
-          <p>Paleiskite <code>npm run module:new</code> arba paprašykite AI agento; <code>AGENTS.md</code> aprašo, ko reikia moduliui. Tada įrašykite jo id į <code>sistemele.config.ts</code>.</p>
+        <details id="companies">
+          <summary>Ar galite ją įdiegti mums?</summary>
+          <p>Taip. Kūrėjas, nepriklausomas programuotojas iš Lietuvos, sistemą įdiegia ir pritaiko jūsų įmonei. Rašykite <a class="link" href="mailto:hello@sistemele.dev?subject=Sistem%C4%97l%C4%97s%20%C4%AFdiegimas">hello@sistemele.dev</a>.</p>
         </details>
       </div>
     </div>
   </section>
 
-  <section class="band" id="start" aria-labelledby="start-title">
+  <section class="band" id="deploy" aria-labelledby="deploy-title">
     <div class="container">
-      <h2 id="start-title">Paleiskite patys arba užsakykite įdiegimą.</h2>
+      <h2 id="deploy-title">Įdiekite Cloudflare Workers platformoje.</h2>
       <div class="band__grid">
         <div class="band__half">
-          <h3>Paleiskite patys</h3>
-          <figure class="code" data-copy>
-            <pre tabindex="0"><code><span class="prompt">npx degit aimantas/sistemele my-business</span>
-<span class="prompt">cd my-business</span>
-<span class="prompt">npm install</span>
-<span class="prompt">npm run setup</span>
-<span class="prompt">npm run dev</span>
-<span class="tok-c"># kai viskas tinka</span>
+          <h3>Vienu paspaudimu</h3>
+          <p>Mygtukas sukuria D1 duomenų bazę, kiekvieno diegimo metu pritaiko migracijas ir paklausia dviejų slaptų reikšmių: jūsų el. pašto, kuris tampa savininku, ir Resend rakto prisijungimo nuorodoms.</p>
+          <a class="btn btn--primary" href="https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele">Įdiegti Cloudflare</a>
+          <h3>Arba iš terminalo</h3>
+          <figure class="code">
+            <pre tabindex="0"><code><span class="prompt">npx wrangler login</span>
+<span class="prompt">npm run setup:cloudflare</span>
+<span class="prompt">npx wrangler secret put ADMIN_EMAILS</span>
+<span class="prompt">npx wrangler secret put RESEND_API_KEY</span>
 <span class="prompt">npm run deploy</span></code></pre>
           </figure>
-          <p>Reikia Node 22 ir Cloudflare paskyros.</p>
+          <p>Vienas Worker aptarnauja svetainę, administravimo skydelį, API ir MCP; duomenys saugomi D1. <a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/deployment.md" hreflang="en">Diegimo gidas</a> aprašo domenus, peržiūros versijas ir atnaujinimus.</p>
         </div>
-        <div class="band__half" id="companies">
-          <h3>Įmonėms</h3>
-          <p>Kūrėjas, nepriklausomas programuotojas iš Lietuvos, sistemą įdiegia ir pritaiko jūsų įmonei.</p>
-          <a class="btn btn--on-board" href="mailto:hello@sistemele.dev?subject=Sistem%C4%97l%C4%97s%20%C4%AFdiegimas">Parašyti dėl įdiegimo</a>
-          <p><a class="link mail" href="mailto:hello@sistemele.dev">hello@sistemele.dev</a></p>
+        <div class="band__half">
+          <h3>Agentai pirma klausia.</h3>
+          <p><code>AGENTS.md</code> reikalauja žmogaus leidimo prieš bet kokią nuotolinę komandą: <code>--remote</code>, <code>wrangler deploy</code> ar <code>wrangler secret put</code>. <code>npm run dev</code> naudoja tik vietinę D1.</p>
         </div>
       </div>
     </div>
@@ -510,10 +548,12 @@ Authorization: Bearer sk_…</span>
       <p>Sistemėlė yra atviro kodo programinė įranga su MIT licencija, sukurta Lietuvoje. Ši svetainė nenaudoja slapukų ir nieko nekrauna iš kitų serverių.</p>
       <ul class="foot__links">
         <li><a class="link" href="https://github.com/aimantas/sistemele">GitHub</a></li>
+        <li><a class="link" href="https://sistemele.aimantas.com">Demo</a></li>
         <li><a class="link" href="../llms.txt">llms.txt</a></li>
         <li><a class="link" href="mailto:hello@sistemele.dev">hello@sistemele.dev</a></li>
         <li><a class="link" href="../" hreflang="en" lang="en">English</a></li>
       </ul>
+      <p class="foot__credit">Sukūrė <a class="link" href="https://aimantas.com">aimantas.com</a></p>
     </div>
   </div>
 </footer>

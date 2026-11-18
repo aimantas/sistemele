@@ -11,6 +11,8 @@ export interface StockLine {
 export interface SistemeleEvents {
   "contact.created": { contactId: string; source: string };
   "deal.stage_changed": { dealId: string; contactId: string; from: string; to: string };
+  "lead.created": { leadId: string; source: string };
+  "lead.converted": { leadId: string; contactId: string; dealId: string | null };
   "quote.sent": { quoteId: string; contactId: string; dealId: string | null; number: string };
   "quote.accepted": { quoteId: string; contactId: string; dealId: string | null; number: string; totalCents: number };
   "quote.declined": { quoteId: string; contactId: string; dealId: string | null; number: string };

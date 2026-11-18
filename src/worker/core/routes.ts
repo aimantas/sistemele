@@ -16,6 +16,7 @@ import { badRequest, conflict, forbidden, notFound } from "../lib/errors";
 import { parseJsonColumn } from "../lib/db";
 import { getBranding, putSetting } from "../lib/settings";
 import { sanitizeSvg } from "../lib/svg";
+import { listTeam } from "../lib/team";
 import { logoUrl } from "../site/brand";
 import { readJson, readQuery } from "../lib/validate";
 
@@ -68,6 +69,11 @@ export function coreRoutes(modules: readonly ServerModule[]) {
     })
 
     // Team
+    .get("/team", async (c) => {
+      const ctx = getContext(c);
+      ctx.requireRole("member");
+      return c.json({ items: await listTeam(ctx.db) });
+    })
     .get("/users", async (c) => {
       const ctx = getContext(c);
       ctx.requireRole("admin");

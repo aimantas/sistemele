@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Positioning: "Don't ask your agent to reinvent the wheel" — a practical starter kit and admin panel for AI-native projects. README, PRODUCT, AGENTS, the skill and the website (`website/`) lead with it; new `docs/extending.md` with best practices for extending.
+- CRM leads inbox: website messages arrive as leads (new → contacted → qualified, or disqualified with a reason), with owners, sources, estimated values and follow-up dates; logging a call, email or meeting marks a new lead contacted; one-step conversion into a contact (reused by email) and a deal, moving the timeline along. Filters by status, owner, source and due follow-ups; dashboard widget; metrics for open leads, new leads and lead conversion; MCP tools `crm_list_leads`, `crm_get_lead`, `crm_create_lead`, `crm_update_lead`, `crm_convert_lead`.
+- CRM pipeline stages are configurable (Pipeline → Stages): add, rename, reorder and remove open stages, win probability per stage, weighted pipeline metric. Deals gain owners and lost reasons; dropping a deal on Lost asks why; a deal dialog edits title, value, close date, owner and stage. MCP tools `crm_list_stages`, `crm_create_stage`, `crm_update_stage`, `crm_update_deal`.
+- Migration `0007_crm_leads_stages.sql`: deals in the retired "lead" stage move to "qualified"; default stages Qualified, Proposal, Negotiation, Won, Lost.
+- Core: `GET /api/team` and the `core_list_team` tool list active users for owner pickers; `assertTeamMember` helper.
+- Public site: the default home page shows the business name, general copy and actions for the contact form and every module's public section; the contact page and header link are "Contact" instead of "Request a quote"; no reply-time promise in default copy. The demo home page explains the demo.
+
 - Content module: website pages (`/<slug>`) and blog posts (`/blog/<slug>`) in Markdown, with drafts, scheduling, unpublish/archive, a site-menu position, RSS feed, `BlogPosting` structured data, sitemap entries, a dashboard editor with preview, a widget, a KPI metric and MCP tools. Members draft; owners and admins publish.
 - Starter home page: modules contribute a hero and sections through `home()`; a live content page with the address `home` replaces the default headline, and the newest posts show under “From the blog”. Demo data includes a home page, an About page and posts.
 - Demo mode (`DEMO_MODE=1`): one-click sign-in as a shared demo owner, no email ever sent, demo banners, noindex, and a Cron Trigger that empties every table and reloads the seed data. The public demo runs at https://sistemele.aimantas.com (`npm run deploy:demo`).

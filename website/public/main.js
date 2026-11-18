@@ -53,7 +53,9 @@
       figure.append(button, status);
       let timer;
       button.addEventListener('click', async () => {
-        const text = [...pre.querySelectorAll('.prompt')].map((line) => line.textContent.trim()).join('\n');
+        // Command blocks copy their $ lines only; a prompt block copies all its text.
+        const commands = [...pre.querySelectorAll('.prompt')];
+        const text = commands.length ? commands.map((line) => line.textContent.trim()).join('\n') : pre.textContent.trim();
         button.disabled = true;
         try {
           await navigator.clipboard.writeText(text);

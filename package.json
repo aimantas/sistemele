@@ -2,17 +2,30 @@
   "name": "sistemele",
   "version": "0.1.0",
   "private": true,
-  "description": "Modular business system starter for Cloudflare Workers: D1, CRM, catalog and stock, quotes, invoices, drag-and-drop dashboard, MCP and agent-ready docs.",
+  "description": "Don't ask your agent to reinvent the wheel: a practical starter kit and admin panel for AI-native projects on Cloudflare Workers. D1, CRM with leads and pipeline stages, catalog and stock, quotes, invoices, website and blog, dashboard and MCP.",
   "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
+  "cloudflare": {
+    "bindings": {
+      "DB": {
+        "description": "D1 database for all data. Migrations run on every deploy."
+      },
+      "ADMIN_EMAILS": {
+        "description": "Your email. It becomes the owner when you first sign in at `/app/login`. Comma-separate several."
+      },
+      "RESEND_API_KEY": {
+        "description": "[Resend](https://resend.com/api-keys) API key for sign-in links. Until you verify a domain, email only reaches your Resend account's address."
+      }
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "npm run build && vite preview",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "npm run build && wrangler d1 migrations apply DB --remote && wrangler deploy",
     "deploy:demo": "CLOUDFLARE_ENV=demo npm run build && wrangler deploy",
     "db:migrate:demo": "wrangler d1 migrations apply DB --remote --env demo",
     "db:seed:demo": "node scripts/seed.mjs --demo",

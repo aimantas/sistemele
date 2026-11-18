@@ -18,8 +18,9 @@ else warnings.push(".dev.vars missing — run `npm run setup`");
 // wrangler.jsonc
 const wrangler = read("wrangler.jsonc");
 if (wrangler.includes("00000000-0000-0000-0000-000000000000")) warnings.push("D1 database_id is the placeholder (fine locally; run `npm run setup:cloudflare` before deploying)");
-if (wrangler.includes("sistemele.example.com")) warnings.push("vars.APP_URL is the example origin");
-if (/"ADMIN_EMAILS":\s*"owner@example\.com"/u.test(wrangler)) warnings.push("vars.ADMIN_EMAILS is the example address");
+if (wrangler.includes("sistemele.example.com")) warnings.push("vars.APP_URL is the example origin; leave it empty or set your domain");
+if (/"ADMIN_EMAILS":/u.test(wrangler.replace(/"env":[\s\S]*$/u, ""))) warnings.push("ADMIN_EMAILS is in vars; make it a secret (npx wrangler secret put ADMIN_EMAILS)");
+if (/(TURNSTILE_SECRET_KEY|DEMO_MODE|APP_ENV|APP_URL)=/u.test(readFileSync(".dev.vars.example", "utf8"))) warnings.push(".dev.vars.example should list secrets only; the Deploy to Cloudflare button asks for every entry");
 
 // Migrations
 const migrations = readdirSync("migrations").filter((f) => f.endsWith(".sql")).sort();

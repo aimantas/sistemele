@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sistemėlė: an open-source business system for Cloudflare Workers</title>
-<meta name="description" content="MIT-licensed starter to run a small business on Cloudflare Workers: CRM, catalog and stock, quotes, invoices, a drag-and-drop dashboard and MCP tools for AI agents.">
+<title>Sistemėlė: a practical starter kit and admin panel for AI-native projects</title>
+<meta name="description" content="Don’t ask your agent to reinvent the wheel. A practical, MIT-licensed starter kit and admin panel for AI-native projects: sign-in, CRM, quotes, invoices, stock, a website and MCP, deployed on Cloudflare Workers.">
 <link rel="canonical" href="https://sistemele.dev/">
 <link rel="alternate" hreflang="en" href="https://sistemele.dev/">
 <link rel="alternate" hreflang="lt" href="https://sistemele.dev/lt/">
@@ -15,19 +15,19 @@
 <script src="main.js" defer></script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sistemėlė">
-<meta property="og:title" content="Sistemėlė: the business system you own, not rent">
-<meta property="og:description" content="Open-source CRM, stock, quotes and invoices on one Cloudflare Worker, with a drag-and-drop dashboard and MCP tools for AI agents.">
+<meta property="og:title" content="Sistemėlė: don’t ask your agent to reinvent the wheel">
+<meta property="og:description" content="A practical starter kit and admin panel for AI-native projects: sign-in, CRM, quotes, invoices, stock, a website and MCP on one Cloudflare Worker. MIT licensed.">
 <meta property="og:url" content="https://sistemele.dev/">
 <meta property="og:locale" content="en_GB">
 <meta property="og:locale:alternate" content="lt_LT">
 <meta property="og:image" content="https://sistemele.dev/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Sistemėlė: the business system you own, not rent. A dashboard with sample data and a paid invoice.">
+<meta property="og:image:alt" content="The Sistemėlė dashboard with sample data: revenue, money outstanding, deals by stage and a paid invoice INV-0042.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://sistemele.dev/og.png">
-<meta name="twitter:title" content="Sistemėlė: the business system you own, not rent">
-<meta name="twitter:description" content="Open-source CRM, stock, quotes and invoices on one Cloudflare Worker, with MCP tools for AI agents.">
+<meta name="twitter:title" content="Sistemėlė: don’t ask your agent to reinvent the wheel">
+<meta name="twitter:description" content="A practical starter kit and admin panel for AI-native projects, on one Cloudflare Worker. MIT licensed.">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -53,7 +53,7 @@
       "@type": "SoftwareSourceCode",
       "@id": "https://sistemele.dev/#code",
       "name": "Sistemėlė",
-      "description": "Open-source starter to run a small business, or build client systems, on Cloudflare Workers: CRM, catalog and stock, quotes, invoices, a drag-and-drop dashboard and MCP tools for AI agents.",
+      "description": "Open-source, practical starter kit and admin panel for AI-native projects: sign-in and roles, a CRM with a leads inbox, catalog and stock, quotes, invoices, website pages and a blog, a dashboard and an MCP endpoint, on one Cloudflare Worker with D1.",
       "url": "https://sistemele.dev/",
       "codeRepository": "https://github.com/aimantas/sistemele",
       "license": "https://opensource.org/licenses/MIT",
@@ -76,10 +76,11 @@
         <span>Sistemėlė</span>
       </a>
       <ul class="nav__links">
+        <li><a href="#start">Start</a></li>
         <li><a href="#modules">Modules</a></li>
-        <li><a href="#dashboard">Dashboard</a></li>
         <li><a href="#agents">Agents</a></li>
-        <li><a href="#questions">Questions</a></li>
+        <li><a href="#extend">Extend</a></li>
+        <li><a href="#deploy">Deploy</a></li>
       </ul>
       <div class="nav__end">
         <a class="nav__lang" href="lt/" hreflang="lt" lang="lt">Lietuviškai</a>
@@ -88,10 +89,11 @@
       <details class="nav__menu">
         <summary>Menu</summary>
         <ul>
+          <li><a href="#start">Start</a></li>
           <li><a href="#modules">Modules</a></li>
-          <li><a href="#dashboard">Dashboard</a></li>
           <li><a href="#agents">Agents</a></li>
-          <li><a href="#questions">Questions</a></li>
+          <li><a href="#extend">Extend</a></li>
+          <li><a href="#deploy">Deploy</a></li>
           <li><a href="https://github.com/aimantas/sistemele">Get the code</a></li>
           <li><a href="lt/" hreflang="lt" lang="lt">Lietuviškai</a></li>
         </ul>
@@ -104,13 +106,18 @@
   <section class="hero" aria-labelledby="hero-title">
     <div class="container hero__grid">
       <div class="hero__text">
-        <h1 id="hero-title">The business system you own, not rent.</h1>
-        <p class="lead">Open-source CRM, stock, quotes and invoices running on Cloudflare Workers.</p>
+        <h1 id="hero-title">Don’t ask your agent to reinvent the wheel.</h1>
+        <p class="lead">A practical starter kit and admin panel for AI-native projects. Sign-in, CRM, quotes, invoices, stock and a website, already built, tested and documented.</p>
         <div class="actions">
-          <a class="btn btn--primary" href="https://github.com/aimantas/sistemele">Get the code</a>
-          <a class="btn btn--secondary" href="#companies">Have it set up</a>
+          <a class="btn btn--primary" href="https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele">Deploy to Cloudflare</a>
+          <a class="btn btn--secondary" href="#start">Quick start</a>
         </div>
-        <p class="terms">MIT licensed. Runs in your own Cloudflare account.</p>
+        <ul class="runs-on" aria-label="Runs on">
+          <li>Cloudflare Workers</li>
+          <li>D1</li>
+          <li>Resend</li>
+          <li>MCP</li>
+        </ul>
       </div>
 
       <figure class="shot" data-slot="hero" data-kind="product" data-alt="The Sistemėlė dashboard with sample data and a paid invoice" role="img" aria-label="The Sistemėlė dashboard with sample data: revenue, money outstanding and open pipeline, deals by stage, and a paid invoice INV-0042 for Example Kitchen.">
@@ -158,36 +165,114 @@
     </div>
   </section>
 
+  <section class="section" id="start" aria-labelledby="start-title">
+    <div class="container">
+      <div class="head">
+        <h2 id="start-title">Start in 2 minutes.</h2>
+      </div>
+      <div class="paths paths--3">
+        <div class="path">
+          <h3>Deploy to Cloudflare</h3>
+          <p>One click copies the code to your GitHub, creates the D1 database, asks for your email and a Resend key, and deploys. Every push redeploys.</p>
+          <a class="btn btn--primary" href="https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele">Deploy to Cloudflare</a>
+        </div>
+        <div class="path">
+          <h3>Run it locally</h3>
+          <figure class="code" data-copy>
+            <pre tabindex="0"><code><span class="prompt">npx degit aimantas/sistemele my-app</span>
+<span class="prompt">cd my-app</span>
+<span class="prompt">npm install</span>
+<span class="prompt">npm run setup</span>
+<span class="prompt">npm run dev</span>
+<span class="tok-c"># http://localhost:5173/app, sign in as owner@example.com</span></code></pre>
+          </figure>
+          <p>Needs Node 22 or later. Locally, the sign-in link shows on screen.</p>
+        </div>
+        <div class="path">
+          <h3>Try the demo</h3>
+          <p>One click signs you in as the demo owner. The sample data resets every hour and no email is sent.</p>
+          <a class="btn btn--secondary" href="https://sistemele.aimantas.com/app">Open the demo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="modules" aria-labelledby="modules-title">
+    <div class="container">
+      <div class="head">
+        <h2 id="modules-title">The wheels are already here.</h2>
+      </div>
+      <ul class="wheels">
+        <li>
+          <h3>Sign-in and security</h3>
+          <p>Magic links by email, owner, admin and member roles, an audit log, CSRF checks, security headers and rate limits.</p>
+        </li>
+        <li>
+          <h3>CRM</h3>
+          <p>A leads inbox with owners, follow-up dates and sources; a lead becomes a contact and a deal in one step. Pipeline stages you add, rename and reorder, each with a win probability.</p>
+        </li>
+        <li>
+          <h3>Quotes</h3>
+          <p>Numbered quotes with VAT per rate. The customer accepts or declines from a private link, and the deal moves to won.</p>
+        </li>
+        <li>
+          <h3>Invoices</h3>
+          <p>Gap-free numbers, VAT per rate and partial payments. Issued invoices never change; a void and a new invoice correct them.</p>
+        </li>
+        <li>
+          <h3>Catalog and stock</h3>
+          <p>Products and services, a stock ledger with receipts and counts, low-stock alerts and public product pages.</p>
+        </li>
+        <li>
+          <h3>Website and blog</h3>
+          <p>Markdown pages and posts with drafts, scheduling and RSS. Agents draft; owners and admins publish.</p>
+        </li>
+        <li>
+          <h3>Search</h3>
+          <p>Server-rendered pages with unique titles, canonical URLs, Open Graph, JSON-LD and a sitemap. Previews are never indexed.</p>
+        </li>
+        <li>
+          <h3>Dashboard</h3>
+          <p>Drag-and-drop cards, KPI metrics from every module, four templates and a layout saved per person.</p>
+        </li>
+        <li>
+          <h3>MCP endpoint</h3>
+          <p>Every module’s tools at <code>/mcp</code>. An API token’s role limits what an agent can call.</p>
+        </li>
+      </ul>
+      <p class="config-note">Switch modules on or off in <code>sistemele.config.ts</code>.</p>
+    </div>
+  </section>
+
+  <section class="section--l" id="flow" aria-labelledby="flow-title">
     <div class="container split split--5-7">
       <div>
         <div class="head">
-          <h2 id="modules-title">One accepted quote moves four modules.</h2>
-          <p class="lead">Modules talk through typed events, so nobody types a record twice.</p>
+          <h2 id="flow-title">One accepted quote moves four modules.</h2>
+          <p class="lead">Modules talk through typed events, not each other’s code.</p>
         </div>
         <ol class="steps" data-steps>
           <li>
             <svg class="module-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect class="is-on" x="1" y="1" width="10" height="10" rx="2.5"/><rect x="13" y="1" width="10" height="10" rx="2.5"/><rect x="1" y="13" width="10" height="10" rx="2.5"/><rect x="13" y="13" width="10" height="10" rx="2.5"/></svg>
             <h3>Quotes</h3>
-            <p>Your customer opens a private link and accepts the priced offer.</p>
+            <p>The customer opens a private link and accepts the priced offer.</p>
           </li>
           <li>
             <svg class="module-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1" y="1" width="10" height="10" rx="2.5"/><rect class="is-on" x="13" y="1" width="10" height="10" rx="2.5"/><rect x="1" y="13" width="10" height="10" rx="2.5"/><rect x="13" y="13" width="10" height="10" rx="2.5"/></svg>
             <h3>CRM</h3>
-            <p>The deal moves to won, beside the contact, notes, tasks and website requests. The pipeline is drag and drop.</p>
+            <p>The deal moves to won, next to the contact, its notes and tasks.</p>
           </li>
           <li>
             <svg class="module-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1" y="1" width="10" height="10" rx="2.5"/><rect x="13" y="1" width="10" height="10" rx="2.5"/><rect class="is-on" x="1" y="13" width="10" height="10" rx="2.5"/><rect x="13" y="13" width="10" height="10" rx="2.5"/></svg>
             <h3>Invoices</h3>
-            <p>The invoice takes the next number with no gaps, VAT per rate, bank-transfer details and a public link. Payments and overdue dates are tracked.</p>
+            <p>The invoice takes the next number with no gaps, VAT per rate, bank-transfer details and a public link.</p>
           </li>
           <li>
             <svg class="module-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1" y="1" width="10" height="10" rx="2.5"/><rect x="13" y="1" width="10" height="10" rx="2.5"/><rect x="1" y="13" width="10" height="10" rx="2.5"/><rect class="is-on" x="13" y="13" width="10" height="10" rx="2.5"/></svg>
             <h3>Catalog and stock</h3>
-            <p>Issuing it deducts stock in the ledger. Low stock raises an alert, and every product gets a public page with Product structured data.</p>
+            <p>Issuing it deducts stock in the ledger, and low stock raises an alert.</p>
           </li>
         </ol>
-        <p class="config-note">Switch any module off in <code>sistemele.config.ts</code>.</p>
       </div>
 
       <div class="chain-wrap">
@@ -232,98 +317,66 @@
     </div>
   </section>
 
-  <section class="section--l" id="dashboard" aria-labelledby="dashboard-title">
-    <div class="container split split--5-7 switch">
-      <div>
-        <div class="head">
-          <h2 id="dashboard-title">Drag the dashboard into shape.</h2>
-          <p class="lead">Layouts save per person in D1, and KPI cards read from any module.</p>
-        </div>
-        <fieldset class="seg">
-          <legend class="visually-hidden">Dashboard template</legend>
-          <input type="radio" name="tpl" id="tpl-owner" value="owner" checked><label for="tpl-owner">Owner</label>
-          <input type="radio" name="tpl" id="tpl-sales" value="sales"><label for="tpl-sales">Sales</label>
-          <input type="radio" name="tpl" id="tpl-operations" value="operations"><label for="tpl-operations">Operations</label>
-          <input type="radio" name="tpl" id="tpl-minimal" value="minimal"><label for="tpl-minimal">Minimal</label>
-        </fieldset>
-        <p class="recipe">Four templates to start from. Coding agents add more, and new widgets, by the recipe in <code>AGENTS.md</code>.</p>
-      </div>
-
-      <div class="boards" data-slot="templates" data-kind="product" data-alt="The dashboard with the selected template applied">
-        <ul class="board board--owner" aria-label="Owner template, sample data">
-          <li class="w w--4"><span class="w__t">Getting started</span><span>3 of 5 steps done</span><span class="progress" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="done"></i><i></i><i></i></span></li>
-          <li class="w"><span class="w__t">Revenue, 30 days</span><span class="w__v">€8,400</span></li>
-          <li class="w"><span class="w__t">Outstanding</span><span class="w__v">€1,150</span></li>
-          <li class="w"><span class="w__t">Open pipeline</span><span class="w__v">€11,900</span></li>
-          <li class="w"><span class="w__t">Open quotes</span><span class="w__v">€3,000</span></li>
-          <li class="w w--2"><span class="w__t">Pipeline</span><span class="bars" aria-hidden="true"><span><i class="b3"></i><span>Lead</span></span><span><i class="b2"></i><span>Qualified</span></span><span><i class="b2"></i><span>Proposal</span></span><span><i class="b1"></i><span>Won</span></span></span></li>
-          <li class="w w--2"><span class="w__t">Overdue invoices</span><ul class="w__rows"><li><span class="ref">INV-0039</span><span class="money">€350.00</span></li></ul></li>
-          <li class="w w--2 w--tall"><span class="w__t">Open tasks</span><ul class="w__rows"><li><span>Call Example Bakery</span></li><li><span>Send quote <span class="ref">Q-0008</span></span></li><li><span>Order brackets</span></li></ul></li>
-          <li class="w w--2"><span class="w__t">Low stock</span><ul class="w__rows"><li><span>Oak shelving unit</span><span class="num">10</span></li></ul></li>
-          <li class="w w--2"><span class="w__t">Quick actions</span><span class="w__chips"><span>New quote</span><span>New invoice</span></span></li>
-        </ul>
-        <ul class="board board--sales" aria-label="Sales template, sample data">
-          <li class="w"><span class="w__t">Open pipeline</span><span class="w__v">€11,900</span></li>
-          <li class="w"><span class="w__t">Win rate, 90 days</span><span class="w__v">40%</span></li>
-          <li class="w"><span class="w__t">Open quotes</span><span class="w__v">€3,000</span></li>
-          <li class="w"><span class="w__t">New contacts, 30 days</span><span class="w__v">6</span></li>
-          <li class="w w--4"><span class="w__t">Pipeline</span><span class="bars" aria-hidden="true"><span><i class="b4"></i><span>Lead</span></span><span><i class="b3"></i><span>Qualified</span></span><span><i class="b2"></i><span>Proposal</span></span><span><i class="b1"></i><span>Won</span></span></span></li>
-          <li class="w w--2 w--tall"><span class="w__t">Quotes awaiting an answer</span><ul class="w__rows"><li><span class="ref">Q-0008</span><span class="money">€2,100.00</span></li><li><span class="ref">Q-0009</span><span class="money">€900.00</span></li></ul></li>
-          <li class="w w--2 w--tall"><span class="w__t">Open tasks</span><ul class="w__rows"><li><span>Call Example Bakery</span></li><li><span>Send quote <span class="ref">Q-0008</span></span></li></ul></li>
-          <li class="w w--2"><span class="w__t">Recent contacts</span><ul class="w__rows"><li><span>Example Studio</span></li></ul></li>
-          <li class="w w--2"><span class="w__t">Quick actions</span><span class="w__chips"><span>New contact</span><span>New quote</span></span></li>
-        </ul>
-        <ul class="board board--operations" aria-label="Operations template, sample data">
-          <li class="w"><span class="w__t">Low stock items</span><span class="w__v">3</span></li>
-          <li class="w"><span class="w__t">Stock value</span><span class="w__v">€18,900</span></li>
-          <li class="w"><span class="w__t">Overdue amount</span><span class="w__v">€350</span></li>
-          <li class="w"><span class="w__t">Outstanding</span><span class="w__v">€1,150</span></li>
-          <li class="w w--2 w--tall"><span class="w__t">Low stock</span><ul class="w__rows"><li><span>Oak shelving unit</span><span class="num">10</span></li><li><span>Wall bracket</span><span class="num">6</span></li><li><span>Glass shelf</span><span class="num">2</span></li></ul></li>
-          <li class="w w--2 w--tall"><span class="w__t">Recent stock movements</span><ul class="w__rows"><li><span class="ref">INV-0042</span><span class="num">−2</span></li><li><span>Received</span><span class="num">+10</span></li></ul></li>
-          <li class="w w--4"><span class="w__t">Overdue invoices</span><ul class="w__rows"><li><span><span class="ref">INV-0039</span> Example Bakery</span><span class="money">€350.00</span></li></ul></li>
-        </ul>
-        <ul class="board board--minimal" aria-label="Minimal template, sample data">
-          <li class="w"><span class="w__t">Revenue, 30 days</span><span class="w__v">€8,400</span></li>
-          <li class="w"><span class="w__t">Outstanding</span><span class="w__v">€1,150</span></li>
-          <li class="w"><span class="w__t">Open pipeline</span><span class="w__v">€11,900</span></li>
-          <li class="w"><span class="w__t">Note</span><span class="w__note">Write a note for your team here.</span></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
   <section class="section--l" id="agents" aria-labelledby="agents-title">
     <div class="container split split--6-6">
       <div>
         <div class="head">
-          <h2 id="agents-title">Agents can quote and invoice too.</h2>
+          <h2 id="agents-title">Give your agent the setup.</h2>
         </div>
         <dl class="facts">
-          <div><dt>MCP endpoint</dt><dd>Every module’s tools at <code>/mcp</code>. A Bearer token’s role limits what it can call.</dd></div>
-          <div><dt>Docs for agents</dt><dd><code>AGENTS.md</code> and a README in every module.</dd></div>
-          <div><dt>Agent skill</dt><dd><code class="inline-cmd">npx skills add aimantas/sistemele</code></dd></div>
+          <div><dt><code>AGENTS.md</code></dt><dd>Rules, a map of the code and recipes. Claude Code reads it through <code>CLAUDE.md</code>.</dd></div>
+          <div><dt>Module READMEs</dt><dd>API, MCP tools, events and rules for each module.</dd></div>
+          <div><dt>Skill</dt><dd><code class="inline-cmd">npx skills add aimantas/sistemele</code></dd></div>
+          <div><dt>Slash commands</dt><dd>For Claude Code: <code>/new-module</code>, <code>/add-widget</code>, <code>/add-dashboard-template</code>, <code>/add-mcp-tool</code>, <code>/seo-check</code>, <code>/ship-check</code>.</dd></div>
+          <div><dt>MCP</dt><dd>Every module’s tools at <code>/mcp</code>, with an API token from Settings → API &amp; agents.</dd></div>
           <div><dt>Plain text</dt><dd><code>llms.txt</code>, and public pages answer <code>Accept: text/markdown</code>.</dd></div>
         </dl>
       </div>
-      <div class="codes">
-        <figure class="code">
-          <pre tabindex="0"><code><span class="tok-c">POST /mcp
-Authorization: Bearer sk_…</span>
+      <figure class="code code--prose" data-copy aria-label="Setup prompt for a coding agent">
+        <pre tabindex="0"><code>Set up Sistemėlė for &lt;business&gt;.
+Clone it with npx degit aimantas/sistemele my-app and read AGENTS.md first.
+Run npm run setup and adapt sistemele.config.ts: modules, locale, currency and business defaults.
+Switch off the modules we don’t need.
+Finish with npm run check. Ask me before any remote command.</code></pre>
+      </figure>
+    </div>
+  </section>
 
-{ <span class="tok-k">"method"</span>: <span class="tok-s">"tools/call"</span>,
-  <span class="tok-k">"params"</span>: {
-    <span class="tok-k">"name"</span>: <span class="tok-s">"crm_list_deals"</span>,
-    <span class="tok-k">"arguments"</span>: { <span class="tok-k">"stage"</span>: <span class="tok-s">"proposal"</span> } } }</code></pre>
-        </figure>
-        <figure class="code">
-          <pre tabindex="0"><code>{ <span class="tok-k">"structuredContent"</span>: {
-    <span class="tok-k">"items"</span>: [ {
-      <span class="tok-k">"title"</span>: <span class="tok-s">"Display counter"</span>,
-      <span class="tok-k">"contactName"</span>: <span class="tok-s">"Example Bakery"</span>,
-      <span class="tok-k">"stage"</span>: <span class="tok-s">"proposal"</span>,
-      <span class="tok-k">"valueCents"</span>: 210000 } ] } }</code></pre>
-          <figcaption>Response, sample data</figcaption>
-        </figure>
+  <section class="section" id="extend" aria-labelledby="extend-title">
+    <div class="container">
+      <div class="head">
+        <h2 id="extend-title">Extend it without reinventing the wheel.</h2>
+      </div>
+      <div class="split split--5-7 split--below">
+        <div>
+          <figure class="code">
+            <pre tabindex="0"><code><span class="prompt">npm run module:new bookings "Bookings"</span>
+created migrations/…_bookings.sql
+created src/modules/bookings/shared/schema.ts
+created src/modules/bookings/server/service.ts
+created src/modules/bookings/server/tools.ts
+<span class="tok-c">…</span>
+created src/modules/bookings/README.md
+created tests/bookings.test.ts
+enabled in sistemele.config.ts</code></pre>
+          </figure>
+          <ul class="doclinks">
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/getting-started.md">Getting started guide</a></li>
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/modules.md">Module guide</a></li>
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/extending.md">Extending guide</a></li>
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/ai-agents.md">AI agents guide</a></li>
+            <li><a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/deployment.md">Deployment guide</a></li>
+          </ul>
+        </div>
+        <dl class="facts facts--flush">
+          <div><dt>Start from the scaffold</dt><dd><code>npm run module:new &lt;id&gt; "&lt;Name&gt;"</code>, then follow the shape of the CRM module.</dd></div>
+          <div><dt>Every layer, one folder</dt><dd>A migration, Zod schemas, services that validate, call <code>ctx.requireRole</code> and <code>ctx.audit</code>, thin routes, MCP tools, pages and widgets, a README and tests.</dd></div>
+          <div><dt>Events, not imports</dt><dd>Modules never import each other’s server code. They react to typed events.</dd></div>
+          <div><dt>Money in cents</dt><dd>Integer cents, VAT in basis points (2100 = 21%). The server computes every total.</dd></div>
+          <div><dt>New migrations only</dt><dd>Never edit an applied migration; add a new one.</dd></div>
+          <div><dt>Real facts only</dt><dd>No invented business facts in copy, seeds or structured data.</dd></div>
+          <div><dt>Done means checked</dt><dd><code>npm run check</code> and <code>npm run build</code> pass, and the change is checked in the browser.</dd></div>
+        </dl>
       </div>
     </div>
   </section>
@@ -427,24 +480,6 @@ Authorization: Bearer sk_…</span>
     </div>
   </section>
 
-  <section class="section--l" id="basics" aria-labelledby="basics-title">
-    <div class="container">
-      <div class="head">
-        <h2 id="basics-title">Sign-in, roles and SEO already work.</h2>
-      </div>
-      <table class="table">
-        <tbody>
-          <tr><th scope="row">Sign-in</th><td>Magic links by email, so there are no passwords to store.</td></tr>
-          <tr><th scope="row">Roles</th><td>Owner, admin and member. Changes go to an audit log.</td></tr>
-          <tr><th scope="row">Requests</th><td>CSRF checks, security headers and rate limits.</td></tr>
-          <tr><th scope="row">Brand</th><td>Settings → Brand takes an SVG logo as text (no file uploads), a brand colour with a contrast check, background and corners. Applied to the dashboard, website and invoices.</td></tr>
-          <tr><th scope="row">Money</th><td>The server computes every total. Invoice numbers never skip.</td></tr>
-          <tr><th scope="row">Search</th><td>Server-rendered pages with unique titles, canonical URLs, Open Graph, JSON-LD and a sitemap. Previews are never indexed.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
   <section class="section" id="questions" aria-labelledby="questions-title">
     <div class="container split split--4-8">
       <div class="head">
@@ -452,47 +487,50 @@ Authorization: Bearer sk_…</span>
       </div>
       <div class="qa">
         <details>
-          <summary>What does it cost to run?</summary>
-          <p>The code is free. Small use fits the Cloudflare Workers free tier; above it, Cloudflare bills by usage (see <a class="link" href="https://developers.cloudflare.com/workers/platform/pricing/">Workers pricing</a>). Email runs on your own Resend account.</p>
+          <summary>Which coding agents can use it?</summary>
+          <p>Any agent that reads the repository: <code>AGENTS.md</code> is plain Markdown. Claude Code also gets the slash commands, and agents that support skills install <code>npx skills add aimantas/sistemele</code>.</p>
         </details>
         <details>
-          <summary>How is it different from a SaaS CRM?</summary>
-          <p>You own the code and the data. It runs in your Cloudflare account; export the D1 database or change anything, whenever you like.</p>
+          <summary>Can I switch modules off?</summary>
+          <p>Yes. Remove the module’s id from <code>sistemele.config.ts</code> and its routes, screens, widgets and MCP tools go. Its tables stay.</p>
+        </details>
+        <details>
+          <summary>What does it cost to run?</summary>
+          <p>The code is free under the MIT licence. Small use fits the Cloudflare Workers free tier; above it, Cloudflare bills by usage (see <a class="link" href="https://developers.cloudflare.com/workers/platform/pricing/">Workers pricing</a>). Email runs on your own Resend account.</p>
         </details>
         <details>
           <summary>Is it production ready?</summary>
           <p>It ships with tests against a real local D1, roles, an audit log, CSRF protection and server-side totals. Review it like any code you deploy.</p>
         </details>
-        <details>
-          <summary>How are modules added?</summary>
-          <p>Run <code>npm run module:new</code> or ask your coding agent; <code>AGENTS.md</code> lists what a module needs. Then add its id to <code>sistemele.config.ts</code>.</p>
+        <details id="companies">
+          <summary>Can you set it up for us?</summary>
+          <p>Yes. The maker, an independent developer in Lithuania, sets it up and adapts it to your company. Email <a class="link" href="mailto:hello@sistemele.dev?subject=Sistem%C4%97l%C4%97%20setup">hello@sistemele.dev</a>.</p>
         </details>
       </div>
     </div>
   </section>
 
-  <section class="band" id="start" aria-labelledby="start-title">
+  <section class="band" id="deploy" aria-labelledby="deploy-title">
     <div class="container">
-      <h2 id="start-title">Run it yourself, or have it set up.</h2>
+      <h2 id="deploy-title">Deploy on Cloudflare Workers.</h2>
       <div class="band__grid">
         <div class="band__half">
-          <h3>Run it yourself</h3>
-          <figure class="code" data-copy>
-            <pre tabindex="0"><code><span class="prompt">npx degit aimantas/sistemele my-business</span>
-<span class="prompt">cd my-business</span>
-<span class="prompt">npm install</span>
-<span class="prompt">npm run setup</span>
-<span class="prompt">npm run dev</span>
-<span class="tok-c"># when it looks right</span>
+          <h3>One click</h3>
+          <p>The button creates the D1 database, applies migrations on every deploy and asks for two secrets: your email, which becomes the owner, and a Resend key for sign-in links.</p>
+          <a class="btn btn--primary" href="https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele">Deploy to Cloudflare</a>
+          <h3>Or from your terminal</h3>
+          <figure class="code">
+            <pre tabindex="0"><code><span class="prompt">npx wrangler login</span>
+<span class="prompt">npm run setup:cloudflare</span>
+<span class="prompt">npx wrangler secret put ADMIN_EMAILS</span>
+<span class="prompt">npx wrangler secret put RESEND_API_KEY</span>
 <span class="prompt">npm run deploy</span></code></pre>
           </figure>
-          <p>Needs Node 22 and a Cloudflare account.</p>
+          <p>One Worker serves the site, the admin panel, the API and MCP; D1 holds the data. The <a class="link" href="https://github.com/aimantas/sistemele/blob/main/docs/deployment.md">deployment guide</a> covers domains, previews and updates.</p>
         </div>
-        <div class="band__half" id="companies">
-          <h3>For companies</h3>
-          <p>The maker, an independent developer in Lithuania, sets it up and adapts it to your company.</p>
-          <a class="btn btn--on-board" href="mailto:hello@sistemele.dev?subject=Sistem%C4%97l%C4%97%20setup">Email about a setup</a>
-          <p><a class="link mail" href="mailto:hello@sistemele.dev">hello@sistemele.dev</a></p>
+        <div class="band__half">
+          <h3>Agents ask first.</h3>
+          <p><code>AGENTS.md</code> requires a person’s approval before any remote command: <code>--remote</code>, <code>wrangler deploy</code> or <code>wrangler secret put</code>. <code>npm run dev</code> only uses a local D1.</p>
         </div>
       </div>
     </div>
@@ -509,10 +547,12 @@ Authorization: Bearer sk_…</span>
       <p>Sistemėlė is open-source software under the MIT licence, made in Lithuania. This site sets no cookies and loads nothing from other servers.</p>
       <ul class="foot__links">
         <li><a class="link" href="https://github.com/aimantas/sistemele">GitHub</a></li>
+        <li><a class="link" href="https://sistemele.aimantas.com">Demo</a></li>
         <li><a class="link" href="llms.txt">llms.txt</a></li>
         <li><a class="link" href="mailto:hello@sistemele.dev">hello@sistemele.dev</a></li>
         <li><a class="link" href="lt/" hreflang="lt" lang="lt">Lietuviškai</a></li>
       </ul>
+      <p class="foot__credit">Made by <a class="link" href="https://aimantas.com">aimantas.com</a></p>
     </div>
   </div>
 </footer>

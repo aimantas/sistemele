@@ -132,8 +132,15 @@ export function AppShell() {
         </div>
       ) : null}
 
-      <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        {demo ? <p className="mb-5 rounded-control border border-info/30 bg-info-soft px-4 py-2.5 text-sm text-info">Demo with sample data. It resets every hour, and no email is sent.</p> : null}
+      <main className="mx-auto w-full min-w-0 max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        {demo ? (
+          <p className="mb-5 rounded-control border border-info/30 bg-info-soft px-4 py-2.5 text-sm text-info">
+            Demo with sample data. It resets every hour, and no email is sent.{" "}
+            <a className="font-medium underline" href="https://github.com/aimantas/sistemele">
+              Get the code on GitHub
+            </a>
+          </p>
+        ) : null}
         <Outlet />
       </main>
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />

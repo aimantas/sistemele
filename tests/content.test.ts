@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Entry, EntrySummary } from "@/modules/content/shared/schema";
+import { defaultBusinessProfile } from "@/shared/business";
 import { siteContent } from "@/worker/site/content";
 import type { MetricValue, SearchResult } from "@/shared/api";
 import { addUser, createTestApp, json, type TestApp } from "./helpers";
@@ -261,8 +262,10 @@ describe("dashboard and agents", () => {
 describe("home page", () => {
   it("shows the latest posts under the default headline", async () => {
     const home = await (await t.request("/")).text();
-    expect(home).toContain(`<h1>${siteContent.home.headline}</h1>`);
-    expect(home).toContain("How it works");
+    expect(home).toContain(`<h1>${defaultBusinessProfile.name}</h1>`);
+    expect(home).toContain(`<p class="lead">${siteContent.home.lead}</p>`);
+    expect(home).toContain('<a class="button primary" href="/contact">Get in touch</a>');
+    expect(home).toContain('<a class="button" href="/products">Products</a>');
     expect(home).toContain("<h2>From the blog</h2>");
     expect(home).toContain('<a href="/blog">All posts</a>');
     const markdown = await (await t.request("/", { headers: { accept: "text/markdown" } })).text();
@@ -274,7 +277,7 @@ describe("home page", () => {
     const page = await draft({ type: "page", title: "Gates and frames, made to measure", slug: "home", summary: "Send a drawing; get a priced quote.", body: "Read [how ordering works](/about)." });
     expect(page.path).toBe("/");
     // A draft changes nothing.
-    expect(await (await t.request("/")).text()).toContain(siteContent.home.headline);
+    expect(await (await t.request("/")).text()).toContain(siteContent.home.lead);
 
     await publish(page.id);
     const home = await (await t.request("/")).text();
@@ -282,7 +285,7 @@ describe("home page", () => {
     expect(home).toContain('<p class="lead">Send a drawing; get a priced quote.</p>');
     expect(home).toContain('<a href="/about">how ordering works</a>');
     expect(home).toContain('<meta name="description" content="Send a drawing; get a priced quote."/>');
-    expect(home).not.toContain("How it works");
+    expect(home).not.toContain(siteContent.home.lead);
     expect(home).toContain("<h2>From the blog</h2>");
     // One link to "/" in the menu: the home page never becomes a second entry.
     expect(home.match(/href="\/"/gu)?.length).toBe(2);
@@ -293,7 +296,7 @@ describe("home page", () => {
     expect(await (await t.request("/sitemap.xml")).text()).not.toContain("<loc>http://localhost/home</loc>");
 
     await act(page.id, "unpublish");
-    expect(await (await t.request("/")).text()).toContain(siteContent.home.headline);
+    expect(await (await t.request("/")).text()).toContain(siteContent.home.lead);
     expect((await t.request("/home")).status).toBe(404);
   });
 });

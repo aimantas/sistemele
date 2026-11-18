@@ -1,6 +1,7 @@
 // Cloudflare Worker configuration. One Worker serves the API, the MCP endpoint,
 // the server-rendered public site and the dashboard SPA (static assets).
-// Run `npm run setup:cloudflare` to create the D1 database and fill in its id.
+// Deploy with the "Deploy to Cloudflare" button in the README (it creates the
+// D1 database and fills in its id), or run `npm run setup:cloudflare`.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "sistemele",
@@ -27,13 +28,15 @@
   "vars": {
     "APP_NAME": "Sistemėlė",
     // Production defaults. Local development overrides these in .dev.vars.
-    "APP_URL": "https://sistemele.example.com",
+    // Empty: the address the Worker is served from (workers.dev or your domain). Set it once you add a custom domain.
+    "APP_URL": "",
     "APP_ENV": "production",
-    "EMAIL_FROM": "Sistemėlė <hello@example.com>",
-    // Comma-separated. These addresses become owners on first sign-in.
-    "ADMIN_EMAILS": "owner@example.com"
+    // Resend's test sender delivers only to the email of your Resend account. Verify your domain in Resend, then use an address on it.
+    "EMAIL_FROM": "Sistemėlė <onboarding@resend.dev>"
   },
-  // Secrets (never commit): `npx wrangler secret put RESEND_API_KEY`
+  // Secrets (never commit; listed in .dev.vars.example, which the Deploy button asks for):
+  //   npx wrangler secret put ADMIN_EMAILS     your email; it becomes the owner on first sign-in
+  //   npx wrangler secret put RESEND_API_KEY   sends sign-in links and other email
   // Optional: TURNSTILE_SECRET_KEY for the public contact form.
 
   // The public demo at https://sistemele.aimantas.com (fictional data, reset every hour).

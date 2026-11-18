@@ -8,13 +8,15 @@ import { renderPage } from "./render";
 import { breadcrumbJsonLd, organizationJsonLd } from "./seo";
 
 /**
- * Core public pages: home, contact (quote request), privacy. The home page
- * shows the copy from ./content.ts unless a module supplies a hero (the
- * content module's "home" page), followed by sections modules add.
+ * Core public pages: home, contact, privacy. The home page shows the
+ * business name and the copy from ./content.ts unless a module supplies a
+ * hero (the content module's "home" page), then sections modules add, with
+ * actions for the contact form and every module's public section.
  */
 export function sitePages(modules: readonly ServerModule[]) {
   const hasCrm = modules.some((module) => module.id === "crm");
-  const hasCatalog = modules.some((module) => module.id === "catalog");
+  // Secondary home actions: every public section a module adds to the header (Products, Blog …).
+  const moduleLinks = modules.flatMap((module) => module.siteLinks ?? []);
 
   return new Hono<AppEnv>()
     .get("/", async (c) => {
@@ -33,64 +35,42 @@ export function sitePages(modules: readonly ServerModule[]) {
       );
       const hero = contributions.find((contribution) => contribution.hero)?.hero;
       const sections = contributions.flatMap((contribution) => contribution.sections ?? []);
-      const headline = hero?.title ?? home.headline;
+      const headline = hero?.title ?? (home.headline || business.name);
       const lead = hero?.lead ?? home.lead;
-      const steps = hero ? null : home.steps;
+      const actions = [...(hasCrm ? [{ ...home.contactCta, primary: true }] : []), ...moduleLinks.map((link) => ({ ...link, primary: false }))];
 
       return renderPage(c, {
         meta: {
           title: business.name,
-          description: hero?.description || home.description,
+          description: hero?.description || home.lead,
           path: "/",
           ogImage: hero?.image ? (hero.image.startsWith("/") ? `${origin}${hero.image}` : hero.image) : undefined,
           jsonLd: [organizationJsonLd(business, origin), { "@context": "https://schema.org", "@type": "WebSite", name: business.name, url: origin }],
         },
         markdown: [
-          `# ${business.name}`,
-          "",
-          headline,
+          `# ${headline}`,
           "",
           ...(lead ? [lead, ""] : []),
-          ...(steps ? ["## How it works", "", ...steps.map((step, i) => `${i + 1}. **${step.title}** — ${step.text}`), ""] : []),
           ...sections.flatMap((section) => [section.markdown.trim(), ""]),
-          ...(hasCrm ? [`[${home.primaryCta.label}](${origin}${home.primaryCta.href})`, ""] : []),
+          ...actions.map((action) => `- [${action.label}](${origin}${action.href})`),
         ].join("\n"),
         body: (
           <>
             <section className="hero">
               <div className="wrap">
-                {hero ? null : <p className="eyebrow">{home.eyebrow}</p>}
                 <h1>{headline}</h1>
                 {lead ? <p className="lead">{lead}</p> : null}
-                <div className="actions">
-                  {hasCrm ? (
-                    <a className="button primary" href={home.primaryCta.href}>
-                      {home.primaryCta.label}
-                    </a>
-                  ) : null}
-                  {hasCatalog ? (
-                    <a className="button" href={home.secondaryCta.href}>
-                      {home.secondaryCta.label}
-                    </a>
-                  ) : null}
-                </div>
+                {actions.length ? (
+                  <div className="actions">
+                    {actions.map((action) => (
+                      <a key={action.href} className={action.primary ? "button primary" : "button"} href={action.href}>
+                        {action.label}
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             </section>
-            {steps ? (
-              <section className="section">
-                <div className="wrap">
-                  <h2>How it works</h2>
-                  <ol className="steps">
-                    {steps.map((step) => (
-                      <li key={step.title}>
-                        <h3>{step.title}</h3>
-                        <p>{step.text}</p>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </section>
-            ) : null}
             {sections.map((section) => (
               <Fragment key={section.id}>{section.body}</Fragment>
             ))}
@@ -142,14 +122,14 @@ export function sitePages(modules: readonly ServerModule[]) {
                 </label>
                 <label>
                   What do you need?
-                  <textarea name="message" rows={6} required maxLength={5000} placeholder="Product or service, quantity, sizes, delivery date" />
+                  <textarea name="message" rows={6} required maxLength={5000} placeholder="What you need, how many, by when" />
                 </label>
                 <input className="trap" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
                 <button className="button primary" type="submit">
-                  Send request
+                  Send message
                 </button>
                 <p className="muted small">
-                  We use these details only to reply to your request. See the <a href="/privacy">privacy policy</a>.
+                  We use these details only to reply to your message. See the <a href="/privacy">privacy policy</a>.
                 </p>
               </form>
             </div>
@@ -174,9 +154,9 @@ export function sitePages(modules: readonly ServerModule[]) {
                 {business.companyCode ? ` (company code ${business.companyCode})` : ""} is responsible for the personal data collected through this website.
               </p>
               <h2>What we collect</h2>
-              <p>When you send a request, we keep your name, email, phone, company and message so we can prepare and send a quote. When you accept a quote or receive an invoice, we keep the details the law requires on those documents.</p>
+              <p>When you send a message, we keep your name, email, phone, company and message so we can reply and, if you ask for one, prepare a quote. When you accept a quote or receive an invoice, we keep the details the law requires on those documents.</p>
               <h2>Why</h2>
-              <p>To answer your request and fulfil the order you ask for. Invoices are kept for the period accounting law requires.</p>
+              <p>To answer your message and fulfil the order you ask for. Invoices are kept for the period accounting law requires.</p>
               <h2>Who processes it</h2>
               <p>The site runs on Cloudflare. Emails are delivered through our email provider. We do not sell your data and do not use it for advertising.</p>
               <h2>Your rights</h2>

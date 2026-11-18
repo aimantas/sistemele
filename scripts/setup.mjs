@@ -3,7 +3,7 @@
 // Usage: npm run setup [-- --admin you@example.com] [-- --no-seed]
 // Never touches remote Cloudflare resources.
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 const args = process.argv.slice(2);
 const adminIndex = args.indexOf("--admin");
@@ -16,9 +16,20 @@ if (major < 22) {
   process.exit(1);
 }
 
+// Local values that override wrangler.jsonc vars, then the secrets from .dev.vars.example.
+const LOCAL_VARS = `# Local development values (git-ignored). Created by npm run setup.
+APP_ENV=development
+APP_URL=http://localhost:5173
+EMAIL_FROM=Sistemele <onboarding@resend.dev>
+# Optional Cloudflare Turnstile secret for the public contact form.
+TURNSTILE_SECRET_KEY=
+# "1" turns this into a public demo: one-click sign-in, no email, data reset by the Cron Trigger.
+DEMO_MODE=
+
+`;
 if (!existsSync(".dev.vars")) {
-  copyFileSync(".dev.vars.example", ".dev.vars");
-  console.log("Created .dev.vars from .dev.vars.example");
+  writeFileSync(".dev.vars", LOCAL_VARS + readFileSync(".dev.vars.example", "utf8"));
+  console.log("Created .dev.vars (local values + secrets from .dev.vars.example)");
 } else {
   console.log(".dev.vars already exists — kept as is");
 }

@@ -59,6 +59,15 @@ const requireSignedIn: MiddlewareHandler<AppEnv> = async (c, next) => {
   await next();
 };
 
+/**
+ * APP_URL may be left empty (the Deploy to Cloudflare button does): links,
+ * cookies and emails then use the address the request came to.
+ */
+const appUrlFallback: MiddlewareHandler<AppEnv> = async (c, next) => {
+  if (!c.env.APP_URL?.trim()) c.env = { ...c.env, APP_URL: new URL(c.req.url).origin };
+  await next();
+};
+
 const securityHeaders: MiddlewareHandler<AppEnv> = async (c, next) => {
   await next();
   // Responses from env.ASSETS (and fetch) have immutable headers; copy before editing.
@@ -104,13 +113,14 @@ export function createApp(modules: readonly ServerModule[]) {
   setSiteNavigation({
     start: [{ label: "Home", href: "/" }, ...modules.flatMap((module) => module.siteLinks ?? [])],
     menus: modules.flatMap((module) => (module.siteMenu ? [(ctx: ModuleContext) => module.siteMenu!(ctx)] : [])),
-    end: modules.some((m) => m.id === "crm") ? [{ label: "Request a quote", href: "/contact" }] : [],
+    end: modules.some((m) => m.id === "crm") ? [{ label: "Contact", href: "/contact" }] : [],
   });
 
   const app = new Hono<AppEnv>();
   app.onError(handleError);
   app.notFound((c) => (isApi(c.req.path) ? c.json({ error: { code: "not_found", message: "Unknown endpoint." } }, 404) : renderNotFound(c)));
 
+  app.use("*", appUrlFallback);
   app.use("*", securityHeaders);
   app.use("*", contextMiddleware(modules));
   app.use("/api/*", csrfGuard);

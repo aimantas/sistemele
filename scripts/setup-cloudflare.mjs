@@ -42,15 +42,15 @@ try {
   }
 
   const warnings = [];
-  if (/"APP_URL":\s*"https:\/\/sistemele\.example\.com"/u.test(config)) warnings.push("Set vars.APP_URL to your real https origin.");
-  if (/"ADMIN_EMAILS":\s*"owner@example\.com"/u.test(config)) warnings.push("Set vars.ADMIN_EMAILS to your email.");
-  if (/hello@example\.com/u.test(config)) warnings.push("Set vars.EMAIL_FROM to an address on your verified Resend domain.");
+  if (/onboarding@resend\.dev/u.test(config)) warnings.push("vars.EMAIL_FROM uses Resend's test sender, which only reaches your Resend account's email. Verify your domain in Resend and change it.");
   console.log(`
 Next steps:
 ${warnings.map((w) => `  - ${w}`).join("\n")}
+  - npx wrangler secret put ADMIN_EMAILS     (your email; it becomes the owner)
   - npx wrangler secret put RESEND_API_KEY
-  - npm run deploy
-  - Sign in at <APP_URL>/app/login and fill in Settings → Business.`);
+  - npm run deploy                         (builds, applies migrations, deploys)
+  - Sign in at <your Worker URL>/app/login and fill in Settings → Business.
+  - With a custom domain, set vars.APP_URL to it.`);
 } finally {
   rl.close();
 }

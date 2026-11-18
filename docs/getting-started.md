@@ -36,10 +36,11 @@ terminal. The first sign-in of an `ADMIN_EMAILS` address creates an owner.
 
 1. `sistemele.config.ts` — modules, locale, currency, timezone, defaults.
 2. Settings → Business — legal name, codes, address, bank details.
-3. `src/worker/site/content.ts` — public website copy.
-4. `src/app/styles.css` and `src/worker/site/styles.css` — brand colours ([DESIGN.md](../DESIGN.md)).
-5. `public/favicon.svg` — your mark.
-6. Delete `website/` (the Sistemėlė marketing site) and `seed/` data you do not want.
+3. `src/worker/site/content.ts` — default public website copy; or publish a page with the address `home` in Website → Pages.
+4. Pipeline → Stages — the steps of your sales process and their win chances.
+5. Settings → Brand — logo, colours, corners (no code; [DESIGN.md](../DESIGN.md)).
+6. `public/favicon.svg` — your mark.
+7. Delete `website/` (the Sistemėlė marketing site) and `seed/` data you do not want.
 
 ## 5. Check and deploy
 
@@ -48,7 +49,8 @@ npm run check     # typecheck + lint + tests
 npm run build
 ```
 
-Then follow [deployment.md](deployment.md).
+Then follow [deployment.md](deployment.md). Before adding features, read
+[extending.md](extending.md): most needs are already covered by a module.
 
 ## Useful commands
 

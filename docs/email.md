@@ -28,7 +28,7 @@ Locally, put the key in `.dev.vars` only if you really want to send. Resend's
 | --- | --- | --- |
 | `auth.sign_in_link` | Sign-in requested | The user |
 | `core.user_invited` | A person is added to the team | The new user |
-| `crm.inquiry_received` | Website request | Business email (Settings) |
+| `crm.inquiry_received` | Website message (new lead or a repeat message on an open lead) | Business email (Settings) |
 | `quotes.sent` | Quote sent | Customer contact |
 | `quotes.responded` | Customer accepted/declined | Business email |
 | `invoices.sent` | Invoice sent | Customer contact |

@@ -9,7 +9,6 @@ import { ApiError } from "@/app/lib/api";
 import { Button, ButtonLink, Card, CardHeader, ErrorState, Field, FormError, Input, PageHeader, Select, Spinner, Textarea, useToast } from "@/app/ui";
 import { ContactPicker } from "@/modules/crm/client/ContactPicker";
 import { useDeals } from "@/modules/crm/client/api";
-import { DEAL_STAGES } from "@/modules/crm/shared/schema";
 import { QUOTE_VALIDITY_DAYS, type QuoteDetail } from "../shared/schema";
 import { useBusinessProfile, useQuote, useSaveQuote } from "./api";
 
@@ -168,7 +167,6 @@ function QuoteForm({ quote, initial, defaultVat }: { quote?: QuoteDetail; initia
 
 function DealSelect({ contactId, value, onChange, error }: { contactId: string; value: string | null; onChange: (dealId: string | null) => void; error?: string }) {
   const deals = useDeals({ contactId });
-  const stageLabel = (stage: string) => DEAL_STAGES.find((item) => item.id === stage)?.label ?? stage;
   const items = deals.data ?? [];
   return (
     <Field label="Deal (optional)" error={error}>
@@ -177,7 +175,7 @@ function DealSelect({ contactId, value, onChange, error }: { contactId: string; 
           <option value="">{deals.data && items.length === 0 ? "This contact has no deals" : "No deal"}</option>
           {items.map((deal) => (
             <option key={deal.id} value={deal.id}>
-              {deal.title} ({stageLabel(deal.stage)})
+              {deal.title} ({deal.stageLabel})
             </option>
           ))}
         </Select>

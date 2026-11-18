@@ -195,3 +195,19 @@ describe("static assets", () => {
     await assets.dispose();
   });
 });
+
+describe("Deploy to Cloudflare defaults", () => {
+  it("uses the request origin when APP_URL is empty and survives a missing ADMIN_EMAILS", async () => {
+    const bare = await createTestApp({ env: { APP_URL: "", ADMIN_EMAILS: undefined } });
+    const home = await (await bare.request("/")).text();
+    expect(home).toContain('rel="canonical" href="http://localhost/"');
+    const link = await bare.request("/api/auth/link", { method: "POST", json: { email: "nobody@example.com" } });
+    expect(link.status).toBe(200);
+    await bare.dispose();
+
+    const withAdmin = await createTestApp({ env: { APP_URL: "" } });
+    const cookie = await withAdmin.signIn();
+    expect(cookie).toMatch(/^sistemele_session=/u);
+    await withAdmin.dispose();
+  });
+});

@@ -16,7 +16,7 @@ const LINK_MINUTES = 15;
 export const DEMO_EMAIL = "demo@sistemele.invalid";
 
 export function adminEmails(env: Pick<Env, "ADMIN_EMAILS">): string[] {
-  return env.ADMIN_EMAILS.split(",").map((email) => email.trim().toLowerCase()).filter(Boolean);
+  return (env.ADMIN_EMAILS ?? "").split(",").map((email) => email.trim().toLowerCase()).filter(Boolean);
 }
 
 /** Only on a local machine in development without email configured. Never on a deployed Worker. */
