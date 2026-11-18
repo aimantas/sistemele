@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm run check)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run lint)",
+      "Bash(npm test:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run build)",
+      "Bash(npm run doctor)",
+      "Bash(npm run db:migrate)",
+      "Bash(npm run db:seed)",
+      "Bash(npm run db:reset)",
+      "Bash(npm run module:new:*)",
+      "Bash(npx vitest run:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx wrangler d1 execute DB --local:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Bash(npx wrangler deploy:*)",
+      "Bash(npm run deploy)",
+      "Bash(npm run db:migrate:remote)",
+      "Bash(npx wrangler d1 migrations apply DB --remote:*)",
+      "Bash(npx wrangler secret put:*)",
+      "Read(./.dev.vars)"
+    ]
+  }
+}

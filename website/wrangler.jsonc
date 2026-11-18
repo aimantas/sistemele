@@ -1,0 +1,13 @@
+// Sistemėlė website: a static-assets-only Worker. There is no Worker script;
+// Cloudflare serves ./public as it is. See README.md.
+{
+  "name": "sistemele-website",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  }
+  // Serve it on your own domain once the zone is on Cloudflare:
+  // "routes": [{ "pattern": "your-domain.example", "custom_domain": true }]
+}

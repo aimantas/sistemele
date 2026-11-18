@@ -1,0 +1,45 @@
+# Sistemėlė
+
+> Sistemėlė ("a little system" in Lithuanian) is an open-source, MIT-licensed starter for running a small business, or building client systems as an agency, on Cloudflare Workers. One Worker serves the API, a server-rendered public website, an MCP endpoint and a React dashboard. Data lives in Cloudflare D1 (SQLite); email goes through Resend.
+
+## Get started
+
+- [Source code](https://github.com/aimantas/sistemele): repository with `AGENTS.md`, a README per module and the full setup guide
+- Install: `npx degit aimantas/sistemele my-business && cd my-business && npm install && npm run setup && npm run dev`, then `npm run deploy`
+- Agent skill: `npx skills add aimantas/sistemele`
+- Requirements: Node 22 and a Cloudflare account; a Resend account for email
+
+## Modules
+
+Switch modules on or off in `sistemele.config.ts`. Modules talk through typed events: an accepted quote marks the deal won; an issued invoice deducts stock.
+
+- CRM: contacts, drag-and-drop deal pipeline, notes, tasks, website requests
+- Catalog and stock: products and services, stock ledger, low-stock alerts, public product pages with Product structured data
+- Quotes: priced offers customers open and accept from a private link
+- Invoices: gap-free numbering, VAT per rate, payments, overdue tracking, bank-transfer instructions, public invoice link
+
+## Dashboard
+
+Drag-and-drop dashboard with per-user layouts saved in D1, KPI cards from any module, and templates (Owner, Sales, Operations, Minimal). `AGENTS.md` documents how to add widgets and templates.
+
+## For AI agents
+
+- MCP endpoint at `/mcp` on every installation (Streamable HTTP, JSON-RPC). Authenticate with `Authorization: Bearer <API token>`; the token's role (owner, admin or member) limits which tools it can call.
+- Each installation publishes `/llms.txt`, and its public pages answer `Accept: text/markdown`.
+
+## Built in
+
+- Passwordless magic-link sign-in; owner, admin and member roles; audit log
+- CSRF protection, security headers, rate limits, server-authoritative totals
+- Server-rendered public pages with unique titles, canonical URLs, Open Graph, JSON-LD, sitemap.xml and robots.txt; preview deployments are never indexed
+- Stack: Hono, React 19, React Router, TanStack Query, Tailwind CSS v4, Zod, Vite with the Cloudflare plugin, Vitest with a real local D1
+
+## Pages
+
+- [English](https://sistemele.dev/)
+- [Lietuviškai](https://sistemele.dev/lt/)
+
+## Optional
+
+- [Cloudflare Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/): small use fits the free tier
+- Setup for companies: hello@sistemele.dev

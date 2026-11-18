@@ -1,0 +1,10 @@
+# Local development values. `npm run setup` copies this file to .dev.vars.
+# .dev.vars is git-ignored; never commit real keys.
+APP_ENV=development
+APP_URL=http://localhost:5173
+ADMIN_EMAILS=owner@example.com
+EMAIL_FROM=Sistemele <onboarding@resend.dev>
+# Leave empty to print emails (including sign-in links) to the terminal.
+RESEND_API_KEY=
+# Optional Cloudflare Turnstile secret for the public contact form.
+TURNSTILE_SECRET_KEY=
