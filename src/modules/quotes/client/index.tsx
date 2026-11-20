@@ -1,6 +1,7 @@
 import { FilePlus2, FileText } from "lucide-react";
 import { lazy } from "react";
 import type { ClientModule } from "@/modules/types.client";
+import { quotesDev } from "./dev";
 
 /** Quotes, browser side. Pages are lazy routes; see src/modules/quotes/README.md. */
 export const quotesClient: ClientModule = {
@@ -23,4 +24,5 @@ export const quotesClient: ClientModule = {
     },
   ],
   quickActions: [{ label: "New quote", to: "/app/quotes/new", icon: FilePlus2 }],
+  dev: quotesDev,
 };

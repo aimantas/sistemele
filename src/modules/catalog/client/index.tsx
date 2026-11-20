@@ -1,6 +1,7 @@
 import { ArrowLeftRight, Package, PackagePlus } from "lucide-react";
 import { lazy } from "react";
 import type { ClientModule } from "@/modules/types.client";
+import { catalogDev } from "./dev";
 
 /** Catalog, browser side. Pages and widgets load lazily. See src/modules/catalog/README.md. */
 export const catalogClient: ClientModule = {
@@ -20,4 +21,5 @@ export const catalogClient: ClientModule = {
     { type: "catalog.recent-movements", title: "Stock movements", description: "Latest deliveries, sales, returns and counts.", defaultSize: { w: 2, h: 2 }, component: lazy(() => import("./widgets").then((m) => ({ default: m.RecentMovementsWidget }))) },
   ],
   quickActions: [{ label: "New product", to: "/app/catalog/products?new=1", icon: PackagePlus }],
+  dev: catalogDev,
 };

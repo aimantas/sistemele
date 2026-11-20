@@ -1,6 +1,7 @@
 import { FilePlus, FileText, Newspaper, SquarePen } from "lucide-react";
 import { lazy } from "react";
 import type { ClientModule } from "@/modules/types.client";
+import { contentDev } from "./dev";
 
 /** Content, browser side: pages, posts and the editor. See src/modules/content/README.md. */
 export const contentClient: ClientModule = {
@@ -28,4 +29,5 @@ export const contentClient: ClientModule = {
     { label: "New post", to: "/app/content/posts?new=1", icon: SquarePen },
     { label: "New page", to: "/app/content/pages?new=1", icon: FilePlus },
   ],
+  dev: contentDev,
 };

@@ -1,6 +1,7 @@
 import { Inbox, KanbanSquare, ListTodo, UserPlus, Users } from "lucide-react";
 import { lazy } from "react";
 import type { ClientModule } from "@/modules/types.client";
+import { crmDev } from "./dev";
 
 /**
  * CRM, browser side. Pages are lazy routes so each module only loads when used.
@@ -34,4 +35,5 @@ export const crmClient: ClientModule = {
     { label: "New lead", to: "/app/crm/leads?new=1", icon: Inbox },
     { label: "New contact", to: "/app/crm/contacts?new=1", icon: UserPlus },
   ],
+  dev: crmDev,
 };

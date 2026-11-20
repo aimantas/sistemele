@@ -95,3 +95,5 @@ payment), one issued and not yet due, one draft; sequence set to 3.
 `tests/invoices.test.ts` covers totals, numbering (including a forced race),
 locking, PATCH semantics, payments, void permissions, overdue, from-quote,
 sending, the public page and MCP.
+
+- Developer panel (dev mode): `client/dev.ts` lists each page's files, MCP tools and starter prompts for a coding agent. Update it when you add a page or move a file; `tests/dev-panel.test.ts` checks it.

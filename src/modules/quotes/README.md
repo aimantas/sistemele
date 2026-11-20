@@ -10,6 +10,7 @@ invoice in one click.
   (REST + public answers), `site.tsx` (`/q/:token`), `tools.ts` (MCP).
 - Shared: `shared/schema.ts` (Zod input schemas, types, status helpers).
 - Client: `client/index.tsx` (nav, routes, widget, quick action) and lazy pages.
+- Developer panel (dev mode): `client/dev.ts` lists each page's files, MCP tools and starter prompts for a coding agent; `tests/dev-panel.test.ts` checks it.
 - Tests: `tests/quotes.test.ts`. Demo data: `seed/04_quotes.sql`.
 
 ## Statuses

@@ -24,6 +24,26 @@ Claude Code commands:
 | `/seo-check` | Audits public pages against docs/seo.md. |
 | `/ship-check` | Runs typecheck, lint, tests, build and reports delivery state. |
 
+### Developer mode: briefs from the page you are on
+
+Owners and admins can turn on **Developer mode** in the admin panel's sidebar
+(or open any admin address with `?dev=1`). Every page then shows a developer
+panel with:
+
+- **Ask an agent**: starter tasks for that page. A click copies a full brief:
+  the page and its address, the files behind it, the MCP tools that do the
+  same job, the task, and the rules and checks from `AGENTS.md`. Paste it into
+  Claude Code, Codex or Cursor in the repository.
+- **Describe a change or give feedback**: your own words become the same kind
+  of brief, or a prefilled GitHub issue.
+- **Files behind this page** and the module README, linked to the repository
+  (`REPOSITORY_URL` in `src/shared/project.ts`; point it at your fork).
+
+The notes live next to the code: `client/dev.ts` in each module and
+`src/app/dev/core-pages.ts` for the dashboard and settings.
+`tests/dev-panel.test.ts` fails when a route has no notes, a file was moved
+or a tool was renamed, so the panel stays true.
+
 ## 2. Agents that use a running system (MCP)
 
 `POST /mcp` speaks the Model Context Protocol (Streamable HTTP, stateless,

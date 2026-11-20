@@ -7,6 +7,7 @@ through events. Optional public pages list products on the website.
 - Server: `server/index.ts` (module definition), `service.ts` (all rules), `routes.ts`, `tools.ts`, `site.tsx` (public pages)
 - Shared: `shared/schema.ts` (Zod schemas, types, `slugify`, `stockLevel`)
 - Client: `client/index.tsx` (nav, routes, widgets), `api.ts` (TanStack Query hooks), pages, `widgets.tsx`
+- Developer panel (dev mode): `client/dev.ts` lists each page's files, MCP tools and starter prompts for a coding agent; `tests/dev-panel.test.ts` checks it.
 - Migration: `migrations/0003_catalog.sql` · Seed: `seed/03_catalog.sql` · Tests: `tests/catalog.test.ts`
 
 ## Rules

@@ -1,3 +1,4 @@
+import { REPOSITORY_URL } from "@/shared/project";
 import agentsMd from "../../../../AGENTS.md?raw";
 import designMd from "../../../../DESIGN.md?raw";
 import skillMd from "../../../../skills/sistemele/SKILL.md?raw";
@@ -10,7 +11,7 @@ import skillMd from "../../../../skills/sistemele/SKILL.md?raw";
  * summary).
  */
 
-export const REPO_URL = "https://github.com/aimantas/sistemele";
+export const REPO_URL = REPOSITORY_URL;
 
 const guideFiles = import.meta.glob<string>("/docs/*.md", { query: "?raw", import: "default", eager: true });
 const skillReferenceFiles = import.meta.glob<string>("/skills/sistemele/references/*.md", { query: "?raw", import: "default", eager: true });

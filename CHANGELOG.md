@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Developer mode in the admin panel: a switch in the sidebar (owners and admins, or `?dev=1`) shows a developer panel on every page with ready-to-copy briefs for a coding agent, a box that turns your own feedback into a brief or a prefilled GitHub issue, the files behind the page and its MCP tools. Notes live in each module's `client/dev.ts` (scaffolded by `npm run module:new`) and `src/app/dev/core-pages.ts`; `tests/dev-panel.test.ts` keeps them in step with routes, files and tools. `REPOSITORY_URL` in `src/shared/project.ts` sets the repository the links point to.
+
 - New Sistemėlė mark: a wheel of six modules around a hub on the brand tile, one module tinted. It is the favicon and the demo logo; brand rules (clear space, sizes, do's and don'ts) are on `/app/design#brand`, in DESIGN.md and `docs/design-system.md`. Square logos from Settings → Brand are now treated as marks: the header, admin panel, sign-in page and quotes and invoices set the business name beside them in Inter (`logoIsMark`, `BrandLockup`).
 - Light by default. The public site is always light; the admin panel gets a dark mode switch (sidebar footer and `/app/design`) that sets the shadcn `.dark` class and is remembered per browser. Nothing follows `prefers-color-scheme` any more; the dark screenshots are gone.
 - "Edit this page" on the public demo and in local development: a card at the end of each public page with the admin screen that edits it, the repository files behind it and how the site is organised, linked to GitHub. Never shown on a live site.

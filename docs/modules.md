@@ -13,6 +13,7 @@ src/modules/<id>/
   client/api.ts          TanStack Query hooks
   client/*Page.tsx       screens (default export, lazy-loaded)
   client/widgets.tsx     dashboard cards
+  client/dev.ts          developer panel notes and agent prompts, one per route
   client/index.tsx       export const <id>Client: ClientModule
 migrations/NNNN_<id>.sql
 seed/NN_<id>.sql
@@ -76,7 +77,8 @@ and `client.ts`, and enables it in `sistemele.config.ts`. Then:
 | `home` | Public home page: an optional hero (headline, lead, description) and sections below it, e.g. the content module's latest posts. Without a hero, `/` is the starter home (`src/worker/site/starter-home.tsx`) and the sections show inside it. |
 
 `ClientModule`: `nav`, `routes` (relative to `/app`, use `lazy`), `widgets`,
-`quickActions`.
+`quickActions`, `dev` (developer panel notes: for each route, its files, MCP
+tools and starter prompts for a coding agent; required for every route).
 
 ## Switching modules off
 

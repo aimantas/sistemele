@@ -235,7 +235,7 @@ export default function ItemsPage() {
         <Field label="Name" className="min-w-64 flex-1" error={fieldError(create.error, "name")}>
           {(props) => <Input {...props} value={name} onChange={(event) => setName(event.target.value)} />}
         </Field>
-        <Button type="submit" variant="primary" icon={<Plus />} loading={create.isPending}>
+        <Button type="submit" icon={<Plus />} loading={create.isPending}>
           Add item
         </Button>
       </form>
@@ -279,12 +279,12 @@ import { useItems } from "./api";
 export function RecentItemsWidget() {
   const items = useItems();
   if (!items.data) return <Spinner />;
-  if (items.data.items.length === 0) return <p className="text-sm text-muted">Nothing yet.</p>;
+  if (items.data.items.length === 0) return <p className="text-sm text-muted-foreground">Nothing yet.</p>;
   return (
     <ul className="grid gap-1">
       {items.data.items.slice(0, 6).map((item) => (
         <li key={item.id}>
-          <Link to="/app/${id}" className="block truncate rounded-control px-1 py-1.5 text-sm hover:bg-paper">
+          <Link to="/app/${id}" className="block truncate rounded-md px-1 py-1.5 text-sm hover:bg-accent">
             {item.name}
           </Link>
         </li>
@@ -294,9 +294,33 @@ export function RecentItemsWidget() {
 }
 `,
 
+  [`${base}/client/dev.ts`]: `import type { DevPage } from "@/modules/types.client";
+
+/** Developer panel notes and agent prompts for the ${name} pages (dev mode). */
+export const ${id}Dev: DevPage[] = [
+  {
+    path: "${id}",
+    title: "${name}",
+    summary: "Replace with one sentence on what this page is for.",
+    files: [
+      { path: "${base}/client/ItemsPage.tsx", note: "List and new item form" },
+      { path: "${base}/server/service.ts", note: "Services: validation, roles, audit" },
+      { path: "${base}/shared/schema.ts", note: "Zod schemas" },
+      { path: "migrations/${migrationNumber}_${id}.sql", note: "Tables" },
+      { path: "tests/${id}.test.ts", note: "Tests" },
+    ],
+    prompts: [
+      "Replace the placeholder ${name.toLowerCase()} table with the real model: migration, schemas, service, routes, MCP tools, the page and tests.",
+      "Add a detail page for one ${name.toLowerCase()} item with an edit form and its developer panel notes.",
+    ],
+  },
+];
+`,
+
   [`${base}/client/index.tsx`]: `import { Boxes } from "lucide-react";
 import { lazy } from "react";
 import type { ClientModule } from "@/modules/types.client";
+import { ${id}Dev } from "./dev";
 
 export const ${id}Client: ClientModule = {
   id: "${id}",
@@ -313,6 +337,7 @@ export const ${id}Client: ClientModule = {
     },
   ],
   quickActions: [],
+  dev: ${id}Dev,
 };
 `,
 
