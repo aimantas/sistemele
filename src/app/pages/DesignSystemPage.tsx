@@ -1,6 +1,8 @@
-import { ArrowLeft, Inbox, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Inbox, Moon, Plus, Sun, Trash2 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router";
+import { BrandLockup } from "../components/BrandLockup";
+import { useTheme } from "../lib/theme";
 import {
   Badge,
   Button,
@@ -64,6 +66,7 @@ const typeScale: Array<{ label: string; className: string; spec: string; sample:
 ];
 
 const sections = [
+  { id: "brand", label: "Brand" },
   { id: "foundations", label: "Foundations" },
   { id: "buttons", label: "Buttons" },
   { id: "forms", label: "Forms" },
@@ -79,6 +82,7 @@ export default function DesignSystemPage() {
   const [confirm, setConfirm] = useState(false);
   const [checked, setChecked] = useState(true);
   const [amount, setAmount] = useState<number | null>(125000);
+  const [theme, setTheme] = useTheme();
 
   return (
     <div className="min-h-dvh bg-background">
@@ -89,13 +93,18 @@ export default function DesignSystemPage() {
             Sistemėlė
             <span className="font-normal text-muted-foreground">/ Design system</span>
           </Link>
-          <nav aria-label="Sections" className="hidden items-center gap-1 md:flex">
-            {sections.map((section) => (
-              <a key={section.id} href={`#${section.id}`} className="rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
-                {section.label}
-              </a>
-            ))}
-          </nav>
+          <div className="flex items-center gap-1">
+            <nav aria-label="Sections" className="hidden items-center gap-1 md:flex">
+              {sections.map((section) => (
+                <a key={section.id} href={`#${section.id}`} className="rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+                  {section.label}
+                </a>
+              ))}
+            </nav>
+            <IconButton label={theme === "dark" ? "Use light mode" : "Use dark mode"} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+              {theme === "dark" ? <Sun /> : <Moon />}
+            </IconButton>
+          </div>
         </div>
       </header>
 
@@ -107,8 +116,68 @@ export default function DesignSystemPage() {
             </Link>
           }
           title="Design system"
-          description="shadcn/ui components on one set of tokens, shared by the admin panel and the public site. Light and dark follow the system setting; Settings → Brand changes the primary colour, surfaces and corners."
+          description="shadcn/ui components on one set of tokens, shared by the admin panel and the public site. Light is the default; the admin panel has a dark mode switch (the moon, top right here and in the sidebar). Settings → Brand changes the logo, primary colour, surfaces and corners."
         />
+
+        <Section id="brand" title="Brand" lead="The mark is a wheel built from six modules around a hub: the wheel your agent does not reinvent. The tinted module, top right, is the one you add.">
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              { label: "On the page", className: "bg-background" },
+              { label: "On a card", className: "bg-card" },
+              { label: "In dark mode", className: "dark bg-background text-foreground" },
+            ].map((surface) => (
+              <figure key={surface.label} className={`grid place-items-center gap-5 rounded-xl border p-8 ${surface.className}`}>
+                <img src="/favicon.svg" alt="" className="size-20" />
+                <BrandLockup brand={{ name: "Sistemėlė", logoUrl: null, logoMark: true, brandColor: "#1f5f4a" }} />
+                <figcaption className="text-xs text-muted-foreground">{surface.label}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <Card>
+              <CardHeader title="Use it like this" />
+              <CardContent>
+                <ul className="grid gap-3 text-sm">
+                  {[
+                    ["Lockup", "Mark plus the business name in Inter 650, gap ⅓ of the mark. The panel and the site build it for any square logo."],
+                    ["Clear space", "A quarter of the mark on every side. Nothing else inside it."],
+                    ["Smallest size", "16 px as a favicon, 24 px in the interface, 30 px in the site header."],
+                    ["Colour", "Brand-colour tile, white modules, the added module at 50% white. Keep the tile on photos and busy backgrounds."],
+                    ["Your own logo", "Settings → Brand. A square SVG is treated as a mark (name set beside it); a wide one already carries the name and shows alone."],
+                  ].map(([title, text]) => (
+                    <li key={title} className="grid gap-0.5 sm:grid-cols-[110px_1fr] sm:gap-4">
+                      <span className="font-medium">{title}</span>
+                      <span className="text-muted-foreground">{text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader title="Not like this" />
+              <CardContent>
+                <ul className="grid gap-3 text-sm">
+                  {[
+                    ["Recolour modules", "One tile colour, white modules. No rainbow segments."],
+                    ["Rotate or stretch", "The added module stays top right; the mark stays square."],
+                    ["Drop the tile", "The modules alone read as a pie chart."],
+                    ["Add effects", "No shadows, gradients, outlines or glows on the mark."],
+                    ["Another typeface", "The name is set in Inter, never baked into the image as text."],
+                  ].map(([title, text]) => (
+                    <li key={title} className="grid gap-0.5 sm:grid-cols-[130px_1fr] sm:gap-4">
+                      <span className="font-medium text-destructive">{title}</span>
+                      <span className="text-muted-foreground">{text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Files: <code className="rounded bg-muted px-1">public/favicon.svg</code> is the default mark (also the browser tab icon); the demo uses the same SVG as its logo in{" "}
+            <code className="rounded bg-muted px-1">seed/01_core.sql</code>.
+          </p>
+        </Section>
 
         <Section id="foundations" title="Foundations" lead="Use token names, never raw colours. Tailwind classes map one to one: bg-card, text-muted-foreground, border-border.">
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

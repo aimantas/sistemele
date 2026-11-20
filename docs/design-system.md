@@ -1,8 +1,8 @@
 # Design system
 
 The admin panel and the public site share one design system: **shadcn/ui
-components on shadcn token names**, Inter, light and dark from the system
-setting. Open **`/app/design`** in a running copy (or on the demo) to see every
+components on shadcn token names**, Inter, light by default (the admin panel
+has a dark mode switch). Open **`/app/design`** in a running copy (or on the demo) to see every
 token and component live. `DESIGN.md` records the visual rules; this page is
 the how-to.
 
@@ -44,20 +44,36 @@ with `rounded-sm/md/lg/xl` derived from it; controls use `rounded-md`, cards
 `rounded-xl`. Shadows: `shadow-xs` on controls and cards, `shadow-sm` on raised
 cards, `shadow-lg` on dialogs and menus only.
 
-### Light and dark
+### Light by default, dark on request
 
-Both schemes are defined; the system setting picks one (`prefers-color-scheme`),
-there is no toggle. Dark mode keeps its own neutral surfaces and uses a lighter
-brand colour (computed for 4.5:1 contrast). When you add a token, add it to
-both blocks in `src/app/styles.css`, and, if the public site uses it, to the
-marked block in `src/worker/site/styles.css`. `npm test` fails when the two
-copies differ.
+Everything is light by default; the system's dark setting is ignored. The
+admin panel has a dark mode switch (the moon in the sidebar footer and on
+`/app/design`): it puts `.dark` on `<html>` and remembers the choice in that
+browser (`src/app/lib/theme.ts`). The public site is always light.
 
-SVG logos are shown through `<img>`. To keep a dark wordmark readable in dark
-mode, put a media query inside the SVG:
-`<style>@media (prefers-color-scheme: dark){.w{fill:#f4f5f7}}</style>` and give
-the text `class="w"` (the demo logo in `seed/01_core.sql` does this). Pages
-declare `color-scheme: light dark` so the query follows the system setting.
+- Light tokens live in `:root`, dark ones in `.dark` (`src/app/styles.css`, the
+  shadcn convention). `dark:` utilities follow the class.
+- Dark mode keeps its own neutral surfaces and uses the brand at the same hue
+  and saturation, lightened to 5:1 contrast.
+- When you add a token, add it to both blocks in `src/app/styles.css` and, if
+  the public site uses it, to the marked block in `src/worker/site/styles.css`.
+  `npm test` fails when the copies differ or when anything switches on
+  `prefers-color-scheme` again.
+
+### Logo
+
+The default mark is `public/favicon.svg`: a wheel of six modules around a hub
+on a brand-colour tile, one module tinted (the one you add). Rules and
+examples are on `/app/design#brand`.
+
+- **Square logo = mark.** Settings → Brand accepts any SVG. A square one is
+  treated as a mark: the site header, the admin panel, the sign-in page and
+  quotes and invoices set the business name beside it in Inter
+  (`logoIsMark()` in `src/shared/branding.ts`, `BrandLockup` in the panel and
+  the site layout).
+- **Wide logo = full logo.** It already carries the name and shows alone.
+- Don't bake the name into a square SVG as text: SVG text in an `<img>` cannot
+  use the site's font.
 
 ### Brand settings
 
@@ -122,5 +138,5 @@ Keep new site classes in `src/worker/site/styles.css` and reuse the tokens.
 - [ ] Built from `@/app/ui`, no raw colours (`npm test` checks for the retired palette names)
 - [ ] Page header with one primary action
 - [ ] Loading, empty, error states
-- [ ] Checked at 375 px and desktop, light and dark
+- [ ] Checked at 375 px and desktop (and in the panel's dark mode if it is an admin screen)
 - [ ] New component shown on `/app/design`

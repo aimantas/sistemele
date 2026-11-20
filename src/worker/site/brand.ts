@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { themeCss, type BrandInfo } from "@/shared/branding";
+import { logoIsMark, themeCss, type BrandInfo } from "@/shared/branding";
 import { getContext } from "../context";
 import type { AppEnv } from "../env";
 import { sha256Hex } from "../lib/crypto";
@@ -43,6 +43,6 @@ export const brandRoutes = new Hono<AppEnv>()
   .get("/brand/info.json", async (c) => {
     const ctx = getContext(c);
     const [branding, business] = await Promise.all([getBranding(ctx.db), ctx.business()]);
-    const info: BrandInfo = { name: business.name, logoUrl: await logoUrl(branding.logoSvg), brandColor: branding.brandColor };
+    const info: BrandInfo = { name: business.name, logoUrl: await logoUrl(branding.logoSvg), logoMark: logoIsMark(branding.logoSvg), brandColor: branding.brandColor };
     return c.json(info, 200, { "Cache-Control": "no-cache" });
   });

@@ -41,6 +41,14 @@ export function docsRoutes(modules: readonly ServerModule[]) {
     .get("/docs", (c) => {
       const origin = appOrigin(c.env);
       return renderPage(c, {
+        edit: {
+          summary: "The docs are Markdown files in the repository, rendered on each build. This overview and its diagrams are code.",
+          files: [
+            { path: "src/worker/site/docs/routes.tsx", note: "This overview and the page layout" },
+            { path: "src/worker/site/docs/visuals.tsx", note: "Diagrams and the tools chart" },
+            { path: "src/worker/site/docs/sources.ts", note: "Which files appear, in which group and order" },
+          ],
+        },
         meta: {
           title: "Documentation",
           description: "How to build on Sistemėlė: AGENTS.md, the agent skill, and guides for modules, the dashboard, MCP, design and deployment.",
@@ -129,6 +137,13 @@ export function docsRoutes(modules: readonly ServerModule[]) {
       const visual = visualsFor[doc.slug]?.();
 
       return renderPage(c, {
+        edit: {
+          summary: "This page is a Markdown file in the repository. Edit it on GitHub or locally; it is rendered on the next deploy.",
+          files: [
+            { path: doc.path, note: "The text of this page" },
+            { path: "src/worker/site/docs/sources.ts", note: "Title, summary, group and order in the sidebar" },
+          ],
+        },
         meta: {
           title: `${doc.title} · Docs`,
           description: doc.summary,

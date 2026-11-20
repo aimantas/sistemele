@@ -5,6 +5,14 @@ Public pages are React components rendered to HTML on the Worker
 their CSS, and are cached at the edge for 5 minutes with
 stale-while-revalidate.
 
+## "Edit this page"
+
+Pass `edit` to `renderPage` to say where a page comes from: a one-line
+`summary`, the admin screen that edits it (`admin`) and the repository files
+behind it (`files`). On the public demo (`DEMO_MODE=1`) and in local
+development the page ends with an "Edit this page" card linking to them on
+GitHub; a live site never shows it. Every core and module page sets one.
+
 ## What every page gets
 
 - `<title>` = page title + business name; unique meta description.

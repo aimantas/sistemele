@@ -4,8 +4,11 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router/dom";
 import { ApiError } from "./lib/api";
 import { router } from "./router";
+import { applyTheme, storedTheme } from "./lib/theme";
 import { ToastProvider } from "./ui";
 import "./styles.css";
+
+applyTheme(storedTheme());
 
 const queryClient = new QueryClient({
   defaultOptions: {

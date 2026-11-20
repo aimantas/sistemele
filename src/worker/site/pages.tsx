@@ -42,11 +42,32 @@ export function sitePages(modules: readonly ServerModule[]) {
       // No home page published yet: the general-purpose starter page with a get-started guide.
       if (!hero) {
         const starter = starterHome({ businessName: business.name, origin, demo: isDemo(c.env), modules, sections });
-        return renderPage(c, { meta: { title: starter.title, description: starter.description, path: "/", jsonLd }, markdown: starter.markdown, body: starter.body });
+        return renderPage(c, {
+          meta: { title: starter.title, description: starter.description, path: "/", jsonLd },
+          markdown: starter.markdown,
+          body: starter.body,
+          edit: {
+            summary: "This starter home is code. Publish a page with the address “home” in Website → Pages and it replaces this one, no code needed.",
+            admin: { label: "Website → Pages", href: "/app/content/pages" },
+            files: [
+              { path: "src/worker/site/starter-home.tsx", note: "Sections, copy, screenshots and logos on this page" },
+              { path: "src/worker/site/styles.css", note: "Styles; the landing uses the .lp-* classes" },
+              { path: "public/screenshots/", note: "Product screenshots (WebP)" },
+            ],
+          },
+        });
       }
 
       const actions = [...(hasCrm ? [{ ...home.contactCta, primary: true }] : []), ...moduleLinks.map((link) => ({ ...link, primary: false }))];
       return renderPage(c, {
+        edit: {
+          summary: "The headline and text come from the page with the address “home”; the sections under it come from the modules (for example the newest posts).",
+          admin: { label: "Website → Pages", href: "/app/content/pages" },
+          files: [
+            { path: "src/worker/site/pages.tsx", note: "The home route: hero, sections and actions" },
+            { path: "src/modules/content/server/site.tsx", note: "home(): the hero and the latest posts" },
+          ],
+        },
         meta: {
           title: business.name,
           description: hero.description || home.lead,
@@ -93,6 +114,15 @@ export function sitePages(modules: readonly ServerModule[]) {
       const error = c.req.query("error");
       const content = siteContent.contact;
       return renderPage(c, {
+        edit: {
+          summary: "The words are in the site content file; the form posts to the CRM, where each message becomes a lead.",
+          admin: { label: "See the leads", href: "/app/crm/leads" },
+          files: [
+            { path: "src/worker/site/content.ts", note: "siteContent.contact: title, lead and the thank-you message" },
+            { path: "src/worker/site/pages.tsx", note: "The /contact route and the form fields" },
+            { path: "src/modules/crm/server/routes.ts", note: "publicApi: POST /api/public/crm/inquiries" },
+          ],
+        },
         meta: { title: content.title, description: content.description, path: "/contact", jsonLd: [breadcrumbJsonLd(origin, [{ name: "Home", path: "/" }, { name: content.title, path: "/contact" }])] },
         markdown: `# ${content.title}\n\n${content.lead}\n\nSend a POST request to ${origin}/api/public/crm/inquiries with JSON fields: name, email, phone (optional), company (optional), message.\n`,
         body: (
@@ -154,6 +184,14 @@ export function sitePages(modules: readonly ServerModule[]) {
       const content = siteContent.privacy;
       const controller = business.legalName || business.name;
       return renderPage(c, {
+        edit: {
+          summary: "The policy sections are code in the core pages file; the controller's name comes from Settings → Business. Have it checked for your business before you go live.",
+          admin: { label: "Settings → Business", href: "/app/settings" },
+          files: [
+            { path: "src/worker/site/pages.tsx", note: "The /privacy route and every section of the policy" },
+            { path: "src/worker/site/content.ts", note: "siteContent.privacy: title and description" },
+          ],
+        },
         meta: { title: content.title, description: content.description, path: "/privacy" },
         markdown: `# ${content.title}\n\n${controller} is responsible for the data described here.`,
         body: (

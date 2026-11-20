@@ -45,32 +45,6 @@
   --info: oklch(0.5 0.15 258);
   --shadow-color: 220 15% 20%;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: oklch(0.155 0.004 264);
-    --foreground: oklch(0.97 0.002 264);
-    --card: oklch(0.19 0.005 264);
-    --card-foreground: oklch(0.97 0.002 264);
-    --popover: oklch(0.21 0.005 264);
-    --popover-foreground: oklch(0.97 0.002 264);
-    --primary: #319574;
-    --primary-foreground: oklch(0.16 0.01 165);
-    --secondary: oklch(0.245 0.006 264);
-    --secondary-foreground: oklch(0.97 0.002 264);
-    --muted: oklch(0.235 0.006 264);
-    --muted-foreground: oklch(0.71 0.012 264);
-    --accent: oklch(0.255 0.007 264);
-    --accent-foreground: oklch(0.97 0.002 264);
-    --destructive: oklch(0.7 0.18 24);
-    --border: oklch(1 0 0 / 9%);
-    --input: oklch(1 0 0 / 15%);
-    --success: oklch(0.74 0.14 155);
-    --warning: oklch(0.8 0.13 75);
-    --info: oklch(0.74 0.12 250);
-    --shadow-color: 0 0% 0%;
-    color-scheme: dark;
-  }
-}
 /* tokens:end */
 
 :root {
@@ -81,8 +55,8 @@
   --shadow-xs: 0 1px 2px 0 hsl(var(--shadow-color) / 0.05);
   --shadow-sm: 0 1px 2px 0 hsl(var(--shadow-color) / 0.06), 0 1px 3px 0 hsl(var(--shadow-color) / 0.08);
   --shadow-lg: 0 4px 6px -2px hsl(var(--shadow-color) / 0.06), 0 24px 48px -12px hsl(var(--shadow-color) / 0.22);
-  /* Both schemes, so form controls and SVG logos shown as images follow the system setting. */
-  color-scheme: light dark;
+  /* The public site is always light (DESIGN.md: light by default). */
+  color-scheme: light;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -121,6 +95,12 @@ code { font-family: var(--font-mono); font-size: 0.875em; }
 .header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; min-height: 60px; flex-wrap: wrap; }
 .brand { font-weight: 650; color: var(--foreground); text-decoration: none; letter-spacing: -0.01em; display: inline-flex; align-items: center; }
 .brand-logo { height: 28px; width: auto; max-width: 200px; display: block; }
+.brand-lockup { display: inline-flex; align-items: center; gap: 10px; }
+.brand-mark { width: 30px; height: 30px; display: block; flex-shrink: 0; }
+.brand-name { font-size: 1.0625rem; font-weight: 650; letter-spacing: -0.02em; color: var(--foreground); }
+.brand-lockup.small { gap: 8px; }
+.brand-lockup.small .brand-mark { width: 24px; height: 24px; }
+.brand-lockup.small .brand-name { font-size: 0.9375rem; }
 .site-header ul { list-style: none; display: flex; gap: 2px; margin: 0; padding: 0; flex-wrap: wrap; }
 .site-header nav a { display: block; padding: 6px 12px; border-radius: calc(var(--radius) - 2px); color: var(--muted-foreground); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.15s, background-color 0.15s; }
 .site-header nav a:hover { background: var(--accent); color: var(--foreground); }
@@ -199,7 +179,10 @@ code { font-family: var(--font-mono); font-size: 0.875em; }
 
 /* Documents (quote and invoice links) */
 .doc { background: var(--card); border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); padding: clamp(20px, 4vw, 44px); box-shadow: var(--shadow-sm); }
-.doc-logo { height: 36px; width: auto; max-width: 240px; margin-bottom: 24px; display: block; }
+.doc-logo { margin-bottom: 24px; }
+.doc-logo .brand-logo { height: 36px; max-width: 240px; }
+.doc-logo .brand-mark { width: 36px; height: 36px; }
+.doc-logo .brand-name { font-size: 1.25rem; }
 .doc table { width: 100%; border-collapse: collapse; margin: 16px 0; font-variant-numeric: tabular-nums; font-size: 0.9375rem; }
 .doc th, .doc td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
 .doc th { font-size: 0.8125rem; font-weight: 500; color: var(--muted-foreground); }
@@ -260,7 +243,6 @@ code { font-family: var(--font-mono); font-size: 0.875em; }
 /* Starter landing (starter-home.tsx) */
 .lp-logo { width: 18px; height: 18px; display: inline-block; flex-shrink: 0; }
 .button .lp-logo { width: 16px; height: 16px; }
-@media (prefers-color-scheme: dark) { .lp-logo.mono { filter: invert(1); } }
 .lp-hero { position: relative; padding: clamp(64px, 10vw, 128px) 0 0; overflow: hidden; isolation: isolate; }
 .lp-hero::before { content: ""; position: absolute; inset: 0 0 40% 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, var(--card), var(--background)); }
 .lp-hero-copy { text-align: center; display: grid; justify-items: center; }
@@ -282,7 +264,6 @@ code { font-family: var(--font-mono); font-size: 0.875em; }
 .lp-logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 32px; }
 .lp-logos li { display: inline-flex; align-items: center; gap: 8px; font-size: 0.9375rem; font-weight: 550; color: var(--muted-foreground); }
 .lp-logos .lp-logo { filter: grayscale(1); opacity: 0.85; }
-@media (prefers-color-scheme: dark) { .lp-logos .lp-logo.mono { filter: grayscale(1) invert(1); } }
 .lp-steps { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 0; margin-top: 8px; }
 .lp-steps li { padding: 4px 24px 8px 0; }
 .lp-steps li + li { padding-left: 24px; border-left: 1px solid var(--border); }
@@ -327,7 +308,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; }
 .site-footer { border-top: 1px solid var(--border); margin-top: 64px; font-size: 0.875rem; color: var(--muted-foreground); }
 .footer-main { display: grid; gap: 32px; padding: 48px 0 40px; }
 @media (min-width: 720px) { .footer-main { grid-template-columns: minmax(0, 1fr) auto; align-items: start; } }
-.footer-brand .brand-logo { height: 24px; margin-bottom: 16px; }
+.footer-brand .brand-logo, .footer-brand .brand-lockup { height: 24px; margin-bottom: 16px; }
 .footer-brand address { font-style: normal; display: grid; gap: 4px; }
 .site-footer strong { color: var(--foreground); font-weight: 600; }
 .footer-links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, auto); gap: 10px 48px; }
@@ -490,9 +471,31 @@ code { font-family: var(--font-mono); font-size: 0.875em; }
 .dv-install .dv-label { margin: 0; color: oklch(0.71 0.012 264); }
 .dv-install code { font-size: 0.875rem; color: inherit; }
 
+/* "Edit this page" (demo and local development only) */
+.edit-notice { padding: 8px 0 56px; }
+.edit-card { border: 1px dashed color-mix(in oklab, var(--primary) 45%, var(--border)); border-radius: calc(var(--radius) + 4px); background: color-mix(in oklab, var(--primary) 3%, var(--card)); padding: 20px; }
+.edit-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; align-items: start; }
+.edit-head > svg { color: var(--primary); margin-top: 2px; }
+.edit-head .button { grid-column: 1 / -1; justify-self: start; margin-top: 10px; min-height: 36px; font-size: 0.875rem; }
+@media (min-width: 720px) { .edit-head { grid-template-columns: auto minmax(0, 1fr) auto; } .edit-head .button { grid-column: auto; margin-top: 0; } }
+.edit-title { margin: 0; font-weight: 600; }
+.edit-summary { margin: 2px 0 0; color: var(--muted-foreground); font-size: 0.9375rem; max-width: 70ch; }
+.edit-files { margin: 16px 0 0; border-top: 1px solid var(--border); }
+.edit-files li { display: grid; gap: 2px 16px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.875rem; }
+@media (min-width: 720px) { .edit-files li { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); align-items: baseline; } }
+.edit-files a { text-decoration: none; }
+.edit-files a:hover code { text-decoration: underline; }
+.edit-files code { color: var(--primary); font-size: 0.8125rem; overflow-wrap: anywhere; }
+.edit-files span { color: var(--muted-foreground); }
+.edit-structure { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 0; font-size: 0.8125rem; color: var(--muted-foreground); }
+.edit-structure a { color: var(--foreground); font-weight: 500; }
+.edit-structure span a { text-decoration: none; }
+.edit-structure span a:hover code { text-decoration: underline; }
+.edit-structure code { font-size: 0.75rem; color: var(--foreground); }
+
 @media print {
   :root { --background: #fff; --foreground: #111; --card: #fff; --border: #ddd; --muted-foreground: #555; --muted: #f4f4f5; color-scheme: light; }
-  .site-header, .site-footer, .actions, .no-print, .demo-bar { display: none !important; }
+  .site-header, .site-footer, .actions, .no-print, .demo-bar, .edit-notice { display: none !important; }
   body { background: #fff; }
   .doc { border: 0; padding: 0; box-shadow: none; }
 }

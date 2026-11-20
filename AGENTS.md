@@ -90,7 +90,7 @@ Each recipe lists the files to touch. Follow the CRM module as the reference.
 
 **Add a text page or blog post** — no code: create it in the content module (dashboard Website → Pages/Posts, or the `content_*` MCP tools). Members and member tokens draft; an owner or admin publishes.
 
-**Add a public page in code** — a `site` Hono route that returns `renderPage(c, { meta, body, markdown })`. Unique title and description, canonical path, JSON-LD only for visible facts, `noindex` for private pages, add it to `sitemap()`. See `docs/seo.md`.
+**Add a public page in code** — a `site` Hono route that returns `renderPage(c, { meta, body, markdown, edit })` (`edit` names the admin screen and files behind the page; the demo shows it as "Edit this page"). Unique title and description, canonical path, JSON-LD only for visible facts, `noindex` for private pages, add it to `sitemap()`. See `docs/seo.md`.
 
 **Send an email** — `renderEmail({...})` then `ctx.sendEmail({ to, subject, template: "<module>.<event>", ...content })`. Use `ctx.waitUntil` when the response must not wait.
 

@@ -1,14 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { clsx } from "clsx";
-import { LayoutDashboard, LogOut, Menu, Search, Settings, X } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, Moon, Search, Settings, Sun, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, NavLink, Navigate, Outlet, useLocation } from "react-router";
 import { roleAtLeast } from "@/shared/auth";
 import { clientModules } from "@/modules/client";
 import type { NavItem } from "@/modules/types.client";
 import { api } from "../lib/api";
-import { brandLogoSrc, useBrandInfo } from "../lib/brand";
+import { BrandLockup } from "../components/BrandLockup";
+import { useBrandInfo } from "../lib/brand";
 import { useAppInfo, useSession } from "../lib/session";
+import { useTheme } from "../lib/theme";
 import { Spinner } from "../ui";
 import { CommandPalette } from "./CommandPalette";
 
@@ -21,6 +23,7 @@ export function AppShell() {
   const queryClient = useQueryClient();
   const [menuOpen, setMenuOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [theme, setTheme] = useTheme();
 
   // Close the phone menu after navigation (state derived during render, no effect).
   const [menuPath, setMenuPath] = useState(location.pathname);
@@ -60,15 +63,8 @@ export function AppShell() {
 
   const sidebar = (
     <nav aria-label="Main" className="flex h-full flex-col gap-4 overflow-y-auto px-3 py-4">
-      <Link to="/app" className="flex min-h-8 items-center gap-2 px-2 text-[15px] font-semibold tracking-tight">
-        {brand?.logoUrl ? (
-          <img src={brand.logoUrl} alt={brand.name} className="h-7 w-auto max-w-[180px]" />
-        ) : (
-          <>
-            <img src="/favicon.svg" alt="" className="size-6" />
-            {brand?.name ?? info?.appName ?? "Sistemėlė"}
-          </>
-        )}
+      <Link to="/app" className="flex min-h-8 items-center px-2">
+        <BrandLockup brand={brand} fallbackName={info?.appName} />
       </Link>
       <button
         type="button"
@@ -105,7 +101,7 @@ export function AppShell() {
         </div>
       ))}
       <div className="mt-auto grid gap-2 border-t border-sidebar-border pt-3">
-        <div className="flex items-center gap-2.5 px-1">
+        <div className="flex min-w-0 items-center gap-2 px-1">
           <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary" aria-hidden>
             {initials}
           </span>
@@ -115,6 +111,15 @@ export function AppShell() {
               {user.role} · {user.email}
             </p>
           </div>
+          <button
+            type="button"
+            aria-label={theme === "dark" ? "Use light mode" : "Use dark mode"}
+            title={theme === "dark" ? "Use light mode" : "Use dark mode"}
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="inline-grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+          >
+            {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+          </button>
           <button type="button" aria-label="Sign out" title="Sign out" onClick={() => logout.mutate()} className="inline-grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground">
             <LogOut className="size-4" />
           </button>
@@ -131,9 +136,8 @@ export function AppShell() {
       <aside className="sticky top-0 hidden h-dvh border-r border-sidebar-border bg-sidebar lg:block print:hidden">{sidebar}</aside>
 
       <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/85 px-4 backdrop-blur-md lg:hidden print:hidden">
-        <Link to="/app" className="flex items-center gap-2 font-semibold">
-          <img src={brandLogoSrc(brand)} alt={brand?.logoUrl ? brand.name : ""} className={brand?.logoUrl ? "h-7 w-auto max-w-[160px]" : "size-6"} />
-          {brand?.logoUrl ? null : (brand?.name ?? info?.appName ?? "Sistemėlė")}
+        <Link to="/app" className="flex min-w-0 items-center">
+          <BrandLockup brand={brand} fallbackName={info?.appName} />
         </Link>
         <div className="flex items-center gap-1">
           <button type="button" aria-label="Search" className="inline-grid size-10 place-items-center rounded-md hover:bg-accent" onClick={() => setPaletteOpen(true)}>

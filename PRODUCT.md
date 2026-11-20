@@ -38,6 +38,8 @@ spends its effort on what is specific to the business.
 - **Category standard, made well.** The admin panel and landing look like the tools the audience already trusts; the craft bar is Linear and Resend. Precision over decoration, the product itself over illustration.
 - **shadcn/ui is the design system.** Token names, components and the `npx shadcn@latest add` workflow, so agents and developers add UI the way they already know. Rules in `DESIGN.md`, how-to in `docs/design-system.md`, live reference at `/app/design`.
 - **Every deployment is its own brand.** Colour, surfaces, corners and logo are settings; nothing in code assumes the default green.
+- **The Sistemėlė mark** is a wheel of six modules around a hub, one tinted: the wheel your agent does not reinvent, and the module you add. Rules: `/app/design#brand`.
+- **Light by default.** Calm and readable for the people who run the business; dark is an opt-in switch in the admin panel only.
 
 ## Non-goals (for now)
 

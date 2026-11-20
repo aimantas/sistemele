@@ -46,7 +46,23 @@ export const defaultBranding: Branding = brandingSchema.parse({});
 export interface BrandInfo {
   name: string;
   logoUrl: string | null;
+  /** True when the logo is a square mark: show the business name beside it. */
+  logoMark: boolean;
   brandColor: string;
+}
+
+/**
+ * A logo whose viewBox (or width and height) is roughly square is a mark,
+ * not a full logo: headers set the business name next to it. Wide logos
+ * already carry the name and show alone.
+ */
+export function logoIsMark(svg: string | null): boolean {
+  if (!svg) return false;
+  const viewBox = /viewBox=["']\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)/iu.exec(svg);
+  const width = viewBox?.[1] ?? /\swidth=["']([\d.]+)/iu.exec(svg)?.[1];
+  const height = viewBox?.[2] ?? /\sheight=["']([\d.]+)/iu.exec(svg)?.[1];
+  const ratio = Number(width) / Number(height);
+  return Number.isFinite(ratio) && ratio > 0.75 && ratio < 1.34;
 }
 
 // Colour maths (sRGB, WCAG 2.x contrast)
@@ -168,12 +184,13 @@ export function brandTokens(branding: Branding): BrandTokens {
 
 /**
  * Theme overrides for the admin panel and the public site (same shadcn token
- * names). Light values only apply in light mode, so dark mode keeps its own
- * neutral surfaces; the brand colour is adjusted for each.
+ * names). Light is the default everywhere; the admin panel switches to dark
+ * with the `.dark` class on <html>. Light overrides skip `.dark`, so dark
+ * mode keeps its own neutral surfaces; the brand colour is adjusted for it.
  */
 export function themeCss(branding: Branding): string {
   const t = brandTokens(branding);
   const light = `--primary:${t.brand};--primary-foreground:${t.brandInk};--background:${t.background};--muted:${t.muted};--secondary:${t.muted};--accent:${t.muted};--sidebar:${t.sidebar};--sidebar-accent:${t.border};--border:${t.border};--sidebar-border:${t.border};--input:${t.input};`;
   const dark = `--primary:${t.brandDark};--primary-foreground:${t.brandDarkInk};`;
-  return `:root:root{--radius:${t.radius};}@media (prefers-color-scheme: light){:root:root{${light}}}@media (prefers-color-scheme: dark){:root:root{${dark}}}`;
+  return `:root:root{--radius:${t.radius};}:root:root:not(.dark){${light}}:root:root.dark{${dark}}`;
 }

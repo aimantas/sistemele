@@ -151,6 +151,14 @@ export const contentSite = new Hono<AppEnv>()
     const date = (value: string | null) => formatDate(value, ctx.locale);
 
     return renderPage(c, {
+      edit: {
+        summary: "Posts are content: write, schedule and publish them in the admin panel or with the content_* MCP tools.",
+        admin: { label: "Website → Posts", href: "/app/content/posts" },
+        files: [
+          { path: "src/modules/content/server/site.tsx", note: "Page, post and blog layouts" },
+          { path: "src/modules/content/shared/markdown.tsx", note: "The Markdown the editor supports" },
+        ],
+      },
       meta: {
         title,
         description: `Posts from ${business.name}, newest first.`,
@@ -221,6 +229,14 @@ export const contentSite = new Hono<AppEnv>()
     const published = formatDate(publishedAt, ctx.locale);
 
     return renderPage(c, {
+      edit: {
+        summary: "This post is content: edit it in the admin panel or with the content_update_entry MCP tool. No code, no deploy.",
+        admin: { label: "Edit this post", href: `/app/content/${post.id}` },
+        files: [
+          { path: "src/modules/content/server/site.tsx", note: "Page, post and blog layouts" },
+          { path: "src/modules/content/shared/markdown.tsx", note: "The Markdown the editor supports" },
+        ],
+      },
       meta: {
         title: post.title,
         description,
@@ -289,6 +305,14 @@ export const contentSite = new Hono<AppEnv>()
     const image = page.imageUrl ? absolute(origin, page.imageUrl) : undefined;
 
     return renderPage(c, {
+      edit: {
+        summary: "This page is content: edit it in the admin panel or with the content_update_entry MCP tool. No code, no deploy.",
+        admin: { label: "Edit this page", href: `/app/content/${page.id}` },
+        files: [
+          { path: "src/modules/content/server/site.tsx", note: "Page, post and blog layouts" },
+          { path: "src/modules/content/shared/markdown.tsx", note: "The Markdown the editor supports" },
+        ],
+      },
       meta: {
         title: page.title,
         description: describe(page, `${page.title}. ${business.name}.`),

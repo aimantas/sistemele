@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { brandTokens, contrastRatio, defaultBranding } from "@/shared/branding";
+import { brandTokens, contrastRatio, defaultBranding, logoIsMark } from "@/shared/branding";
 import { addUser, createTestApp, json, type TestApp } from "./helpers";
 
 let t: TestApp;
@@ -49,16 +49,20 @@ describe("brand settings", () => {
 
     const css = await (await t.request("/brand/theme")).text();
     expect(css).toContain("--primary:#a3472b");
-    expect(css).toContain("@media (prefers-color-scheme: dark)");
+    expect(css).toContain(":root:root:not(.dark){--primary:#a3472b");
+    expect(css).toMatch(/:root:root\.dark\{--primary:#[0-9a-f]{6};/u);
+    expect(css).not.toContain("prefers-color-scheme");
     expect(css).toContain("--radius:0.25rem");
 
-    const info = await json<{ logoUrl: string; brandColor: string }>(await t.request("/brand/info.json"));
-    expect(info).toMatchObject({ brandColor: "#a3472b" });
+    const info = await json<{ logoUrl: string; logoMark: boolean; brandColor: string }>(await t.request("/brand/info.json"));
+    expect(info).toMatchObject({ brandColor: "#a3472b", logoMark: true });
     expect(info.logoUrl).toMatch(/^\/brand\/logo\.svg\?v=/u);
 
     const home = await (await t.request("/")).text();
     expect(home).toContain("--primary:#a3472b");
-    expect(home).toContain('class="brand-logo"');
+    // The test logo is square, so it is a mark with the business name beside it.
+    expect(home).toContain('class="brand-mark"');
+    expect(home).toMatch(/class="brand-lockup"><img src="\/brand\/logo\.svg\?v=[0-9a-f]+" alt="" width="30" height="30" class="brand-mark"\/><span class="brand-name">/u);
   });
 
   it("puts the logo on public invoice pages", async () => {
@@ -76,6 +80,16 @@ describe("brand settings", () => {
   it("returns 404 when no logo is set", async () => {
     await t.request("/api/settings/branding", { method: "PUT", cookie: owner, json: { ...defaultBranding, logoSvg: null } });
     expect((await t.request("/brand/logo.svg")).status).toBe(404);
+  });
+});
+
+describe("logo shape", () => {
+  it("treats square logos as marks and wide ones as full logos", () => {
+    expect(logoIsMark('<svg viewBox="0 0 32 32"></svg>')).toBe(true);
+    expect(logoIsMark('<svg width="40" height="36"></svg>')).toBe(true);
+    expect(logoIsMark('<svg viewBox="0 0 168 32"></svg>')).toBe(false);
+    expect(logoIsMark("<svg></svg>")).toBe(false);
+    expect(logoIsMark(null)).toBe(false);
   });
 });
 
