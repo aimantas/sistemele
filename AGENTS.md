@@ -40,7 +40,7 @@ UI kit) and extend it. `docs/extending.md` maps common needs to existing pieces.
 | `src/modules/<id>/` | A module: `shared/` (Zod schemas, types), `server/` (service, routes, tools, index), `client/` (api hooks, pages, widgets, index), `README.md`. |
 | `src/modules/server.ts`, `client.ts` | Module registries. |
 | `src/modules/types.server.ts`, `types.client.ts`, `events.ts` | Module contracts. |
-| `src/app/` | Dashboard SPA: shell, router, dashboard grid, settings, UI kit (`src/app/ui`). |
+| `src/app/` | Dashboard SPA: shell, router, dashboard grid, settings, UI kit (`src/app/ui`), developer mode (`src/app/dev`). |
 | `src/shared/` | Code used by browser and Worker: money, lines, ids, dates, auth roles, API shapes, branding tokens, `patchSchema`. |
 | `migrations/` | D1 migrations, one per module, applied in filename order. |
 | `seed/` | Local demo data (`npm run db:seed`). Fictional only. |
@@ -70,7 +70,7 @@ the sign-in page shows the link and the terminal prints every email.
 
 Each recipe lists the files to touch. Follow the CRM module as the reference.
 
-**Add a module** — `npm run module:new bookings "Bookings"`, then: write the migration in `migrations/`, Zod schemas in `shared/schema.ts`, services in `server/service.ts` (take `ctx: ModuleContext`), thin routes in `server/routes.ts`, tools in `server/tools.ts`, pages/widgets in `client/`, a `README.md`, a seed file and `tests/<id>.test.ts`. Details: `docs/modules.md`.
+**Add a module** — `npm run module:new bookings "Bookings"`, then: write the migration in `migrations/`, Zod schemas in `shared/schema.ts`, services in `server/service.ts` (take `ctx: ModuleContext`), thin routes in `server/routes.ts`, tools in `server/tools.ts`, pages/widgets in `client/`, developer panel notes for every route in `client/dev.ts`, a `README.md`, a seed file and `tests/<id>.test.ts`. Details: `docs/modules.md`.
 
 **Add an API endpoint** — add a service function (validate with Zod, `ctx.requireRole`, `ctx.audit` on writes), call it from `server/routes.ts`. Signed-in routes go in `api`; anonymous ones in `publicApi` (mounted at `/api/public/<id>`; validate and `enforceRateLimit`).
 

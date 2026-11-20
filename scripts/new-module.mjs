@@ -294,9 +294,33 @@ export function RecentItemsWidget() {
 }
 `,
 
+  [`${base}/client/dev.ts`]: `import type { DevPage } from "@/modules/types.client";
+
+/** Developer panel notes and agent prompts for the ${name} pages (dev mode). */
+export const ${id}Dev: DevPage[] = [
+  {
+    path: "${id}",
+    title: "${name}",
+    summary: "Replace with one sentence on what this page is for.",
+    files: [
+      { path: "${base}/client/ItemsPage.tsx", note: "List and new item form" },
+      { path: "${base}/server/service.ts", note: "Services: validation, roles, audit" },
+      { path: "${base}/shared/schema.ts", note: "Zod schemas" },
+      { path: "migrations/${migrationNumber}_${id}.sql", note: "Tables" },
+      { path: "tests/${id}.test.ts", note: "Tests" },
+    ],
+    prompts: [
+      "Replace the placeholder ${name.toLowerCase()} table with the real model: migration, schemas, service, routes, MCP tools, the page and tests.",
+      "Add a detail page for one ${name.toLowerCase()} item with an edit form and its developer panel notes.",
+    ],
+  },
+];
+`,
+
   [`${base}/client/index.tsx`]: `import { Boxes } from "lucide-react";
 import { lazy } from "react";
 import type { ClientModule } from "@/modules/types.client";
+import { ${id}Dev } from "./dev";
 
 export const ${id}Client: ClientModule = {
   id: "${id}",
@@ -313,6 +337,7 @@ export const ${id}Client: ClientModule = {
     },
   ],
   quickActions: [],
+  dev: ${id}Dev,
 };
 `,
 

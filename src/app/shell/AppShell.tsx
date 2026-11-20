@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { clsx } from "clsx";
-import { LayoutDashboard, LogOut, Menu, Moon, Search, Settings, Sun, X } from "lucide-react";
+import { Code2, LayoutDashboard, LogOut, Menu, Moon, Search, Settings, Sun, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, NavLink, Navigate, Outlet, useLocation } from "react-router";
 import { roleAtLeast } from "@/shared/auth";
@@ -8,6 +8,8 @@ import { clientModules } from "@/modules/client";
 import type { NavItem } from "@/modules/types.client";
 import { api } from "../lib/api";
 import { BrandLockup } from "../components/BrandLockup";
+import { DevPanel } from "../dev/DevPanel";
+import { useDevMode } from "../dev/devmode";
 import { useBrandInfo } from "../lib/brand";
 import { useAppInfo, useSession } from "../lib/session";
 import { useTheme } from "../lib/theme";
@@ -24,6 +26,7 @@ export function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [theme, setTheme] = useTheme();
+  const [devMode, setDevMode] = useDevMode();
 
   // Close the phone menu after navigation (state derived during render, no effect).
   const [menuPath, setMenuPath] = useState(location.pathname);
@@ -124,6 +127,22 @@ export function AppShell() {
             <LogOut className="size-4" />
           </button>
         </div>
+        {roleAtLeast(user.role, "admin") ? (
+          <button
+            type="button"
+            role="switch"
+            aria-checked={devMode}
+            aria-label="Developer mode"
+            onClick={() => setDevMode(!devMode)}
+            className="flex h-8 items-center gap-2 rounded-md px-2 text-left text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+          >
+            <Code2 className="size-4 shrink-0" />
+            <span className="flex-1">Developer mode</span>
+            <span className={clsx("relative h-4 w-7 shrink-0 rounded-full transition-colors", devMode ? "bg-primary" : "bg-input")} aria-hidden>
+              <span className={clsx("absolute top-0.5 size-3 rounded-full bg-background shadow-xs transition-[left]", devMode ? "left-3.5" : "left-0.5")} />
+            </span>
+          </button>
+        ) : null}
         <Link to="/app/design" className="px-2 text-xs text-muted-foreground transition-colors hover:text-foreground">
           Design system
         </Link>
@@ -173,6 +192,7 @@ export function AppShell() {
         <Outlet />
       </main>
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+      {devMode && roleAtLeast(user.role, "admin") ? <DevPanel /> : null}
     </div>
   );
 }

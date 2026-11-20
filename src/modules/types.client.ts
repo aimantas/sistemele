@@ -41,6 +41,25 @@ export interface QuickAction {
   icon: LucideIcon;
 }
 
+/**
+ * What the admin panel's developer panel (dev mode) shows for one page: where
+ * it lives in the code and ready-to-copy tasks for a coding agent. Every route
+ * a module adds needs one (tests/dev-panel.test.ts checks it).
+ */
+export interface DevPage {
+  /** The route path as in `routes` ("crm/leads/:id"); "" is the dashboard. */
+  path: string;
+  title: string;
+  /** What the page is for, one sentence. */
+  summary: string;
+  /** Repository files behind the page, most relevant first. */
+  files: Array<{ path: string; note: string }>;
+  /** MCP tools that do the same job, for agents working on live data. */
+  tools?: string[];
+  /** Starter tasks for a coding agent: one imperative sentence each. */
+  prompts: string[];
+}
+
 export interface ClientModule {
   id: string;
   name: string;
@@ -51,4 +70,6 @@ export interface ClientModule {
   widgets?: WidgetDefinition[];
   /** Shown in the command palette (Ctrl/Cmd+K) and the Quick actions widget. */
   quickActions?: QuickAction[];
+  /** Developer panel notes and agent prompts, one per route. */
+  dev?: DevPage[];
 }

@@ -88,3 +88,5 @@ Timeline: `crm_add_activity`, `crm_list_open_tasks`. Team members for `ownerId`:
 - More lead sources: add to `LEAD_SOURCES` in `shared/schema.ts` (the column is free text, validated by the schema).
 - Custom contact fields: add columns in a new migration, extend `contactInputSchema`, `CONTACT_COLUMNS`, `CONTACT_FIELD_COLUMNS` and the form.
 - Reacting to a won deal or a converted lead (e.g. a delivery task): handle `deal.stage_changed` or `lead.converted` in your module's `events`.
+
+- Developer panel (dev mode): `client/dev.ts` lists each page's files, MCP tools and starter prompts for a coding agent. Update it when you add a page or move a file; `tests/dev-panel.test.ts` checks it.

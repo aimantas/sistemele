@@ -1,6 +1,7 @@
 import { FilePlus2, Receipt } from "lucide-react";
 import { lazy } from "react";
 import type { ClientModule } from "@/modules/types.client";
+import { invoicesDev } from "./dev";
 
 /** Invoices, browser side. Pages are lazy routes so the module only loads when used. */
 export const invoicesClient: ClientModule = {
@@ -23,4 +24,5 @@ export const invoicesClient: ClientModule = {
     },
   ],
   quickActions: [{ label: "New invoice", to: "/app/invoices/new", icon: FilePlus2 }],
+  dev: invoicesDev,
 };

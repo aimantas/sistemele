@@ -1,3 +1,5 @@
+import { REPOSITORY_URL as REPO_URL, repositoryUrl as fileUrl } from "@/shared/project";
+
 /** Where a public page comes from, for the "Edit this page" notice. */
 export interface EditHint {
   /** One sentence: what makes up this page and how to change it. */
@@ -8,7 +10,6 @@ export interface EditHint {
   files: Array<{ path: string; note: string }>;
 }
 
-export const REPO_URL = "https://github.com/aimantas/sistemele";
 
 /** How the public site is organised, shown under every notice. */
 const STRUCTURE: Array<{ path: string; note: string }> = [
@@ -16,8 +17,6 @@ const STRUCTURE: Array<{ path: string; note: string }> = [
   { path: "src/modules/", note: "one folder per module; its pages are in server/site.tsx" },
   { path: "docs/", note: "the guides behind /docs" },
 ];
-
-const fileUrl = (path: string) => `${REPO_URL}/${path.endsWith("/") ? "tree" : "blob"}/main/${path.replace(/\/$/u, "")}`;
 
 /**
  * A card at the end of the page that says how to change it: the admin panel

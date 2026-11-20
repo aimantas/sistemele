@@ -8,6 +8,7 @@ change what is live. No other module depends on it.
 - Server: `server/index.ts` (module definition), `service.ts` (all rules), `routes.ts`, `tools.ts`, `site.tsx` (public pages, blog, RSS)
 - Shared: `shared/schema.ts` (Zod schemas, types, states, reserved addresses), `shared/markdown.tsx` (safe Markdown → React, plain text, excerpts)
 - Client: `client/index.tsx` (nav, routes, widget, quick actions), `api.ts`, `EntriesPage.tsx` (Pages and Posts lists), `EntryEditorPage.tsx`, `widgets.tsx`
+- Developer panel (dev mode): `client/dev.ts` lists each page's files, MCP tools and starter prompts for a coding agent; `tests/dev-panel.test.ts` checks it.
 - Migration: `migrations/0006_content.sql` · Seed: `seed/06_content.sql` · Tests: `tests/content.test.ts`, `tests/markdown.test.ts`
 
 ## Rules
