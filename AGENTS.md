@@ -34,6 +34,7 @@ UI kit) and extend it. `docs/extending.md` maps common needs to existing pieces.
 | `src/worker/core/routes.ts` | Core API: me, team, settings, API tokens, audit, dashboard layout, metrics, search, email log. |
 | `src/worker/mcp/` | MCP server (`POST /mcp`) and core tools. |
 | `src/worker/site/` | Public SSR pages, SEO helpers, sitemap/robots/llms.txt, `DocumentView` for quotes/invoices, inline CSS. |
+| `src/worker/site/docs/` | `/docs`: renders this file, the agent skill, `DESIGN.md` and `docs/` with diagrams and a tools chart. `site.docs` in the config turns it off. |
 | `src/worker/email/` | `renderEmail` layout and `sendEmail` (Resend, logged to `email_log`). |
 | `src/worker/lib/` | `Db`, errors, validation, crypto, rate limit, settings, sequences, Turnstile. |
 | `src/modules/<id>/` | A module: `shared/` (Zod schemas, types), `server/` (service, routes, tools, index), `client/` (api hooks, pages, widgets, index), `README.md`. |
@@ -92,6 +93,8 @@ Each recipe lists the files to touch. Follow the CRM module as the reference.
 **Add a public page in code** — a `site` Hono route that returns `renderPage(c, { meta, body, markdown })`. Unique title and description, canonical path, JSON-LD only for visible facts, `noindex` for private pages, add it to `sitemap()`. See `docs/seo.md`.
 
 **Send an email** — `renderEmail({...})` then `ctx.sendEmail({ to, subject, template: "<module>.<event>", ...content })`. Use `ctx.waitUntil` when the response must not wait.
+
+**Add or change a guide** — edit `docs/<name>.md` (or this file, the skill, `DESIGN.md`); new guides also get a line in `LISTINGS` in `src/worker/site/docs/sources.ts`. `/docs` renders them on the next build.
 
 **Change the schema** — add a new numbered file in `migrations/` (never edit an applied migration), then `npm run db:migrate`. Keep conventions: TEXT ids with prefix, ISO timestamps, cents, bps.
 

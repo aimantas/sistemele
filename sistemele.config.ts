@@ -24,6 +24,12 @@ export const config = {
     description: "A small business running its customers, products, quotes and invoices on one fast system.",
     /** Public pages listed in sitemap.xml. Modules may add more. */
     language: "en",
+    /**
+     * Serve this kit's documentation (AGENTS.md, the agent skill, docs/) at
+     * /docs, linked from the header. Turn it off when the site becomes your
+     * own business's public site.
+     */
+    docs: true,
   },
 } as const;
 
