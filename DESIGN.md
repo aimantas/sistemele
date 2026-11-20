@@ -1,6 +1,6 @@
 ---
 name: Sistemėlė
-description: The category-standard admin panel and landing for AI-native projects. Cool neutral ground, Inter, one brand green, shadcn/ui tokens, light and dark.
+description: The category-standard admin panel and landing for AI-native projects. Cool neutral ground, Inter, one brand green, shadcn/ui tokens, light by default.
 colors:
   background: "oklch(0.985 0.002 264)"
   foreground: "oklch(0.205 0.006 264)"
@@ -128,8 +128,8 @@ illustrations.
 The admin panel is an Operate surface: dense enough to scan, calm, obvious
 about the next action. The public starter home is a Persuade surface built
 from the same tokens: a large tight headline, the product itself as the hero
-image, ruled rows instead of feature-card grids. Both follow the system's light
-or dark setting.
+image, ruled rows instead of feature-card grids. Both are light by default;
+only the admin panel offers dark, by an explicit switch.
 
 **Key Characteristics:**
 
@@ -137,7 +137,8 @@ or dark setting.
 - Cool neutral ground (hue 264, near-zero chroma), white cards, one brand green.
 - Inter Variable, self-hosted; one family, weight and size carry hierarchy.
 - Lines structure; shadows only lift slightly or float.
-- Light and dark from `prefers-color-scheme`, no toggle.
+- Light by default; the admin panel has a dark mode switch (`.dark` class). The public site is always light.
+- The mark: a wheel of six modules around a hub on a brand tile, one module tinted. The name is set beside it in Inter, never drawn into the logo.
 - Brand colour, surfaces and corners are runtime settings, never hard-coded.
 
 ## Colors
@@ -249,6 +250,8 @@ edge is a 1px hairline.
 - **Badges**: md radius, 12px 500, tone tints (`bg-success/10 text-success`); `outline` for archived.
 - **Dialogs** (Radix): popover fill, lg shadow, black/50 overlay, focus trap, Escape closes, footer actions right-aligned.
 - **Sidebar nav**: 32px items, muted text, active item on `sidebar-accent` with the icon in primary.
+- **Brand lockup** (`BrandLockup`): a square logo is a mark, 28–30px, with the business name beside it in Inter 650 at a gap of a third of the mark; a wide logo shows alone. Clear space is a quarter of the mark; smallest sizes are 16px (favicon) and 24px (interface).
+- **Edit this page** (public site, demo and local development only): a dashed brand-tinted card at the end of the page naming the admin screen and the repository files behind it.
 - **Empty states**: dashed hairline box, icon in a mist tile, one sentence on what to do, one action.
 
 ## Do's and Don'ts
@@ -256,12 +259,14 @@ edge is a 1px hairline.
 **Do**
 
 - Build screens from `@/app/ui`; add missing pieces with `npx shadcn@latest add` and show them on `/app/design`.
-- Show the product: real screenshots (light and dark) over illustrations.
+- Show the product: real light-mode screenshots over illustrations.
 - Keep one primary action per screen, top right.
-- Check every screen at 375px and desktop, in light and dark.
+- Check every screen at 375px and desktop; admin screens also in dark mode.
 
 **Don't**
 
+- Don't recolour, rotate, stretch or add effects to the mark, or drop its tile; don't draw the business name into it as SVG text.
+- Don't switch the public site to dark or bring back `prefers-color-scheme`; dark is the admin panel's opt-in.
 - Don't hard-code colours, fonts or radii; Settings → Brand must keep working.
 - Don't use eyebrows/kickers, gradient text, glow halos, hard offset shadows or emoji icons.
 - Don't build same-size icon-card grids for features; use ruled rows or a product shot.

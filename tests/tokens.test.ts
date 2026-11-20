@@ -10,25 +10,18 @@ const root = resolve(import.meta.dirname, "..");
 const app = readFileSync(resolve(root, "src/app/styles.css"), "utf8");
 const site = readFileSync(resolve(root, "src/worker/site/styles.css"), "utf8");
 
-type Tokens = { light: Map<string, string>; dark: Map<string, string> };
-
 function declarations(block: string): Map<string, string> {
   const out = new Map<string, string>();
   for (const match of block.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) out.set(match[1], match[2].trim());
   return out;
 }
 
-/** Light tokens from the first `:root {…}`, dark tokens from the dark media query. */
-function tokens(css: string): Tokens {
-  const light = /:root\s*\{([^}]*)\}/.exec(css);
-  const dark = /@media \(prefers-color-scheme: dark\)\s*\{\s*:root\s*\{([^}]*)\}/.exec(css);
-  if (!light || !dark) throw new Error("Token blocks not found.");
-  return { light: declarations(light[1]), dark: declarations(dark[1]) };
-}
+const block = (css: string, selector: RegExp) => declarations(selector.exec(css)?.[1] ?? "");
 
 const siteBlock = /\/\* tokens:start \*\/([\s\S]*?)\/\* tokens:end \*\//.exec(site)?.[1] ?? "";
-const appTokens = tokens(app);
-const siteTokens = tokens(siteBlock);
+const appLight = block(app, /:root\s*\{([^}]*)\}/);
+const appDark = block(app, /\n\.dark\s*\{([^}]*)\}/);
+const siteLight = block(siteBlock, /:root\s*\{([^}]*)\}/);
 
 const REQUIRED = ["--background", "--foreground", "--card", "--primary", "--primary-foreground", "--muted", "--muted-foreground", "--accent", "--destructive", "--border", "--input", "--success", "--warning", "--info"];
 
@@ -37,14 +30,17 @@ describe("design tokens", () => {
     expect(siteBlock.length).toBeGreaterThan(0);
   });
 
-  for (const scheme of ["light", "dark"] as const) {
-    it(`site ${scheme} tokens match the admin panel`, () => {
-      for (const name of REQUIRED) expect(siteTokens[scheme].has(name), `${scheme} ${name} missing on the site`).toBe(true);
-      for (const [name, value] of siteTokens[scheme]) {
-        expect(appTokens[scheme].get(name), `${scheme} ${name}`).toBe(value);
-      }
-    });
-  }
+  it("site tokens match the admin panel's light tokens", () => {
+    for (const name of REQUIRED) expect(siteLight.has(name), `${name} missing on the site`).toBe(true);
+    for (const [name, value] of siteLight) expect(appLight.get(name), name).toBe(value);
+  });
+
+  it("is light by default: dark is a class, never the system setting", () => {
+    for (const name of REQUIRED) expect(appDark.has(name), `.dark ${name}`).toBe(true);
+    expect(app).not.toContain("prefers-color-scheme");
+    expect(site).not.toContain("prefers-color-scheme");
+    expect(site).toContain("color-scheme: light;");
+  });
 
   it("components use token classes, not the pre-shadcn names", () => {
     const legacy = /\b(?:bg|text|border|ring|divide)-(?:paper|surface|sunken|ink|ink-soft|line|line-strong|brand|brand-hover|brand-soft|brand-ink|danger)\b/;

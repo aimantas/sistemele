@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { BusinessProfile } from "@/shared/business";
 import { SiteBrandContext } from "./brand-context";
+import { EditNotice, type EditHint } from "./EditNotice";
 import { jsonLdScript, type PageMeta } from "./seo";
 import styles from "./styles.css?raw";
 
@@ -18,6 +19,10 @@ export interface LayoutProps {
   /** Brand variables from Settings → Brand, applied after the base styles. */
   themeCss: string;
   logoUrl: string | null;
+  /** The logo is a square mark: set the business name beside it. */
+  logoMark?: boolean;
+  /** "Edit this page" notice (demo and local development only). */
+  edit?: EditHint;
   links: SiteLink[];
   currentPath: string;
   /** Public demo: a bar above the header says the data is sample data. */
@@ -31,7 +36,7 @@ const SISTEMELE_REPO = "https://github.com/aimantas/sistemele";
 const AUTHOR_URL = "https://aimantas.com";
 
 /** Full HTML document for public pages. Server-rendered, no client JavaScript. */
-export function Layout({ meta, origin, siteName, language, business, themeCss, logoUrl, links, currentPath, demo, children }: LayoutProps) {
+export function Layout({ meta, origin, siteName, language, business, themeCss, logoUrl, logoMark, edit, links, currentPath, demo, children }: LayoutProps) {
   const canonical = `${origin}${meta.path}`;
   const fullTitle = meta.title === siteName ? siteName : `${meta.title} | ${siteName}`;
   return (
@@ -54,8 +59,7 @@ export function Layout({ meta, origin, siteName, language, business, themeCss, l
         <meta name="twitter:card" content={meta.ogImage ? "summary_large_image" : "summary"} />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossOrigin="" />
-        <meta name="theme-color" content="#f8f9fb" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#0f1013" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#f8f9fb" />
         <link rel="alternate" type="text/markdown" href={canonical} />
         {(meta.alternates ?? []).map((alternate) => (
           <link key={alternate.href} rel="alternate" type={alternate.type} href={alternate.href} title={alternate.title} />
@@ -77,7 +81,7 @@ export function Layout({ meta, origin, siteName, language, business, themeCss, l
         <header className="site-header">
           <div className="wrap header-row">
             <a className="brand" href="/">
-              {logoUrl ? <img src={logoUrl} alt={business.name} height={32} className="brand-logo" /> : business.name}
+              <BrandLockup name={business.name} logoUrl={logoUrl} logoMark={logoMark} />
             </a>
             <nav aria-label="Main">
               <ul>
@@ -93,12 +97,13 @@ export function Layout({ meta, origin, siteName, language, business, themeCss, l
           </div>
         </header>
         <main id="main">
-          <SiteBrandContext.Provider value={{ name: business.name, logoUrl }}>{children}</SiteBrandContext.Provider>
+          <SiteBrandContext.Provider value={{ name: business.name, logoUrl, logoMark: Boolean(logoMark) }}>{children}</SiteBrandContext.Provider>
+          {edit ? <EditNotice hint={edit} /> : null}
         </main>
         <footer className="site-footer">
           <div className="wrap footer-main">
             <div className="footer-brand">
-              {logoUrl ? <img src={logoUrl} alt="" height={24} className="brand-logo" /> : null}
+              {logoUrl ? <BrandLockup name={business.name} logoUrl={logoUrl} logoMark={logoMark} small /> : null}
               <address>
                 <strong>{business.legalName || business.name}</strong>
                 {business.companyCode ? <span>Company code {business.companyCode}</span> : null}
@@ -134,5 +139,17 @@ export function Layout({ meta, origin, siteName, language, business, themeCss, l
         </footer>
       </body>
     </html>
+  );
+}
+
+/** A wide logo on its own, or a square mark with the business name beside it. */
+export function BrandLockup({ name, logoUrl, logoMark, small }: { name: string; logoUrl: string | null; logoMark?: boolean; small?: boolean }) {
+  if (!logoUrl) return <span className="brand-name">{name}</span>;
+  if (!logoMark) return <img src={logoUrl} alt={name} height={small ? 24 : 32} className="brand-logo" />;
+  return (
+    <span className={small ? "brand-lockup small" : "brand-lockup"}>
+      <img src={logoUrl} alt="" width={small ? 24 : 30} height={small ? 24 : 30} className="brand-mark" />
+      <span className="brand-name">{name}</span>
+    </span>
   );
 }

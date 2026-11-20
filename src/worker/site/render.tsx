@@ -3,11 +3,12 @@ import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { config } from "../../../sistemele.config";
 import type { ModuleContext } from "@/modules/types.server";
-import { themeCss } from "@/shared/branding";
+import { logoIsMark, themeCss } from "@/shared/branding";
 import { getContext } from "../context";
 import { getBranding } from "../lib/settings";
 import { logoUrl } from "./brand";
-import { appOrigin, isDemo, type AppEnv } from "../env";
+import { appOrigin, isDemo, isDevelopment, type AppEnv } from "../env";
+import type { EditHint } from "./EditNotice";
 import { Layout, type SiteLink } from "./Layout";
 import type { PageMeta } from "./seo";
 
@@ -60,12 +61,14 @@ export function prefersMarkdown(accept: string | undefined): boolean {
  */
 const DIRECTION_CONTRACT = `<!--
 THESIS: Sistemėlė looks like the category standard executed at Linear and Resend craft: a calm product landing and a shadcn/ui admin panel; it refuses quirky themes and the dark neon dev-tool cliché.
-OWN-WORLD: shadcn/ui tokens on near-neutral cool greys, one brand colour (Settings → Brand, default forest green) for primary actions, links and focus; Inter; hairline borders, soft offset shadows, 10px radius; light and dark follow the system.
+OWN-WORLD: shadcn/ui tokens on near-neutral cool greys, one brand colour (Settings → Brand, default forest green) for primary actions, links and focus; Inter; hairline borders, soft offset shadows, 10px radius; light by default (dark is an admin opt-in); mark: a wheel of six modules, one tinted.
 STORY: A developer sees what the kit is, opens the admin panel or deploys their own, and learns what their agent gets.
 FIRST VIEWPORT: Centred motto, a short balanced lead, Open the admin panel (primary) and Deploy to Cloudflare, a one-line meta row, then the live dashboard screenshot rising into place over a soft card-to-background wash.
 FORM: category standard (user choice over the roll), seed 5542942a.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->`;
+
+export type { EditHint } from "./EditNotice";
 
 export interface RenderPageOptions {
   meta: PageMeta;
@@ -73,6 +76,8 @@ export interface RenderPageOptions {
   /** Plain Markdown version of the page for agents (Accept: text/markdown). */
   markdown?: string;
   status?: 200 | 404 | 410;
+  /** Where the page comes from; shown as "Edit this page" on the demo and in local development. */
+  edit?: EditHint;
 }
 
 /** Renders a public page inside the site layout. Use from module `site` routes. */
@@ -98,6 +103,8 @@ export async function renderPage(c: Context<AppEnv>, options: RenderPageOptions)
       business={business}
       themeCss={themeCss(branding)}
       logoUrl={await logoUrl(branding.logoSvg)}
+      logoMark={logoIsMark(branding.logoSvg)}
+      edit={options.edit && (isDemo(c.env) || isDevelopment(c.env)) ? options.edit : undefined}
       links={links}
       currentPath={new URL(c.req.url).pathname}
       demo={isDemo(c.env)}

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MailCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router";
+import { BrandLockup } from "../components/BrandLockup";
 import { api, fieldError } from "../lib/api";
 import { useBrandInfo } from "../lib/brand";
 import { useSession } from "../lib/session";
@@ -12,15 +13,8 @@ function AuthFrame({ children }: { children: React.ReactNode }) {
   return (
     <main className="grid min-h-dvh place-items-center px-4 py-12">
       <div className="w-full max-w-sm">
-        <div className="mb-8 flex min-h-8 items-center gap-2 font-semibold">
-          {brand?.logoUrl ? (
-            <img src={brand.logoUrl} alt={brand.name} className="h-8 w-auto max-w-[220px]" />
-          ) : (
-            <>
-              <img src="/favicon.svg" alt="" className="size-7" />
-              {brand?.name ?? "Sistemėlė"}
-            </>
-          )}
+        <div className="mb-8 flex min-h-9 items-center">
+          <BrandLockup brand={brand} size="lg" />
         </div>
         {children}
       </div>

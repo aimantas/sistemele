@@ -3,6 +3,7 @@ import type { PartySnapshot } from "@/shared/lines";
 import { formatDate } from "@/shared/dates";
 import { formatMoney, formatPercentBps, type VatGroup } from "@/shared/money";
 import { SiteBrandContext } from "./brand-context";
+import { BrandLockup } from "./Layout";
 
 export interface DocumentViewProps {
   /** "Quote Q-2026-0001" or "Invoice INV-2026-0001". */
@@ -47,7 +48,11 @@ export function DocumentView(props: DocumentViewProps) {
     <section className="section">
       <div className="wrap">
         <article className="doc">
-          {brand.logoUrl ? <img src={brand.logoUrl} alt={brand.name} className="doc-logo" /> : null}
+          {brand.logoUrl ? (
+            <div className="doc-logo">
+              <BrandLockup name={brand.name} logoUrl={brand.logoUrl} logoMark={brand.logoMark} />
+            </div>
+          ) : null}
           <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap", alignItems: "baseline" }}>
             <h1 style={{ fontSize: "1.75rem" }}>{props.title}</h1>
             {props.status}

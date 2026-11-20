@@ -16,8 +16,3 @@ export function useRefreshBrand() {
     await queryClient.invalidateQueries({ queryKey: ["brand-info"] });
   };
 }
-
-/** Logo image or the default mark. */
-export function brandLogoSrc(info: BrandInfo | undefined): string {
-  return info?.logoUrl ?? "/favicon.svg";
-}

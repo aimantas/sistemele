@@ -10,7 +10,7 @@ import { coreTools } from "../mcp/core-tools";
  * MCP tool counts, what agents get and how to deploy your own copy. Edit the
  * copy here, or replace the page without code by publishing a home page.
  *
- * Screenshots: public/screenshots (light) and public/screenshots/dark.
+ * Screenshots: public/screenshots (WebP, light mode, captured from the demo data).
  * Brand logos: public/logos, from Simple Icons (CC0 1.0); the trademarks belong
  * to their owners and are shown only to say what the kit works with.
  */
@@ -105,7 +105,7 @@ function steps(origin: string, demo: boolean): Step[] {
   ];
 }
 
-/** Black brand marks are inverted in dark mode (see .lp-logo.mono). */
+/** Single-colour brand marks, greyed with the rest of the strip (see .lp-logo.mono). */
 const MONO_LOGOS = new Set(["github", "cursor", "resend", "modelcontextprotocol"]);
 
 function Logo({ name }: { name: string }) {
@@ -120,10 +120,7 @@ function Screenshot({ shot, eager }: { shot: Shot; eager?: boolean }) {
         <i />
         <i />
       </span>
-      <picture>
-        <source srcSet={`/screenshots/dark/${shot.name}.webp`} media="(prefers-color-scheme: dark)" />
-        <img src={`/screenshots/${shot.name}.webp`} width={shot.width} height={shot.height} alt={shot.alt} loading={eager ? "eager" : "lazy"} decoding="async" {...(eager ? { fetchPriority: "high" as const } : {})} />
-      </picture>
+      <img src={`/screenshots/${shot.name}.webp`} width={shot.width} height={shot.height} alt={shot.alt} loading={eager ? "eager" : "lazy"} decoding="async" {...(eager ? { fetchPriority: "high" as const } : {})} />
     </a>
   );
 }

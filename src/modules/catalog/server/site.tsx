@@ -96,6 +96,11 @@ export const catalogSite = new Hono<AppEnv>()
     ].join("\n");
 
     return renderPage(c, {
+      edit: {
+        summary: "Products, prices and stock are data: change them in the admin panel. The page layout is the catalog module's site file.",
+        admin: { label: "Catalog → Products", href: "/app/catalog/products" },
+        files: [{ path: "src/modules/catalog/server/site.tsx", note: "/products and product pages: layout, prices, structured data" }],
+      },
       meta: { title: "Products", description, path: "/products", jsonLd: [breadcrumbJsonLd(origin, [{ name: "Home", path: "/" }, { name: "Products", path: "/products" }])] },
       markdown,
       body: (
@@ -192,6 +197,11 @@ export const catalogSite = new Hono<AppEnv>()
     ].join("\n");
 
     return renderPage(c, {
+      edit: {
+        summary: "This product's name, text, price and stock are data in the admin panel; the layout is the catalog module's site file.",
+        admin: { label: "Edit this product", href: `/app/catalog/products/${product.id}` },
+        files: [{ path: "src/modules/catalog/server/site.tsx", note: "Product page layout, prices and Product structured data" }],
+      },
       meta: {
         title: product.name,
         description,
