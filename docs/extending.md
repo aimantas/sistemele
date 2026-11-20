@@ -30,7 +30,7 @@ change, a new field or a new screen on an existing module.
 | Search | The module's `search()` hook (Ctrl/Cmd+K) |
 | Public pages, SEO | `renderPage` with unique meta, sitemap entry (`docs/seo.md`) |
 | Agent access | `defineTool` in the module's `server/tools.ts`, served at `/mcp` |
-| UI pieces | `src/app/ui` (Button, Field, Dialog, Table, EmptyState …) |
+| UI pieces | `src/app/ui` (shadcn/ui: Button, Field, Dialog, Table, EmptyState …); see `docs/design-system.md` and `/app/design` |
 
 If one of these is almost right, extend it (a column, a filter, an event
 handler) instead of writing a parallel version.

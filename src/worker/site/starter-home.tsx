@@ -1,16 +1,18 @@
-import { BookOpen, Boxes, Cloud, Database, FileText, Newspaper, Package, Plug, Receipt, Rocket, Scale, ShieldCheck, Sparkles, Terminal, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, Plug, Sparkles, Terminal, type LucideIcon } from "lucide-react";
 import { Fragment, type ReactNode } from "react";
 import type { HomeSection, ServerModule } from "@/modules/types.server";
+import { coreTools } from "../mcp/core-tools";
 
 /**
  * The starter home page: shown at "/" until a page with the address "home" is
- * published (Website → Pages). A general-purpose welcome with product
- * screenshots, a get-started guide, the enabled modules, what agents get and
- * how to deploy your own copy. Edit the copy here, or replace the page without
- * code by publishing your own home page. Screenshots live in public/screenshots.
+ * published (Website → Pages). The category-standard product landing for the
+ * kit: product shots, a get-started guide, the enabled modules with their real
+ * MCP tool counts, what agents get and how to deploy your own copy. Edit the
+ * copy here, or replace the page without code by publishing a home page.
  *
- * Brand logos in public/logos are from Simple Icons (CC0 1.0); the trademarks
- * belong to their owners and are shown only to say what the kit works with.
+ * Screenshots: public/screenshots (light) and public/screenshots/dark.
+ * Brand logos: public/logos, from Simple Icons (CC0 1.0); the trademarks belong
+ * to their owners and are shown only to say what the kit works with.
  */
 
 export const STARTER_REPO = "https://github.com/aimantas/sistemele";
@@ -18,54 +20,40 @@ export const DEPLOY_URL = `https://deploy.workers.cloudflare.com/?url=${STARTER_
 
 const copy = {
   title: "Don’t ask your agent to reinvent the wheel.",
-  lead: "This website, its admin panel and its API for AI agents run on Sistemėlė, a practical starter kit for AI-native projects. Follow the guide to make it yours.",
+  lead: "A practical starter kit and admin panel for AI-native projects. Sign-in, CRM, quotes, invoices, stock, a website and MCP, already built, tested and documented.",
   localCommands: ["npx degit aimantas/sistemele my-app", "cd my-app", "npm install", "npm run setup", "npm run dev"],
 };
 
-/** A chip shows a brand logo (public/logos/<logo>.svg) or an icon, optionally as a link. */
-interface ChipItem {
-  label: string;
-  logo?: string;
-  icon?: LucideIcon;
-  href?: string;
+const worksWith: Array<{ label: string; logo: string }> = [
+  { label: "Claude Code", logo: "claude" },
+  { label: "ChatGPT and Codex", logo: "openai" },
+  { label: "Cursor", logo: "cursor" },
+  { label: "MCP", logo: "modelcontextprotocol" },
+  { label: "Cloudflare Workers", logo: "cloudflare" },
+  { label: "GitHub", logo: "github" },
+  { label: "Resend", logo: "resend" },
+];
+
+interface Shot {
+  name: string;
+  width: number;
+  height: number;
+  alt: string;
 }
 
-const platform: ChipItem[] = [
-  { label: "Cloudflare Workers", logo: "cloudflareworkers" },
-  { label: "D1 database", icon: Database },
-  { label: "MCP for agents", logo: "modelcontextprotocol" },
-  { label: "Open source on GitHub", logo: "github", href: STARTER_REPO },
-  { label: "MIT licence", icon: Scale },
-];
-
-/** Real screens from the demo data (public/screenshots). */
-const screens = [
-  { src: "/screenshots/leads.webp", width: 1920, height: 1200, title: "Leads inbox", text: "Website messages land as leads. Filter by status, owner, source and due follow-ups.", alt: "The leads inbox with status tabs, filters and a table of leads" },
-  { src: "/screenshots/lead.webp", width: 1920, height: 1200, title: "Work a lead, convert in one step", text: "Log calls and emails, set the owner and follow-up date, then convert it into a customer and a deal.", alt: "A lead with its details, timeline and status, owner and follow-up controls" },
-  { src: "/screenshots/pipeline.webp", width: 2400, height: 1140, title: "Pipeline with your own stages", text: "Drag deals between stages you define, each with a win chance. The board shows open and weighted value.", alt: "The pipeline board with Qualified, Proposal, Negotiation, Won and Lost columns" },
-  { src: "/screenshots/invoice.webp", width: 1920, height: 1200, title: "Quotes to invoices", text: "Priced quotes customers accept online become gap-free invoices with VAT, payments and a private link.", alt: "An invoice with line items, VAT, totals and payments" },
-];
-
-const moduleIcons: Record<string, LucideIcon> = { crm: Users, catalog: Package, quotes: FileText, invoices: Receipt, content: Newspaper };
+const shots = {
+  dashboard: { name: "dashboard", width: 1920, height: 1200, alt: "The admin panel dashboard with KPI cards, pipeline, open tasks and low stock" },
+  leads: { name: "leads", width: 1824, height: 1260, alt: "The leads inbox with status tabs, filters and a table of leads" },
+  lead: { name: "lead", width: 1336, height: 1200, alt: "A lead with its contact details, notes and timeline" },
+  pipeline: { name: "pipeline", width: 2704, height: 854, alt: "The pipeline board with Qualified, Proposal, Negotiation, Won and Lost columns and their totals" },
+  invoice: { name: "invoice", width: 1336, height: 1200, alt: "An invoice with seller, buyer, line items, VAT and totals" },
+} satisfies Record<string, Shot>;
 
 const agentTools: Array<{ title: string; text: ReactNode; markdown: string; icon: LucideIcon }> = [
   { title: "AGENTS.md and a README per module", text: "Rules, a map of the code and recipes, so an agent extends the kit instead of rebuilding it.", markdown: "Rules, a map of the code and recipes, so an agent extends the kit instead of rebuilding it.", icon: BookOpen },
   { title: "Agent skill", text: <code>npx skills add aimantas/sistemele</code>, markdown: "`npx skills add aimantas/sistemele`", icon: Sparkles },
   { title: "Slash commands", text: <code>/new-module /add-widget /add-mcp-tool /ship-check</code>, markdown: "`/new-module`, `/add-widget`, `/add-mcp-tool`, `/ship-check` in Claude Code", icon: Terminal },
   { title: "MCP endpoint", text: "Every module’s tools, limited by the API token’s role.", markdown: "Every module's tools, limited by the API token's role.", icon: Plug },
-];
-
-const worksWith: ChipItem[] = [
-  { label: "Claude Code", logo: "claude" },
-  { label: "ChatGPT and Codex", logo: "openai" },
-  { label: "Cursor", logo: "cursor" },
-  { label: "Any MCP client", logo: "modelcontextprotocol" },
-];
-
-const deployStack: ChipItem[] = [
-  { label: "Cloudflare Workers", logo: "cloudflare" },
-  { label: "D1", icon: Database },
-  { label: "Resend email", logo: "resend" },
 ];
 
 interface Step {
@@ -93,71 +81,60 @@ function steps(origin: string, demo: boolean): Step[] {
         },
     {
       title: "Make it yours",
-      body: "Settings → Business and Brand set the name, logo and colours used here, in the admin panel and on invoices. Pipeline → Stages sets your sales steps.",
-      markdown: "Settings → Business and Brand set the name, logo and colours used here, in the admin panel and on invoices. Pipeline → Stages sets your sales steps.",
+      body: "Settings → Business and Brand set the name, logo, colour and corners used here, in the admin panel and on invoices.",
+      markdown: "Settings → Business and Brand set the name, logo, colour and corners used here, in the admin panel and on invoices.",
     },
     {
       title: "Replace this page",
       body: (
         <>
-          In Website → Pages, publish a page with the address <code>home</code>. It takes this page’s place; your newest blog posts show under it.
+          In Website → Pages, publish a page with the address <code>home</code>. It takes this page’s place; your newest posts show under it.
         </>
       ),
-      markdown: "In Website → Pages, publish a page with the address `home`. It takes this page's place; your newest blog posts show under it.",
+      markdown: "In Website → Pages, publish a page with the address `home`. It takes this page's place; your newest posts show under it.",
     },
     {
       title: "Hand it to your agent",
       body: (
         <>
-          Coding agents start from <code>AGENTS.md</code> in the code. Running agents connect over MCP at <code>{origin}/mcp</code> with a token from Settings → API &amp; agents.
+          Coding agents start from <code>AGENTS.md</code>. Running agents connect over MCP at <code>{origin}/mcp</code>.
         </>
       ),
-      markdown: `Coding agents start from \`AGENTS.md\` in the code. Running agents connect over MCP at \`${origin}/mcp\` with a token from Settings → API & agents.`,
+      markdown: `Coding agents start from \`AGENTS.md\`. Running agents connect over MCP at \`${origin}/mcp\`.`,
     },
   ];
 }
 
-function Chips({ items, label }: { items: ChipItem[]; label?: string }) {
-  return (
-    <ul className="chips" aria-label={label}>
-      {items.map((item) => {
-        const mark = item.logo ? <img src={`/logos/${item.logo}.svg`} width={14} height={14} alt="" /> : item.icon ? <item.icon size={14} aria-hidden="true" /> : null;
-        return (
-          <li key={item.label} className="chip">
-            {item.href ? (
-              <a href={item.href}>
-                {mark} {item.label}
-              </a>
-            ) : (
-              <>
-                {mark} {item.label}
-              </>
-            )}
-          </li>
-        );
-      })}
-    </ul>
-  );
+/** Black brand marks are inverted in dark mode (see .lp-logo.mono). */
+const MONO_LOGOS = new Set(["github", "cursor", "resend", "modelcontextprotocol"]);
+
+function Logo({ name }: { name: string }) {
+  return <img className={MONO_LOGOS.has(name) ? "lp-logo mono" : "lp-logo"} src={`/logos/${name}.svg`} width={18} height={18} alt="" />;
 }
 
-function Icon({ icon: Glyph }: { icon: LucideIcon }) {
+function Screenshot({ shot, eager }: { shot: Shot; eager?: boolean }) {
   return (
-    <span className="icon-badge" aria-hidden="true">
-      <Glyph size={18} strokeWidth={2} />
-    </span>
-  );
-}
-
-function Shot({ src, width, height, alt, eager }: { src: string; width: number; height: number; alt: string; eager?: boolean }) {
-  return (
-    <a className="browser" href={src}>
+    <a className="browser" href={`/screenshots/${shot.name}.webp`}>
       <span className="browser-bar" aria-hidden="true">
         <i />
         <i />
         <i />
       </span>
-      <img src={src} width={width} height={height} alt={alt} loading={eager ? "eager" : "lazy"} decoding="async" />
+      <picture>
+        <source srcSet={`/screenshots/dark/${shot.name}.webp`} media="(prefers-color-scheme: dark)" />
+        <img src={`/screenshots/${shot.name}.webp`} width={shot.width} height={shot.height} alt={shot.alt} loading={eager ? "eager" : "lazy"} decoding="async" {...(eager ? { fetchPriority: "high" as const } : {})} />
+      </picture>
     </a>
+  );
+}
+
+function Checks({ items }: { items: string[] }) {
+  return (
+    <ul className="lp-checks">
+      {items.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
   );
 }
 
@@ -170,17 +147,22 @@ export interface StarterHome {
 
 export function starterHome({ businessName, origin, demo, modules, sections }: { businessName: string; origin: string; demo: boolean; modules: readonly ServerModule[]; sections: HomeSection[] }): StarterHome {
   const guide = steps(origin, demo);
-  const inside = [
-    { id: "core", name: "Sign-in and roles", description: "Magic-link sign-in, owner, admin and member roles, an audit log and API tokens.", icon: ShieldCheck },
-    ...modules.map((module) => ({ id: module.id, name: module.name, description: module.description, icon: moduleIcons[module.id] ?? Boxes })),
+  const index = [
+    { id: "core", name: "Core", description: "Magic-link sign-in, owner, admin and member roles, an audit log, API tokens and the MCP endpoint.", tools: coreTools(modules).length },
+    ...modules.map((module) => ({ id: module.id, name: module.name, description: module.description, tools: module.tools?.length ?? 0 })),
   ];
+  const toolCount = index.reduce((sum, row) => sum + row.tools, 0);
   const mcpExample = [
-    `POST ${origin}/mcp`,
+    "POST /mcp",
     "Authorization: Bearer sk_…",
     "",
-    '{ "method": "tools/call",',
-    '  "params": { "name": "crm_list_leads",',
-    '              "arguments": { "due": true } } }',
+    "{",
+    '  "method": "tools/call",',
+    '  "params": {',
+    '    "name": "crm_list_leads",',
+    '    "arguments": { "due": true }',
+    "  }",
+    "}",
   ].join("\n");
 
   const markdown = [
@@ -189,30 +171,31 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
     copy.lead,
     "",
     `- [Open the admin panel](${origin}/app/login)`,
-    `- [Deploy your own to Cloudflare](${DEPLOY_URL})`,
+    `- [Deploy to Cloudflare](${DEPLOY_URL})`,
+    `- [Code on GitHub](${STARTER_REPO})`,
     "",
-    `Runs on: ${platform.map((item) => item.label).join(", ")}.`,
+    `Works with: ${worksWith.map((item) => item.label).join(", ")}.`,
     "",
     "## Get started",
     "",
-    ...guide.map((step, index) => `${index + 1}. **${step.title}.** ${step.markdown}`),
+    ...guide.map((step, i) => `${i + 1}. **${step.title}.** ${step.markdown}`),
     "",
-    "## See it",
+    "## The admin panel your agent does not have to build",
     "",
-    ...screens.map((screen) => `- [${screen.title}](${origin}${screen.src}): ${screen.text}`),
+    "- Leads inbox: website messages arrive as leads, with owners, sources and follow-up dates; convert into a contact and a deal in one step.",
+    "- Pipeline with your own stages and win chances; weighted pipeline value.",
+    "- Quotes customers accept online become gap-free invoices with VAT and payments.",
     "",
-    "## What’s inside",
+    `## What's inside (${toolCount} MCP tools)`,
     "",
-    ...inside.map((item) => `- **${item.name}**: ${item.description}`),
+    ...index.map((row) => `- **${row.name}** (${row.tools} MCP tools): ${row.description}`),
     "",
     "## Built for agents",
     "",
     ...agentTools.map((tool) => `- **${tool.title}**: ${tool.markdown}`),
     "",
-    `Works with: ${worksWith.map((item) => item.label).join(", ")}.`,
-    "",
     ...sections.flatMap((section) => [section.markdown.trim(), ""]),
-    "## Deploy on Cloudflare",
+    "## Deploy your own on Cloudflare",
     "",
     `- One click: ${DEPLOY_URL}`,
     "- Or run it locally (Node 22+):",
@@ -226,29 +209,48 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
 
   const body = (
     <>
-      <section className="hero">
-        <div className="wrap hero-grid">
-          <div>
-            <h1>{copy.title}</h1>
-            <p className="lead">{copy.lead}</p>
-            <div className="actions">
-              <a className="button primary" href="/app/login">
-                Open the admin panel
-              </a>
-              <a className="button" href={DEPLOY_URL}>
-                <Rocket size={18} aria-hidden="true" /> Deploy your own
-              </a>
-            </div>
-            <Chips items={platform} label="Runs on" />
+      <section className="lp-hero" aria-labelledby="lp-title">
+        <div className="wrap lp-hero-copy">
+          <h1 id="lp-title">{copy.title}</h1>
+          <p className="lead">{copy.lead}</p>
+          <div className="actions">
+            <a className="button primary lg" href="/app/login">
+              Open the admin panel
+            </a>
+            <a className="button lg" href={DEPLOY_URL}>
+              <Logo name="cloudflare" /> Deploy to Cloudflare
+            </a>
           </div>
-          <Shot src="/screenshots/dashboard.webp" width={1920} height={1200} alt="The admin panel dashboard with KPI cards, pipeline, open tasks and low stock" eager />
+          <p className="lp-meta">
+            MIT licence · One Cloudflare Worker and a D1 database ·{" "}
+            <a href={STARTER_REPO}>
+              <Logo name="github" /> aimantas/sistemele
+            </a>
+          </p>
+        </div>
+        <div className="wrap lp-hero-shot">
+          <Screenshot shot={shots.dashboard} eager />
+        </div>
+      </section>
+
+      <section className="lp-strip" aria-labelledby="lp-works">
+        <div className="wrap">
+          <h2 id="lp-works">Works with the agents and services you already use</h2>
+          <ul className="plain lp-logos">
+            {worksWith.map((item) => (
+              <li key={item.label}>
+                <Logo name={item.logo} /> {item.label}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
       <section className="section" aria-labelledby="get-started">
         <div className="wrap">
           <h2 id="get-started">Get started</h2>
-          <ol className="steps four">
+          <p className="section-lead">Four steps from this page to a system that is yours.</p>
+          <ol className="steps lp-steps">
             {guide.map((step) => (
               <li key={step.title}>
                 <h3>{step.title}</h3>
@@ -261,28 +263,53 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
 
       <section className="section" aria-labelledby="see-it">
         <div className="wrap">
-          <h2 id="see-it">See it</h2>
-          <ul className="shots plain">
-            {screens.map((screen) => (
-              <li key={screen.src}>
-                <Shot src={screen.src} width={screen.width} height={screen.height} alt={screen.alt} />
-                <h3>{screen.title}</h3>
-                <p className="muted">{screen.text}</p>
-              </li>
-            ))}
-          </ul>
+          <h2 id="see-it">The admin panel your agent does not have to build</h2>
+          <p className="section-lead">Leads, pipeline, quotes, invoices, stock and the website share one database and react to each other through typed events.</p>
+          <div className="lp-feature">
+            <div>
+              <h3>Leads inbox</h3>
+              <p className="muted">Every website message lands as a lead. Work it from new to qualified, then convert it.</p>
+              <Checks items={["Owners, sources and follow-up dates", "Calls and emails mark a lead contacted", "One step to a contact and a deal"]} />
+            </div>
+            <Screenshot shot={shots.leads} />
+          </div>
+          <div className="lp-wide">
+            <div className="lp-wide-copy">
+              <h3>Pipeline with your own stages</h3>
+              <p className="muted">Drag deals between stages you define, each with a win chance; the board shows open and weighted value.</p>
+            </div>
+            <Screenshot shot={shots.pipeline} />
+          </div>
+          <div className="lp-pair">
+            <figure>
+              <Screenshot shot={shots.lead} />
+              <figcaption>
+                <strong>One timeline per lead.</strong> Calls, emails, meetings and tasks, with owner and follow-up at hand.
+              </figcaption>
+            </figure>
+            <figure>
+              <Screenshot shot={shots.invoice} />
+              <figcaption>
+                <strong>Quotes to invoices.</strong> Accepted online, invoiced with gap-free numbers, VAT per rate and payments.
+              </figcaption>
+            </figure>
+          </div>
         </div>
       </section>
 
       <section className="section" aria-labelledby="inside">
         <div className="wrap">
-          <h2 id="inside">What’s inside</h2>
-          <ul className="grid plain">
-            {inside.map((item) => (
-              <li key={item.id} className="card">
-                <Icon icon={item.icon} />
-                <h3>{item.name}</h3>
-                <p className="muted">{item.description}</p>
+          <div className="section-head">
+            <h2 id="inside">What’s inside</h2>
+            <span className="muted lp-count">{toolCount} MCP tools</span>
+          </div>
+          <p className="section-lead">Each module is a folder with its tables, API, screens, tests and agent tools. Switch one off in sistemele.config.ts and its routes, screens and tools go with it.</p>
+          <ul className="plain lp-index">
+            {index.map((row) => (
+              <li key={row.id}>
+                <h3>{row.name}</h3>
+                <p>{row.description}</p>
+                <span className="lp-tools">{row.tools} tools</span>
               </li>
             ))}
           </ul>
@@ -290,13 +317,16 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
       </section>
 
       <section className="section" aria-labelledby="agents">
-        <div className="wrap split">
+        <div className="wrap lp-split">
           <div>
             <h2 id="agents">Built for agents</h2>
-            <ul className="features plain">
+            <p className="section-lead">Your coding agent reads the rules before it writes code. Your running agents call the same services the admin panel uses.</p>
+            <ul className="plain lp-agent-list">
               {agentTools.map((tool) => (
                 <li key={tool.title}>
-                  <Icon icon={tool.icon} />
+                  <span className="icon-badge" aria-hidden="true">
+                    <tool.icon size={16} strokeWidth={2} />
+                  </span>
                   <div>
                     <h3>{tool.title}</h3>
                     <p className="muted">{tool.text}</p>
@@ -305,11 +335,16 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
               ))}
             </ul>
           </div>
-          <div className="stack">
-            <pre className="terminal" aria-label="An MCP tool call">
+          <div className="window" aria-label="An MCP tool call">
+            <div className="window-bar" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <span>{origin.replace(/^https?:\/\//u, "")}/mcp</span>
+            </div>
+            <pre className="terminal">
               <code>{mcpExample}</code>
             </pre>
-            <Chips items={worksWith} label="Works with" />
           </div>
         </div>
       </section>
@@ -318,34 +353,28 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
         <Fragment key={section.id}>{section.body}</Fragment>
       ))}
 
-      <section className="section" aria-labelledby="deploy">
-        <div className="wrap">
-          <h2 id="deploy">Deploy on Cloudflare</h2>
-          <div className="grid two">
-            <div className="card">
-              <Icon icon={Cloud} />
-              <h3>One click</h3>
-              <p className="muted">The button copies the code to your GitHub, creates the D1 database, asks for your email and a Resend key, and deploys. Every push redeploys.</p>
-              <Chips items={deployStack} label="Deploys to" />
-              <p>
-                <a className="button primary" href={DEPLOY_URL}>
-                  <Rocket size={18} aria-hidden="true" /> Deploy to Cloudflare
-                </a>
-              </p>
+      <section className="section lp-cta" aria-labelledby="deploy">
+        <div className="wrap lp-cta-inner">
+          <h2 id="deploy">Deploy your own on Cloudflare</h2>
+          <p className="section-lead">The button copies the code to your GitHub, creates the D1 database, asks for your email and a Resend key, and deploys. Every push redeploys.</p>
+          <div className="actions">
+            <a className="button primary lg" href={DEPLOY_URL}>
+              Deploy to Cloudflare
+            </a>
+            <a className="button lg" href={STARTER_REPO}>
+              <Logo name="github" /> View on GitHub
+            </a>
+          </div>
+          <div className="window lp-cta-code">
+            <div className="window-bar" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <span>Or run it locally · Node 22+</span>
             </div>
-            <div className="card">
-              <Icon icon={Terminal} />
-              <h3>Run it locally</h3>
-              <pre className="terminal">
-                <code>{copy.localCommands.map((line) => `$ ${line}`).join("\n")}</code>
-              </pre>
-              <p className="muted small">
-                Needs Node 22 or later. Guides:{" "}
-                <a className="inline-logo" href={STARTER_REPO}>
-                  <img src="/logos/github.svg" width={14} height={14} alt="" /> github.com/aimantas/sistemele
-                </a>
-              </p>
-            </div>
+            <pre className="terminal">
+              <code>{copy.localCommands.map((line) => `$ ${line}`).join("\n")}</code>
+            </pre>
           </div>
         </div>
       </section>

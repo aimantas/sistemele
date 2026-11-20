@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router";
 import { fieldError } from "@/app/lib/api";
 import { useFormat } from "@/app/lib/format";
 import { useCan } from "@/app/lib/session";
-import { Button, buttonClass, Card, CardHeader, CheckboxField, ConfirmDialog, ErrorState, Field, FormError, Input, PageHeader, Spinner, Textarea, useToast } from "@/app/ui";
+import { Button, buttonVariants, Card, CardHeader, CheckboxField, ConfirmDialog, ErrorState, Field, FormError, Input, PageHeader, Spinner, Textarea, useToast } from "@/app/ui";
 import { excerpt, Markdown, markdownText } from "../shared/markdown";
 import { ENTRY_TYPE_LABELS, HOME_SLUG, entryPath, type Entry, type EntryPatch } from "../shared/schema";
 import { useEntry, useEntryAction, useUpdateEntry, type EntryAction } from "./api";
@@ -108,7 +108,7 @@ function Editor({ entry }: { entry: Entry }) {
     <div>
       <PageHeader
         back={
-          <Link to={listPath} className="inline-flex items-center gap-1 text-muted hover:text-ink">
+          <Link to={listPath} className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" /> {entry.type === "page" ? "Pages" : "Posts"}
           </Link>
         }
@@ -126,12 +126,12 @@ function Editor({ entry }: { entry: Entry }) {
         actions={
           <>
             {entry.state === "published" ? (
-              <a href={entry.path} target="_blank" rel="noreferrer" className={buttonClass("ghost")}>
+              <a href={entry.path} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "ghost" })}>
                 <ExternalLink /> View on website
               </a>
             ) : null}
             {archived ? (
-              <Button icon={<ArchiveRestore />} loading={action.isPending} onClick={() => run({ action: "restore" }, `${capitalise(kind)} restored as a draft.`)}>
+              <Button variant="outline" icon={<ArchiveRestore />} loading={action.isPending} onClick={() => run({ action: "restore" }, `${capitalise(kind)} restored as a draft.`)}>
                 Restore
               </Button>
             ) : entry.status === "draft" || isAdmin ? (
@@ -143,8 +143,8 @@ function Editor({ entry }: { entry: Entry }) {
         }
       />
 
-      {!canEdit && !archived ? <p className="mb-4 rounded-control border border-line bg-sunken px-4 py-3 text-sm text-ink-soft">This {kind} is {entry.state}. Only owners and admins can change it.</p> : null}
-      {archived ? <p className="mb-4 rounded-control border border-line bg-sunken px-4 py-3 text-sm text-ink-soft">This {kind} is archived. Restore it to edit or publish it again.</p> : null}
+      {!canEdit && !archived ? <p className="mb-4 rounded-md border border-border bg-muted px-4 py-3 text-sm text-foreground/80">This {kind} is {entry.state}. Only owners and admins can change it.</p> : null}
+      {archived ? <p className="mb-4 rounded-md border border-border bg-muted px-4 py-3 text-sm text-foreground/80">This {kind} is archived. Restore it to edit or publish it again.</p> : null}
 
       <form
         className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]"
@@ -170,7 +170,7 @@ function Editor({ entry }: { entry: Entry }) {
               </Field>
               <FormError error={update.error} />
               <div className="flex flex-wrap items-center gap-3">
-                <Button type="submit" variant={live || !isAdmin ? "primary" : "secondary"} loading={update.isPending} disabled={!dirty}>
+                <Button type="submit" variant={live || !isAdmin ? "default" : "outline"} loading={update.isPending} disabled={!dirty}>
                   {live ? "Save changes" : "Save draft"}
                 </Button>
                 {dirty ? (
@@ -191,11 +191,11 @@ function Editor({ entry }: { entry: Entry }) {
               <div className="grid gap-4 p-5">
                 <Field label={entry.type === "page" ? "Page address" : "Post address"} hint={form.slug === HOME_SLUG && entry.type === "page" ? "“home” makes this your home page at /." : entry.status === "draft" ? undefined : "Unpublish to change the address."} error={errors("slug")}>
                   {(props) => (
-                    <div className="flex items-center rounded-control border border-line-strong bg-surface focus-within:outline-3 focus-within:outline-brand/40 has-disabled:bg-sunken">
-                      <span className="pl-3 font-mono text-sm text-muted">{entry.type === "page" ? "/" : "/blog/"}</span>
+                    <div className="flex items-center rounded-md border border-input bg-card focus-within:outline-3 focus-within:outline-primary/40 has-disabled:bg-muted">
+                      <span className="pl-3 font-mono text-sm text-muted-foreground">{entry.type === "page" ? "/" : "/blog/"}</span>
                       <input
                         {...props}
-                        className="h-10 min-w-0 flex-1 rounded-control bg-transparent pr-3 font-mono text-sm outline-none disabled:text-muted"
+                        className="h-10 min-w-0 flex-1 rounded-md bg-transparent pr-3 font-mono text-sm outline-none disabled:text-muted-foreground"
                         disabled={entry.status !== "draft"}
                         value={form.slug}
                         onChange={(event) => set({ slug: event.target.value.toLowerCase().replace(/\s+/gu, "-") })}
@@ -265,11 +265,11 @@ const capitalise = (value: string) => value[0].toUpperCase() + value.slice(1);
 /** Markdown textarea with a Write / Preview switch. */
 function BodyField({ value, onChange, error }: { value: string; onChange: (value: string) => void; error?: string }) {
   const [preview, setPreview] = useState(false);
-  const tab = (active: boolean) => `h-8 rounded-control px-3 text-sm font-medium ${active ? "bg-sunken text-ink" : "text-muted hover:text-ink"}`;
+  const tab = (active: boolean) => `h-8 rounded-md px-3 text-sm font-medium ${active ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`;
   return (
     <div className="grid gap-1.5">
       <div className="flex items-center justify-between gap-3">
-        <label htmlFor="entry-body" className="text-sm font-medium text-ink">
+        <label htmlFor="entry-body" className="text-sm font-medium text-foreground">
           Text
         </label>
         <div role="group" aria-label="Text view" className="flex gap-1">
@@ -282,25 +282,25 @@ function BodyField({ value, onChange, error }: { value: string; onChange: (value
         </div>
       </div>
       {preview ? (
-        <div className="prose min-h-72 rounded-control border border-line bg-surface px-4 py-3">{value.trim() ? <Markdown source={value} /> : <p className="text-muted">Nothing to preview yet.</p>}</div>
+        <div className="prose min-h-72 rounded-md border border-border bg-card px-4 py-3">{value.trim() ? <Markdown source={value} /> : <p className="text-muted-foreground">Nothing to preview yet.</p>}</div>
       ) : (
         <textarea
           id="entry-body"
           aria-invalid={error ? true : undefined}
           aria-describedby="entry-body-hint"
           rows={18}
-          className="min-h-72 w-full rounded-control border border-line-strong bg-surface px-3 py-2 font-mono text-sm leading-relaxed text-ink placeholder:text-muted/70 disabled:bg-sunken disabled:text-muted aria-[invalid=true]:border-danger"
+          className="min-h-72 w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-sm leading-relaxed text-foreground placeholder:text-muted-foreground/70 disabled:bg-muted disabled:text-muted-foreground aria-[invalid=true]:border-destructive"
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder={"Write the text here.\n\n## A heading\n\nA paragraph with **bold** text and a [link](https://example.com).\n\n- A list item\n- Another item"}
         />
       )}
       {error ? (
-        <p id="entry-body-hint" className="text-sm text-danger">
+        <p id="entry-body-hint" className="text-sm text-destructive">
           {error}
         </p>
       ) : (
-        <p id="entry-body-hint" className="text-sm text-muted">
+        <p id="entry-body-hint" className="text-sm text-muted-foreground">
           Markdown: ## heading · **bold** · *italic* · [link](https://…) · - list · &gt; quote
         </p>
       )}
@@ -312,10 +312,10 @@ function BodyField({ value, onChange, error }: { value: string; onChange: (value
 function SearchPreview({ form, path }: { form: FormState; path: string }) {
   const description = form.summary || excerpt(markdownText(form.body), 155);
   return (
-    <div className="grid gap-0.5 rounded-control border border-line bg-paper px-3 py-2.5" aria-label="Search result preview">
-      <p className="truncate text-xs text-muted">{`${window.location.host}${path}`}</p>
+    <div className="grid gap-0.5 rounded-md border border-border bg-background px-3 py-2.5" aria-label="Search result preview">
+      <p className="truncate text-xs text-muted-foreground">{`${window.location.host}${path}`}</p>
       <p className="truncate font-medium text-info">{form.title || "Title"}</p>
-      <p className="line-clamp-2 text-sm text-ink-soft">{description || <span className="text-muted">Add a summary or some text.</span>}</p>
+      <p className="line-clamp-2 text-sm text-foreground/80">{description || <span className="text-muted-foreground">Add a summary or some text.</span>}</p>
     </div>
   );
 }
@@ -349,7 +349,7 @@ function PublishCard({
     entry.state === "published" ? (
       <>
         Live at{" "}
-        <a href={entry.path} target="_blank" rel="noreferrer" className="font-mono text-brand hover:underline">
+        <a href={entry.path} target="_blank" rel="noreferrer" className="font-mono text-primary hover:underline">
           {entry.path}
         </a>{" "}
         since {format.date(entry.publishedAt)}.
@@ -364,11 +364,11 @@ function PublishCard({
     <Card>
       <CardHeader title="Publishing" />
       <div className="grid gap-4 p-5">
-        <p className="text-sm text-ink-soft">{status}</p>
+        <p className="text-sm text-foreground/80">{status}</p>
         {!isAdmin ? (
-          <p className="text-sm text-muted">{entry.status === "draft" ? `Save your draft. An owner or admin publishes the ${kind}.` : `Ask an owner or admin to change or unpublish the ${kind}.`}</p>
+          <p className="text-sm text-muted-foreground">{entry.status === "draft" ? `Save your draft. An owner or admin publishes the ${kind}.` : `Ask an owner or admin to change or unpublish the ${kind}.`}</p>
         ) : entry.state === "published" ? (
-          <Button onClick={onUnpublish} disabled={busy}>
+          <Button variant="outline" onClick={onUnpublish} disabled={busy}>
             Unpublish
           </Button>
         ) : (
@@ -390,7 +390,7 @@ function PublishCard({
             </Field>
             <div className="grid gap-2">
               <Button
-                variant={entry.state === "draft" ? "primary" : "secondary"}
+                variant={entry.state === "draft" ? "default" : "outline"}
                 loading={busy}
                 onClick={() =>
                   onRun(

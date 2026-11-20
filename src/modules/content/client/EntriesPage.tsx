@@ -63,7 +63,7 @@ export function EntriesPage({ type }: { type: EntryType }) {
 
   const total = entries.data?.total ?? 0;
   const createButton = (
-    <Button variant="primary" icon={<Plus />} onClick={() => setCreating(true)}>
+    <Button variant="default" icon={<Plus />} onClick={() => setCreating(true)}>
       {copy.create}
     </Button>
   );
@@ -82,7 +82,7 @@ export function EntriesPage({ type }: { type: EntryType }) {
       />
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative w-full sm:max-w-xs">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input aria-label={`Search ${copy.title.toLowerCase()}`} placeholder="Search title or address" className="pl-9" value={term} onChange={(event) => setTerm(event.target.value)} />
         </div>
         <Select aria-label="Status" className="w-auto" value={state ?? ""} onChange={(event) => setParam("state", event.target.value || null)}>
@@ -93,7 +93,7 @@ export function EntriesPage({ type }: { type: EntryType }) {
             </option>
           ))}
         </Select>
-        <p className="ml-auto text-sm text-muted">{entries.data ? `${total} ${total === 1 ? type : `${type}s`}` : null}</p>
+        <p className="ml-auto text-sm text-muted-foreground">{entries.data ? `${total} ${total === 1 ? type : `${type}s`}` : null}</p>
       </div>
 
       {entries.error ? <ErrorState error={entries.error} retry={() => entries.refetch()} /> : null}
@@ -116,21 +116,21 @@ export function EntriesPage({ type }: { type: EntryType }) {
               {entries.data.items.map((entry) => (
                 <Tr key={entry.id}>
                   <Td>
-                    <Link to={`/app/content/${entry.id}`} className="font-medium text-ink hover:text-brand hover:underline">
+                    <Link to={`/app/content/${entry.id}`} className="font-medium text-foreground hover:text-primary hover:underline">
                       {entry.title}
                     </Link>
-                    <p className="font-mono text-xs break-all text-muted">{entry.path}</p>
+                    <p className="font-mono text-xs break-all text-muted-foreground">{entry.path}</p>
                   </Td>
                   <Td>
                     <StateBadge state={entry.state} />
-                    <p className="mt-1 text-xs text-muted sm:hidden">
+                    <p className="mt-1 text-xs text-muted-foreground sm:hidden">
                       <StateDate entry={entry} />
                     </p>
                   </Td>
-                  {type === "page" ? <Td className="hidden tabular md:table-cell">{entry.menuOrder ?? <span className="text-muted">—</span>}</Td> : null}
-                  <Td className="hidden text-ink-soft sm:table-cell">
+                  {type === "page" ? <Td className="hidden tabular md:table-cell">{entry.menuOrder ?? <span className="text-muted-foreground">—</span>}</Td> : null}
+                  <Td className="hidden text-foreground/80 sm:table-cell">
                     <StateDate entry={entry} />
-                    {entry.updatedByName ? <p className="text-xs text-muted">{entry.updatedByName}</p> : null}
+                    {entry.updatedByName ? <p className="text-xs text-muted-foreground">{entry.updatedByName}</p> : null}
                   </Td>
                 </Tr>
               ))}
@@ -138,13 +138,13 @@ export function EntriesPage({ type }: { type: EntryType }) {
           </Table>
           {total > PAGE_SIZE ? (
             <div className="mt-4 flex items-center justify-end gap-2">
-              <Button size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
+              <Button variant="outline" size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
                 Previous
               </Button>
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 {offset + 1}–{Math.min(offset + PAGE_SIZE, total)} of {total}
               </span>
-              <Button size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
+              <Button variant="outline" size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
                 Next
               </Button>
             </div>
@@ -164,7 +164,7 @@ function HomePageButton() {
   const create = useCreateEntry();
   const home = found.data?.items.find((entry) => entry.slug === HOME_SLUG);
   return (
-    <Button
+    <Button variant="outline"
       icon={<House />}
       loading={create.isPending}
       disabled={!found.data}
@@ -206,7 +206,7 @@ function NewEntryDialog({ type, open, onClose, onCreated }: { type: EntryType; o
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="primary" loading={create.isPending} onClick={submit}>
+          <Button variant="default" loading={create.isPending} onClick={submit}>
             Create draft
           </Button>
         </>

@@ -56,8 +56,10 @@ export function AppShell() {
     { items: [{ to: "/app/settings", label: "Settings", icon: Settings }] },
   ];
 
+  const initials = (user.name || user.email).split(/[\s@.]+/u).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("");
+
   const sidebar = (
-    <nav aria-label="Main" className="flex h-full flex-col gap-5 overflow-y-auto px-3 py-4">
+    <nav aria-label="Main" className="flex h-full flex-col gap-4 overflow-y-auto px-3 py-4">
       <Link to="/app" className="flex min-h-8 items-center gap-2 px-2 text-[15px] font-semibold tracking-tight">
         {brand?.logoUrl ? (
           <img src={brand.logoUrl} alt={brand.name} className="h-7 w-auto max-w-[180px]" />
@@ -68,63 +70,85 @@ export function AppShell() {
           </>
         )}
       </Link>
-      <button type="button" onClick={() => setPaletteOpen(true)} className="flex h-9 items-center gap-2 rounded-control border border-line bg-paper px-3 text-sm text-muted hover:border-line-strong">
+      <button
+        type="button"
+        onClick={() => setPaletteOpen(true)}
+        className="flex h-8 items-center gap-2 rounded-md border bg-card px-2.5 text-sm text-muted-foreground shadow-xs transition-colors hover:text-foreground"
+      >
         <Search className="size-4" />
         <span className="flex-1 text-left">Search</span>
-        <kbd className="rounded border border-line px-1.5 font-mono text-[11px]">⌘K</kbd>
+        <kbd className="rounded border bg-muted px-1.5 font-sans text-[11px] font-medium">⌘K</kbd>
       </button>
       {groups.map((group, index) => (
-        <div key={group.label ?? index} className="grid gap-0.5">
-          {group.label ? <p className="px-2 pb-1 text-xs font-semibold tracking-wide text-muted uppercase">{group.label}</p> : null}
+        <div key={group.label ?? index} className="grid gap-px">
+          {group.label ? <p className="px-2 pb-1 text-xs font-medium text-muted-foreground">{group.label}</p> : null}
           {group.items.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === "/app"}
-              className={({ isActive }) => clsx("flex h-9 items-center gap-2.5 rounded-control px-2 text-sm font-medium", isActive ? "bg-brand-soft text-brand" : "text-ink-soft hover:bg-sunken hover:text-ink")}
+              className={({ isActive }) =>
+                clsx(
+                  "group flex h-8 items-center gap-2.5 rounded-md px-2 text-sm transition-colors",
+                  isActive ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground" : "text-foreground/75 hover:bg-sidebar-accent/70 hover:text-foreground",
+                )
+              }
             >
-              <item.icon className="size-4 shrink-0" />
-              {item.label}
+              {({ isActive }) => (
+                <>
+                  <item.icon className={clsx("size-4 shrink-0", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
+                  {item.label}
+                </>
+              )}
             </NavLink>
           ))}
         </div>
       ))}
-      <div className="mt-auto grid gap-1 border-t border-line pt-3">
-        <p className="truncate px-2 text-sm font-medium">{user.name || user.email}</p>
-        <p className="truncate px-2 text-xs text-muted">
-          {user.email} · {user.role}
-        </p>
-        <button type="button" onClick={() => logout.mutate()} className="mt-1 flex h-9 items-center gap-2.5 rounded-control px-2 text-sm text-ink-soft hover:bg-sunken hover:text-ink">
-          <LogOut className="size-4" />
-          Sign out
-        </button>
+      <div className="mt-auto grid gap-2 border-t border-sidebar-border pt-3">
+        <div className="flex items-center gap-2.5 px-1">
+          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary" aria-hidden>
+            {initials}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium">{user.name || user.email}</p>
+            <p className="truncate text-xs text-muted-foreground">
+              {user.role} · {user.email}
+            </p>
+          </div>
+          <button type="button" aria-label="Sign out" title="Sign out" onClick={() => logout.mutate()} className="inline-grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground">
+            <LogOut className="size-4" />
+          </button>
+        </div>
+        <Link to="/app/design" className="px-2 text-xs text-muted-foreground transition-colors hover:text-foreground">
+          Design system
+        </Link>
       </div>
     </nav>
   );
 
   return (
-    <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr] print:block">
-      <aside className="sticky top-0 hidden h-dvh border-r border-line bg-surface lg:block print:hidden">{sidebar}</aside>
+    <div className="min-h-dvh lg:grid lg:grid-cols-[240px_1fr] print:block">
+      <aside className="sticky top-0 hidden h-dvh border-r border-sidebar-border bg-sidebar lg:block print:hidden">{sidebar}</aside>
 
-      <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-surface px-4 lg:hidden print:hidden">
+      <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/85 px-4 backdrop-blur-md lg:hidden print:hidden">
         <Link to="/app" className="flex items-center gap-2 font-semibold">
           <img src={brandLogoSrc(brand)} alt={brand?.logoUrl ? brand.name : ""} className={brand?.logoUrl ? "h-7 w-auto max-w-[160px]" : "size-6"} />
           {brand?.logoUrl ? null : (brand?.name ?? info?.appName ?? "Sistemėlė")}
         </Link>
         <div className="flex items-center gap-1">
-          <button type="button" aria-label="Search" className="inline-grid size-10 place-items-center rounded-control hover:bg-sunken" onClick={() => setPaletteOpen(true)}>
+          <button type="button" aria-label="Search" className="inline-grid size-10 place-items-center rounded-md hover:bg-accent" onClick={() => setPaletteOpen(true)}>
             <Search className="size-5" />
           </button>
-          <button type="button" aria-label="Open menu" aria-expanded={menuOpen} className="inline-grid size-10 place-items-center rounded-control hover:bg-sunken" onClick={() => setMenuOpen(true)}>
+          <button type="button" aria-label="Open menu" aria-expanded={menuOpen} className="inline-grid size-10 place-items-center rounded-md hover:bg-accent" onClick={() => setMenuOpen(true)}>
             <Menu className="size-5" />
           </button>
         </div>
       </div>
       {menuOpen ? (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <button type="button" aria-label="Close menu" className="absolute inset-0 bg-ink/40" onClick={() => setMenuOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-[min(300px,85vw)] bg-surface shadow-2xl">
-            <button type="button" aria-label="Close menu" className="absolute top-3 right-3 inline-grid size-9 place-items-center rounded-control hover:bg-sunken" onClick={() => setMenuOpen(false)}>
+          <button type="button" aria-label="Close menu" className="absolute inset-0 animate-in bg-black/50 fade-in-0" onClick={() => setMenuOpen(false)} />
+          <div className="absolute inset-y-0 left-0 w-[min(300px,85vw)] animate-in border-r bg-sidebar shadow-lg slide-in-from-left">
+            <button type="button" aria-label="Close menu" className="absolute top-3 right-3 inline-grid size-9 place-items-center rounded-md hover:bg-sidebar-accent" onClick={() => setMenuOpen(false)}>
               <X className="size-5" />
             </button>
             {sidebar}
@@ -132,11 +156,12 @@ export function AppShell() {
         </div>
       ) : null}
 
-      <main className="mx-auto w-full min-w-0 max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <main className="mx-auto w-full min-w-0 max-w-[1400px] px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
         {demo ? (
-          <p className="mb-5 rounded-control border border-info/30 bg-info-soft px-4 py-2.5 text-sm text-info">
-            Demo with sample data. It resets every hour, and no email is sent.{" "}
-            <a className="font-medium underline" href="https://github.com/aimantas/sistemele">
+          <p className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border bg-card px-4 py-2.5 text-sm text-muted-foreground shadow-xs">
+            <span className="size-1.5 rounded-full bg-info" aria-hidden />
+            Demo with sample data. It resets every hour, and no email is sent.
+            <a className="font-medium text-foreground underline underline-offset-4" href="https://github.com/aimantas/sistemele">
               Get the code on GitHub
             </a>
           </p>

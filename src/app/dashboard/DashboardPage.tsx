@@ -100,10 +100,10 @@ export default function DashboardPage() {
         actions={
           editing ? (
             <>
-              <Button icon={<Plus />} onClick={() => setAdding(true)}>
+              <Button variant="outline" icon={<Plus />} onClick={() => setAdding(true)}>
                 Add card
               </Button>
-              <Button icon={<LayoutTemplate />} onClick={() => setChoosingTemplate(true)}>
+              <Button variant="outline" icon={<LayoutTemplate />} onClick={() => setChoosingTemplate(true)}>
                 Templates
               </Button>
               {isCustom ? (
@@ -114,12 +114,12 @@ export default function DashboardPage() {
               <Button variant="ghost" onClick={() => setDraft(null)}>
                 Cancel
               </Button>
-              <Button variant="primary" onClick={() => save.mutate(draft)} loading={save.isPending}>
+              <Button variant="default" onClick={() => save.mutate(draft)} loading={save.isPending}>
                 Save layout
               </Button>
             </>
           ) : (
-            <Button icon={<Settings2 />} onClick={() => setDraft(structuredClone(layout))}>
+            <Button variant="outline" icon={<Settings2 />} onClick={() => setDraft(structuredClone(layout))}>
               Customize
             </Button>
           )
@@ -147,7 +147,7 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => setAdding(true)}
-                  className="flex min-h-[168px] flex-col items-center justify-center gap-2 rounded-panel border-2 border-dashed border-line-strong text-muted hover:border-brand hover:text-brand"
+                  className="flex min-h-[168px] flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-input text-muted-foreground hover:border-primary hover:text-primary"
                 >
                   <Plus className="size-5" />
                   <span className="text-sm font-medium">Add card</span>
@@ -173,19 +173,19 @@ export default function DashboardPage() {
             <li key={template.id}>
               <button
                 type="button"
-                className="w-full rounded-control border border-line px-4 py-3 text-left hover:border-brand hover:bg-brand-soft/40"
+                className="w-full rounded-md border border-border px-4 py-3 text-left hover:border-primary hover:bg-primary/5"
                 onClick={() => {
                   setDraft(layoutFromTemplate(template, widgetTypes));
                   setChoosingTemplate(false);
                 }}
               >
                 <span className="block font-medium">{template.name}</span>
-                <span className="block text-sm text-muted">{template.description}</span>
+                <span className="block text-sm text-muted-foreground">{template.description}</span>
               </button>
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-sm text-muted">A template replaces the cards in your draft. Nothing is saved until you press Save layout.</p>
+        <p className="mt-4 text-sm text-muted-foreground">A template replaces the cards in your draft. Nothing is saved until you press Save layout.</p>
       </Dialog>
       <NoteEditor
         widget={editingNote}
@@ -235,14 +235,14 @@ function WidgetCard({
   const Widget = definition.component;
   const { w, h } = widget.size;
   return (
-    <section className={clsx("flex h-full flex-col rounded-panel border bg-surface", editing ? "border-line-strong" : "border-line", overlay && "rotate-1 shadow-2xl")} aria-label={definition.title}>
-      <header className={clsx("flex min-h-11 items-center gap-1 border-b border-line px-3", definition.bare && !editing && "hidden")}>
+    <section className={clsx("flex h-full flex-col rounded-xl border bg-card", editing ? "border-input" : "border-border", overlay && "rotate-1 shadow-2xl")} aria-label={definition.title}>
+      <header className={clsx("flex min-h-11 items-center gap-1 border-b border-border px-3", definition.bare && !editing && "hidden")}>
         {editing ? (
-          <button type="button" className="-ml-1 inline-grid size-8 cursor-grab touch-none place-items-center rounded-control text-muted hover:bg-sunken active:cursor-grabbing" aria-label={`Move ${definition.title}`} {...handle}>
+          <button type="button" className="-ml-1 inline-grid size-8 cursor-grab touch-none place-items-center rounded-md text-muted-foreground hover:bg-muted active:cursor-grabbing" aria-label={`Move ${definition.title}`} {...handle}>
             <GripVertical className="size-4" />
           </button>
         ) : null}
-        <h2 className="min-w-0 flex-1 truncate text-sm font-semibold text-ink-soft">{definition.title}</h2>
+        <h2 className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground/80">{definition.title}</h2>
         {editing && onResize ? (
           <div className="flex items-center">
             <IconButton label="Narrower" disabled={w === 1} onClick={() => onResize({ w: (w - 1) as WidgetSize["w"], h })}>
@@ -251,11 +251,11 @@ function WidgetCard({
             <IconButton label="Wider" disabled={w === 4} onClick={() => onResize({ w: (w + 1) as WidgetSize["w"], h })}>
               <Maximize2 />
             </IconButton>
-            <button type="button" className="h-8 rounded-control px-2 text-xs font-medium text-muted hover:bg-sunken" onClick={() => onResize({ w, h: h === 1 ? 2 : 1 })}>
+            <button type="button" className="h-8 rounded-md px-2 text-xs font-medium text-muted-foreground hover:bg-muted" onClick={() => onResize({ w, h: h === 1 ? 2 : 1 })}>
               {h === 1 ? "Taller" : "Shorter"}
             </button>
             {onEdit ? (
-              <button type="button" className="h-8 rounded-control px-2 text-xs font-medium text-muted hover:bg-sunken" onClick={onEdit}>
+              <button type="button" className="h-8 rounded-md px-2 text-xs font-medium text-muted-foreground hover:bg-muted" onClick={onEdit}>
                 Edit
               </button>
             ) : null}
@@ -294,24 +294,24 @@ function AddWidgetDialog({ open, onClose, onAdd }: { open: boolean; onClose: () 
   const widgets = widgetRegistry.filter((widget) => widget.type !== "core.metric" && roleAtLeast(user.role, widget.minRole ?? "member"));
   return (
     <Dialog open={open} onClose={onClose} title="Add a card" size="lg">
-      <h3 className="mb-2 text-sm font-semibold text-muted uppercase">Numbers</h3>
+      <h3 className="mb-2 text-sm font-semibold text-muted-foreground uppercase">Numbers</h3>
       <ul className="mb-6 grid gap-2 sm:grid-cols-2">
         {(metrics.data?.available ?? []).map((metric) => (
           <li key={metric.key}>
-            <button type="button" className="h-full w-full rounded-control border border-line px-3 py-2 text-left hover:border-brand hover:bg-brand-soft/40" onClick={() => add("core.metric", { w: 1, h: 1 }, { metric: metric.key })}>
+            <button type="button" className="h-full w-full rounded-md border border-border px-3 py-2 text-left hover:border-primary hover:bg-primary/5" onClick={() => add("core.metric", { w: 1, h: 1 }, { metric: metric.key })}>
               <span className="block text-sm font-medium">{metric.label}</span>
-              <span className="block text-xs text-muted">{metric.description}</span>
+              <span className="block text-xs text-muted-foreground">{metric.description}</span>
             </button>
           </li>
         ))}
       </ul>
-      <h3 className="mb-2 text-sm font-semibold text-muted uppercase">Cards</h3>
+      <h3 className="mb-2 text-sm font-semibold text-muted-foreground uppercase">Cards</h3>
       <ul className="grid gap-2 sm:grid-cols-2">
         {widgets.map((widget) => (
           <li key={widget.type}>
-            <button type="button" className="h-full w-full rounded-control border border-line px-3 py-2 text-left hover:border-brand hover:bg-brand-soft/40" onClick={() => add(widget.type, widget.defaultSize)}>
+            <button type="button" className="h-full w-full rounded-md border border-border px-3 py-2 text-left hover:border-primary hover:bg-primary/5" onClick={() => add(widget.type, widget.defaultSize)}>
               <span className="block text-sm font-medium">{widget.title}</span>
-              <span className="block text-xs text-muted">{widget.description}</span>
+              <span className="block text-xs text-muted-foreground">{widget.description}</span>
             </button>
           </li>
         ))}
@@ -337,7 +337,7 @@ function NoteEditor({ widget, onClose, onSave }: { widget: DashboardWidgetInstan
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={() => onSave(text.slice(0, 1000))}>
+          <Button variant="default" onClick={() => onSave(text.slice(0, 1000))}>
             Update note
           </Button>
         </>

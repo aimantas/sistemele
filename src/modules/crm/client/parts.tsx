@@ -56,7 +56,7 @@ export function Timeline({ target, activities, emptyText }: { target: { contactI
     <Card>
       <CardHeader title="Timeline" />
       <form
-        className="grid gap-3 border-b border-line p-5"
+        className="grid gap-3 border-b border-border p-5"
         onSubmit={(event) => {
           event.preventDefault();
           add.mutate({ ...target, kind, body, dueAt: kind === "task" && dueAt ? dueAt : null }, { onSuccess: () => (setBody(""), setDueAt("")) });
@@ -64,7 +64,7 @@ export function Timeline({ target, activities, emptyText }: { target: { contactI
       >
         <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Activity type">
           {ACTIVITY_KINDS.map((value) => (
-            <button key={value} type="button" role="radio" aria-checked={kind === value} onClick={() => setKind(value)} className={`h-8 rounded-full border px-3 text-sm capitalize ${kind === value ? "border-brand bg-brand-soft text-brand" : "border-line text-ink-soft hover:border-line-strong"}`}>
+            <button key={value} type="button" role="radio" aria-checked={kind === value} onClick={() => setKind(value)} className={`h-8 rounded-full border px-3 text-sm capitalize ${kind === value ? "border-primary bg-primary/10 text-primary" : "border-border text-foreground/80 hover:border-input"}`}>
               {value}
             </button>
           ))}
@@ -72,24 +72,24 @@ export function Timeline({ target, activities, emptyText }: { target: { contactI
         <Textarea aria-label="Activity text" placeholder={kind === "task" ? "What needs doing?" : "What happened?"} value={body} onChange={(event) => setBody(event.target.value)} rows={3} aria-invalid={fieldError(add.error, "body") ? true : undefined} />
         <div className="flex flex-wrap items-end gap-3">
           {kind === "task" ? <Field label="Due">{(props) => <Input {...props} type="date" value={dueAt} onChange={(event) => setDueAt(event.target.value)} className="w-44" />}</Field> : null}
-          <Button type="submit" variant="primary" loading={add.isPending} disabled={!body.trim()}>
+          <Button type="submit" variant="default" loading={add.isPending} disabled={!body.trim()}>
             Add {kind}
           </Button>
         </div>
         <FormError error={add.error} />
       </form>
-      <ol className="divide-y divide-line">
+      <ol className="divide-y divide-border">
         {activities.map((activity) => (
           <li key={activity.id} className="flex gap-3 px-5 py-4">
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                 <Badge tone={activity.kind === "system" ? "brand" : activity.kind === "task" ? "warning" : "neutral"}>{activity.kind}</Badge>
                 <span>{activity.authorName ?? (activity.kind === "system" ? "System" : "Website")}</span>
                 <span>·</span>
                 <time dateTime={activity.createdAt}>{format.dateTime(activity.createdAt)}</time>
                 {activity.dueAt ? <span>· due {format.date(activity.dueAt)}</span> : null}
               </div>
-              <p className={`mt-1 whitespace-pre-line ${activity.doneAt ? "text-muted line-through" : ""}`}>{activity.body}</p>
+              <p className={`mt-1 whitespace-pre-line ${activity.doneAt ? "text-muted-foreground line-through" : ""}`}>{activity.body}</p>
             </div>
             {activity.kind === "task" && !activity.doneAt ? (
               <Button size="sm" variant="ghost" icon={<CheckCircle2 />} onClick={() => complete.mutate(activity.id)}>
@@ -98,7 +98,7 @@ export function Timeline({ target, activities, emptyText }: { target: { contactI
             ) : null}
           </li>
         ))}
-        {activities.length === 0 ? <li className="px-5 py-4 text-sm text-muted">{emptyText}</li> : null}
+        {activities.length === 0 ? <li className="px-5 py-4 text-sm text-muted-foreground">{emptyText}</li> : null}
       </ol>
     </Card>
   );

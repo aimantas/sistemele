@@ -58,16 +58,16 @@ export function BrandSettingsPage() {
         <Card className="grid gap-4 p-5">
           <div>
             <h2 className="text-lg font-semibold">Logo</h2>
-            <p className="text-sm text-muted">SVG only, up to 100 KB. It is read in your browser and saved as text — no file upload. Shown in the dashboard, on the public site and on quotes and invoices.</p>
+            <p className="text-sm text-muted-foreground">SVG only, up to 100 KB. It is read in your browser and saved as text — no file upload. Shown in the dashboard, on the public site and on quotes and invoices.</p>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <div className="grid h-20 w-56 place-items-center rounded-control border border-dashed border-line-strong bg-surface p-3">
-              {logoPreview ? <img src={logoPreview} alt="Logo preview" className="max-h-full max-w-full" /> : <span className="text-sm text-muted">No logo yet</span>}
+            <div className="grid h-20 w-56 place-items-center rounded-md border border-dashed border-input bg-card p-3">
+              {logoPreview ? <img src={logoPreview} alt="Logo preview" className="max-h-full max-w-full" /> : <span className="text-sm text-muted-foreground">No logo yet</span>}
             </div>
             {isAdmin ? (
               <div className="flex flex-wrap gap-2">
                 <input ref={fileRef} type="file" accept=".svg,image/svg+xml" className="sr-only" aria-label="Choose an SVG logo file" onChange={(event) => void readFile(event.target.files?.[0])} />
-                <Button icon={<FileUp />} onClick={() => fileRef.current?.click()}>
+                <Button variant="outline" icon={<FileUp />} onClick={() => fileRef.current?.click()}>
                   Choose SVG file
                 </Button>
                 {value.logoSvg ? (
@@ -78,7 +78,7 @@ export function BrandSettingsPage() {
               </div>
             ) : null}
           </div>
-          {fileError ? <p className="text-sm text-danger">{fileError}</p> : null}
+          {fileError ? <p className="text-sm text-destructive">{fileError}</p> : null}
           {isAdmin ? (
             <Field label="Or paste SVG markup" error={fieldError(save.error, "logoSvg")} hint="Scripts, event handlers and external links are removed when you save.">
               {(props) => <Textarea {...props} rows={4} className="font-mono text-xs" placeholder='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 32">…</svg>' value={value.logoSvg ?? ""} onChange={(event) => set({ logoSvg: event.target.value || null })} />}
@@ -99,7 +99,7 @@ export function BrandSettingsPage() {
                   aria-checked={selected}
                   disabled={!isAdmin}
                   onClick={() => set({ brandColor: preset.color })}
-                  className={clsx("flex items-center gap-2 rounded-full border py-1 pr-3 pl-1 text-sm", selected ? "border-ink" : "border-line hover:border-line-strong")}
+                  className={clsx("flex items-center gap-2 rounded-full border py-1 pr-3 pl-1 text-sm", selected ? "border-foreground" : "border-border hover:border-input")}
                 >
                   <span className="grid size-6 place-items-center rounded-full text-white" style={{ background: preset.color }}>
                     {selected ? <Check className="size-3.5" /> : null}
@@ -113,7 +113,7 @@ export function BrandSettingsPage() {
             <Field label="Custom colour" error={fieldError(save.error, "brandColor")}>
               {(props) => (
                 <div className="flex items-center gap-2">
-                  <input type="color" aria-label="Pick a brand colour" disabled={!isAdmin} value={value.brandColor} onChange={(event) => set({ brandColor: event.target.value })} className="h-10 w-12 cursor-pointer rounded-control border border-line-strong bg-surface p-1" />
+                  <input type="color" aria-label="Pick a brand colour" disabled={!isAdmin} value={value.brandColor} onChange={(event) => set({ brandColor: event.target.value })} className="h-10 w-12 cursor-pointer rounded-md border border-input bg-card p-1" />
                   <Input {...props} disabled={!isAdmin} className="w-32 font-mono" value={value.brandColor} maxLength={7} onChange={(event) => set({ brandColor: event.target.value })} />
                 </div>
               )}
@@ -123,7 +123,7 @@ export function BrandSettingsPage() {
                 <AlertTriangle className="size-4" /> Too light for text on white ({tokens.contrast.asText.toFixed(1)}:1). Pick a darker shade for links and labels to stay readable.
               </p>
             ) : (
-              <p className="pb-2 text-sm text-muted">Contrast {tokens.contrast.asText.toFixed(1)}:1 on white — readable.</p>
+              <p className="pb-2 text-sm text-muted-foreground">Contrast {tokens.contrast.asText.toFixed(1)}:1 on white — readable.</p>
             )}
           </div>
         </Card>
@@ -132,9 +132,9 @@ export function BrandSettingsPage() {
           <fieldset className="grid gap-2">
             <legend className="mb-2 text-lg font-semibold">Background</legend>
             {(Object.keys(SURFACES) as Array<keyof typeof SURFACES>).map((key) => (
-              <label key={key} className="flex cursor-pointer items-center gap-3 rounded-control border border-line px-3 py-2 has-[:checked]:border-brand">
-                <input type="radio" name="surface" disabled={!isAdmin} checked={value.surface === key} onChange={() => set({ surface: key })} className="accent-[var(--color-brand)]" />
-                <span className="size-5 rounded border border-line-strong" style={{ background: SURFACES[key].paper }} />
+              <label key={key} className="flex cursor-pointer items-center gap-3 rounded-md border border-border px-3 py-2 has-[:checked]:border-primary">
+                <input type="radio" name="surface" disabled={!isAdmin} checked={value.surface === key} onChange={() => set({ surface: key })} className="accent-primary" />
+                <span className="size-5 rounded border border-input" style={{ background: SURFACES[key].background }} />
                 {SURFACES[key].label}
               </label>
             ))}
@@ -142,9 +142,9 @@ export function BrandSettingsPage() {
           <fieldset className="grid gap-2">
             <legend className="mb-2 text-lg font-semibold">Corners</legend>
             {(Object.keys(CORNERS) as Array<keyof typeof CORNERS>).map((key) => (
-              <label key={key} className="flex cursor-pointer items-center gap-3 rounded-control border border-line px-3 py-2 has-[:checked]:border-brand">
-                <input type="radio" name="corners" disabled={!isAdmin} checked={value.corners === key} onChange={() => set({ corners: key })} className="accent-[var(--color-brand)]" />
-                <span className="size-5 border-2 border-ink-soft" style={{ borderRadius: CORNERS[key].control }} />
+              <label key={key} className="flex cursor-pointer items-center gap-3 rounded-md border border-border px-3 py-2 has-[:checked]:border-primary">
+                <input type="radio" name="corners" disabled={!isAdmin} checked={value.corners === key} onChange={() => set({ corners: key })} className="accent-primary" />
+                <span className="size-5 border-2 border-foreground/60" style={{ borderRadius: CORNERS[key].radius }} />
                 {CORNERS[key].label}
               </label>
             ))}
@@ -154,7 +154,7 @@ export function BrandSettingsPage() {
         <FormError error={save.error && !fieldError(save.error, "logoSvg") && !fieldError(save.error, "brandColor") ? save.error : null} />
         {isAdmin ? (
           <div className="flex gap-2">
-            <Button type="submit" variant="primary" loading={save.isPending} disabled={!form}>
+            <Button type="submit" variant="default" loading={save.isPending} disabled={!form}>
               Save brand
             </Button>
             {form ? (
@@ -164,29 +164,29 @@ export function BrandSettingsPage() {
             ) : null}
           </div>
         ) : (
-          <p className="text-sm text-muted">Only owners and admins can change the brand.</p>
+          <p className="text-sm text-muted-foreground">Only owners and admins can change the brand.</p>
         )}
       </div>
 
       <aside className="lg:sticky lg:top-8 lg:self-start" aria-label="Preview">
-        <p className="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">Preview</p>
-        <div className="overflow-hidden border" style={{ background: tokens.paper, borderColor: tokens.line, borderRadius: tokens.radiusPanel }}>
-          <div className="flex items-center gap-2 border-b px-4 py-3" style={{ background: "#fff", borderColor: tokens.line }}>
+        <p className="mb-2 text-sm font-medium text-muted-foreground">Preview (light mode)</p>
+        <div className="overflow-hidden border" style={{ background: tokens.background, borderColor: tokens.border, borderRadius: `calc(${tokens.radius} + 4px)` }}>
+          <div className="flex items-center gap-2 border-b px-4 py-3" style={{ background: "#fff", borderColor: tokens.border }}>
             {logoPreview ? <img src={logoPreview} alt="" className="h-6 w-auto max-w-32" /> : <span className="size-6 rounded" style={{ background: tokens.brand }} />}
           </div>
           <div className="grid gap-3 p-4">
-            <div className="px-2 py-1.5 text-sm font-medium" style={{ background: tokens.brandSoft, color: tokens.brand, borderRadius: tokens.radiusControl }}>
+            <div className="px-2 py-1.5 text-sm font-medium" style={{ background: tokens.brandSoft, color: tokens.brand, borderRadius: `calc(${tokens.radius} - 2px)` }}>
               Dashboard
             </div>
-            <div className="border bg-white p-3" style={{ borderColor: tokens.line, borderRadius: tokens.radiusPanel }}>
-              <p className="text-xs text-muted">Open pipeline</p>
+            <div className="border bg-white p-3" style={{ borderColor: tokens.border, borderRadius: `calc(${tokens.radius} + 4px)` }}>
+              <p className="text-xs text-muted-foreground">Open pipeline</p>
               <p className="tabular text-xl font-semibold">€28,850.00</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-2 text-sm font-medium" style={{ background: tokens.brand, color: tokens.brandInk, borderRadius: tokens.radiusControl }}>
+              <span className="px-3 py-2 text-sm font-medium" style={{ background: tokens.brand, color: tokens.brandInk, borderRadius: `calc(${tokens.radius} - 2px)` }}>
                 Create invoice
               </span>
-              <span className="border bg-white px-3 py-2 text-sm font-medium" style={{ borderColor: tokens.lineStrong, borderRadius: tokens.radiusControl }}>
+              <span className="border bg-white px-3 py-2 text-sm font-medium" style={{ borderColor: tokens.input, borderRadius: `calc(${tokens.radius} - 2px)` }}>
                 Cancel
               </span>
             </div>

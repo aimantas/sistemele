@@ -18,13 +18,13 @@ export function ContactPicker({ value, onChange, id, invalid, disabled }: { valu
 
   if (value && selected.data && !open) {
     return (
-      <div className="flex h-10 items-center justify-between gap-2 rounded-control border border-line-strong bg-surface px-3">
+      <div className="flex h-10 items-center justify-between gap-2 rounded-md border border-input bg-card px-3">
         <span className="min-w-0 truncate">
           <span className="font-medium">{selected.data.name}</span>
-          {selected.data.email ? <span className="text-muted"> · {selected.data.email}</span> : null}
+          {selected.data.email ? <span className="text-muted-foreground"> · {selected.data.email}</span> : null}
         </span>
         {!disabled ? (
-          <button type="button" className="text-sm font-medium text-brand hover:underline" onClick={() => (setOpen(true), setTerm(""))}>
+          <button type="button" className="text-sm font-medium text-primary hover:underline" onClick={() => (setOpen(true), setTerm(""))}>
             Change
           </button>
         ) : null}
@@ -48,16 +48,16 @@ export function ContactPicker({ value, onChange, id, invalid, disabled }: { valu
         onChange={(event) => (setTerm(event.target.value), setOpen(true))}
       />
       {open ? (
-        <ul id={listId} role="listbox" className="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-control border border-line bg-surface shadow-lg">
+        <ul id={listId} role="listbox" className="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-md border border-border bg-card shadow-lg">
           {(results.data?.items ?? []).map((contact) => (
             <li key={contact.id} role="option" aria-selected={contact.id === value}>
-              <button type="button" className="w-full px-3 py-2 text-left hover:bg-sunken" onMouseDown={(event) => event.preventDefault()} onClick={() => (onChange(contact), setOpen(false))}>
+              <button type="button" className="w-full px-3 py-2 text-left hover:bg-muted" onMouseDown={(event) => event.preventDefault()} onClick={() => (onChange(contact), setOpen(false))}>
                 <span className="block font-medium">{contact.name}</span>
-                <span className="block text-xs text-muted">{contact.email || contact.companyName || contact.phone || "No email"}</span>
+                <span className="block text-xs text-muted-foreground">{contact.email || contact.companyName || contact.phone || "No email"}</span>
               </button>
             </li>
           ))}
-          {results.data && results.data.items.length === 0 ? <li className="px-3 py-3 text-sm text-muted">No contacts match. Create one in CRM first.</li> : null}
+          {results.data && results.data.items.length === 0 ? <li className="px-3 py-3 text-sm text-muted-foreground">No contacts match. Create one in CRM first.</li> : null}
         </ul>
       ) : null}
     </div>

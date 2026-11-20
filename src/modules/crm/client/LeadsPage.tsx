@@ -56,14 +56,14 @@ export default function LeadsPage() {
       <PageHeader
         title="Leads"
         actions={
-          <Button variant="primary" icon={<Plus />} onClick={() => setCreating(true)}>
+          <Button variant="default" icon={<Plus />} onClick={() => setCreating(true)}>
             New lead
           </Button>
         }
       />
 
       <div className="-mx-4 mb-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-        <div role="tablist" aria-label="Lead status" className="flex w-max gap-1 border-b border-line">
+        <div role="tablist" aria-label="Lead status" className="flex w-max gap-1 border-b border-border">
           {LEAD_FILTERS.map((filter) => (
             <button
               key={filter}
@@ -71,10 +71,10 @@ export default function LeadsPage() {
               role="tab"
               aria-selected={status === filter}
               onClick={() => update({ status: filter === "open" ? null : filter })}
-              className={clsx("-mb-px flex items-center gap-1.5 border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap", status === filter ? "border-brand text-ink" : "border-transparent text-muted hover:text-ink")}
+              className={clsx("-mb-px flex items-center gap-1.5 border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap", status === filter ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground")}
             >
               {filterLabel(filter)}
-              {counts ? <span className="tabular text-xs text-muted">{counts[filter]}</span> : null}
+              {counts ? <span className="tabular text-xs text-muted-foreground">{counts[filter]}</span> : null}
             </button>
           ))}
         </div>
@@ -82,7 +82,7 @@ export default function LeadsPage() {
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative w-full sm:max-w-xs">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input aria-label="Search leads" placeholder="Search name, email, company" className="pl-9" value={term} onChange={(event) => setTerm(event.target.value)} />
         </div>
         <Select aria-label="Owner" className="w-auto" value={ownerId ?? ""} onChange={(event) => update({ owner: event.target.value || null })}>
@@ -107,7 +107,7 @@ export default function LeadsPage() {
           type="button"
           aria-pressed={due}
           onClick={() => update({ due: due ? null : "1" })}
-          className={clsx("h-10 rounded-full border px-4 text-sm font-medium", due ? "border-warning bg-warning-soft text-warning" : "border-line text-ink-soft hover:border-line-strong")}
+          className={clsx("h-10 rounded-full border px-4 text-sm font-medium", due ? "border-warning bg-warning/10 text-warning" : "border-border text-foreground/80 hover:border-input")}
         >
           Follow-up due{counts ? ` · ${counts.due}` : ""}
         </button>
@@ -122,7 +122,7 @@ export default function LeadsPage() {
           description={filtered || status !== "open" ? "Change the filters or search." : "Website requests land here. Add one you heard about elsewhere."}
           action={
             filtered || status !== "open" ? null : (
-              <Button variant="primary" icon={<Plus />} onClick={() => setCreating(true)}>
+              <Button variant="default" icon={<Plus />} onClick={() => setCreating(true)}>
                 New lead
               </Button>
             )
@@ -151,21 +151,21 @@ export default function LeadsPage() {
                 return (
                   <Tr key={lead.id}>
                     <Td>
-                      <Link to={`/app/crm/leads/${lead.id}`} className="font-medium text-ink hover:text-brand hover:underline">
+                      <Link to={`/app/crm/leads/${lead.id}`} className="font-medium text-foreground hover:text-primary hover:underline">
                         {lead.name}
                       </Link>
-                      <p className="text-xs text-muted">{[lead.company, lead.email].filter(Boolean).join(" · ")}</p>
+                      <p className="text-xs text-muted-foreground">{[lead.company, lead.email].filter(Boolean).join(" · ")}</p>
                     </Td>
                     <Td>
                       <LeadStatusBadge status={lead.status} />
                     </Td>
                     <Td className="hidden md:table-cell">{sourceLabel(lead.source)}</Td>
-                    <Td className="hidden lg:table-cell">{lead.ownerName ?? <span className="text-muted">Unassigned</span>}</Td>
-                    <Td className={clsx("hidden whitespace-nowrap sm:table-cell", overdue && "font-medium text-danger")}>{lead.followUpOn ? format.date(lead.followUpOn) : <span className="text-muted">—</span>}</Td>
+                    <Td className="hidden lg:table-cell">{lead.ownerName ?? <span className="text-muted-foreground">Unassigned</span>}</Td>
+                    <Td className={clsx("hidden whitespace-nowrap sm:table-cell", overdue && "font-medium text-destructive")}>{lead.followUpOn ? format.date(lead.followUpOn) : <span className="text-muted-foreground">—</span>}</Td>
                     <Td className="tabular hidden md:table-cell" align="right">
-                      {lead.valueCents ? format.money(lead.valueCents) : <span className="text-muted">—</span>}
+                      {lead.valueCents ? format.money(lead.valueCents) : <span className="text-muted-foreground">—</span>}
                     </Td>
-                    <Td className="hidden whitespace-nowrap text-muted lg:table-cell">{format.relative(lead.createdAt)}</Td>
+                    <Td className="hidden whitespace-nowrap text-muted-foreground lg:table-cell">{format.relative(lead.createdAt)}</Td>
                   </Tr>
                 );
               })}
@@ -173,13 +173,13 @@ export default function LeadsPage() {
           </Table>
           {total > PAGE_SIZE ? (
             <div className="mt-4 flex items-center justify-end gap-2">
-              <Button size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
+              <Button variant="outline" size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
                 Previous
               </Button>
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 {offset + 1}–{Math.min(offset + PAGE_SIZE, total)} of {total}
               </span>
-              <Button size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
+              <Button variant="outline" size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
                 Next
               </Button>
             </div>

@@ -33,6 +33,12 @@ spends its effort on what is specific to the business.
 - **Reuse over reinvention.** Every capability has a typed service, an API route and an MCP tool; docs are written for agents as much as for people. New work extends an existing module or follows the CRM module's shape.
 - **Simple.** Few dependencies, plain SQL, one Worker. An agent should understand a module by reading its folder.
 
+## Brand and visual direction
+
+- **Category standard, made well.** The admin panel and landing look like the tools the audience already trusts; the craft bar is Linear and Resend. Precision over decoration, the product itself over illustration.
+- **shadcn/ui is the design system.** Token names, components and the `npx shadcn@latest add` workflow, so agents and developers add UI the way they already know. Rules in `DESIGN.md`, how-to in `docs/design-system.md`, live reference at `/app/design`.
+- **Every deployment is its own brand.** Colour, surfaces, corners and logo are settings; nothing in code assumes the default green.
+
 ## Non-goals (for now)
 
 - Multi-tenant SaaS hosting (one deployment per business; see roadmap).

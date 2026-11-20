@@ -11,18 +11,18 @@ export function OverdueInvoicesWidget() {
   const overdue = useInvoices({ status: "overdue", limit: SHOWN });
   if (overdue.error) return <ErrorState error={overdue.error} retry={() => overdue.refetch()} />;
   if (!overdue.data) return <Spinner />;
-  if (overdue.data.items.length === 0) return <p className="text-sm text-muted">No overdue invoices.</p>;
+  if (overdue.data.items.length === 0) return <p className="text-sm text-muted-foreground">No overdue invoices.</p>;
   return (
     <div className="grid gap-2">
       <ul className="grid gap-1">
         {overdue.data.items.map((invoice) => (
           <li key={invoice.id}>
-            <Link to={`/app/invoices/${invoice.id}`} className="flex items-center justify-between gap-3 rounded-control px-1 py-1.5 hover:bg-paper">
+            <Link to={`/app/invoices/${invoice.id}`} className="flex items-center justify-between gap-3 rounded-md px-1 py-1.5 hover:bg-background">
               <span className="min-w-0">
                 <span className="block truncate text-sm font-medium">
-                  {invoice.number} <span className="font-normal text-muted">· {invoice.contactName}</span>
+                  {invoice.number} <span className="font-normal text-muted-foreground">· {invoice.contactName}</span>
                 </span>
-                <span className="block text-xs font-medium text-danger">
+                <span className="block text-xs font-medium text-destructive">
                   {invoice.daysOverdue} day{invoice.daysOverdue === 1 ? "" : "s"} overdue
                 </span>
               </span>
@@ -32,7 +32,7 @@ export function OverdueInvoicesWidget() {
         ))}
       </ul>
       {overdue.data.total > SHOWN ? (
-        <Link to="/app/invoices?status=overdue" className="px-1 text-sm font-medium text-brand hover:underline">
+        <Link to="/app/invoices?status=overdue" className="px-1 text-sm font-medium text-primary hover:underline">
           All {overdue.data.total} overdue invoices
         </Link>
       ) : null}

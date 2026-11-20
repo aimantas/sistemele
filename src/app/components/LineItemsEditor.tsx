@@ -26,10 +26,10 @@ export function LineItemsEditor({ lines, onChange, defaultVatRateBps, errors = {
 
   return (
     <div className="grid gap-3">
-      <div className="overflow-x-auto rounded-panel border border-line bg-surface">
+      <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <table className="w-full min-w-[720px] text-sm">
           <thead>
-            <tr className="border-b border-line bg-sunken/60 text-left text-xs font-semibold tracking-wide text-muted uppercase">
+            <tr className="border-b border-border bg-muted/60 text-left text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               <th className="px-3 py-2">Description</th>
               <th className="w-24 px-3 py-2 text-right">Qty</th>
               <th className="w-20 px-3 py-2">Unit</th>
@@ -45,11 +45,11 @@ export function LineItemsEditor({ lines, onChange, defaultVatRateBps, errors = {
               const net = Math.round((Number(line.quantity) || 0) * line.unitPriceCents * (1 - (line.discountBps ?? 0) / 10_000));
               const error = (field: string) => errors[`lines.${index}.${field}`];
               return (
-                <tr key={index} className="border-b border-line align-top last:border-0">
+                <tr key={index} className="border-b border-border align-top last:border-0">
                   <td className="px-3 py-2">
                     <DescriptionCell disabled={disabled} value={line.description} invalid={Boolean(error("description"))} onChange={(description) => update(index, { description, productId: null })} onPick={(product) => update(index, { productId: product.id, description: product.name, unit: product.unit, unitPriceCents: product.priceCents ?? 0, vatRateBps: product.vatRateBps })} />
-                    {line.productId ? <p className="mt-1 text-xs text-muted">From catalog</p> : null}
-                    {error("description") ? <p className="mt-1 text-xs text-danger">{error("description")}</p> : null}
+                    {line.productId ? <p className="mt-1 text-xs text-muted-foreground">From catalog</p> : null}
+                    {error("description") ? <p className="mt-1 text-xs text-destructive">{error("description")}</p> : null}
                   </td>
                   <td className="px-3 py-2">
                     <Input aria-label="Quantity" disabled={disabled} inputMode="decimal" className="tabular text-right" value={String(line.quantity)} aria-invalid={error("quantity") ? true : undefined} onChange={(event) => update(index, { quantity: Number(event.target.value.replace(",", ".")) || (event.target.value as unknown as number) })} />
@@ -80,26 +80,26 @@ export function LineItemsEditor({ lines, onChange, defaultVatRateBps, errors = {
           </tbody>
         </table>
       </div>
-      {errors.lines ? <p className="text-sm text-danger">{errors.lines}</p> : null}
+      {errors.lines ? <p className="text-sm text-destructive">{errors.lines}</p> : null}
       <div className="flex flex-wrap items-start justify-between gap-4">
         {!disabled ? (
-          <Button size="sm" icon={<Plus />} onClick={() => onChange([...lines, emptyLine(defaultVatRateBps)])}>
+          <Button variant="outline" size="sm" icon={<Plus />} onClick={() => onChange([...lines, emptyLine(defaultVatRateBps)])}>
             Add line
           </Button>
         ) : (
           <span />
         )}
         <dl className="tabular grid min-w-64 grid-cols-[1fr_auto] gap-x-6 gap-y-1 text-sm">
-          <dt className="text-muted">Net</dt>
+          <dt className="text-muted-foreground">Net</dt>
           <dd className="text-right">{format.money(totals.subtotalCents)}</dd>
           {totals.vatGroups.map((group) => (
             <div key={group.rateBps} className="contents">
-              <dt className="text-muted">VAT {format.vat(group.rateBps)}</dt>
+              <dt className="text-muted-foreground">VAT {format.vat(group.rateBps)}</dt>
               <dd className="text-right">{format.money(group.vatCents)}</dd>
             </div>
           ))}
-          <dt className="border-t border-line pt-1 font-semibold">Total</dt>
-          <dd className="border-t border-line pt-1 text-right font-semibold">{format.money(totals.totalCents)}</dd>
+          <dt className="border-t border-border pt-1 font-semibold">Total</dt>
+          <dd className="border-t border-border pt-1 text-right font-semibold">{format.money(totals.totalCents)}</dd>
         </dl>
       </div>
     </div>
@@ -122,13 +122,13 @@ function DescriptionCell({ value, onChange, onPick, invalid, disabled }: { value
     <div className="relative">
       <Input aria-label="Description" disabled={disabled} value={value} aria-invalid={invalid || undefined} aria-autocomplete={catalogEnabled ? "list" : undefined} aria-controls={catalogEnabled ? listId : undefined} onFocus={() => setFocused(true)} onBlur={() => setTimeout(() => setFocused(false), 150)} onChange={(event) => onChange(event.target.value)} placeholder={catalogEnabled ? "Type to search products, or describe the line" : "Describe the line"} />
       {focused && items.length > 0 ? (
-        <ul id={listId} role="listbox" className="absolute z-20 mt-1 w-full min-w-72 overflow-hidden rounded-control border border-line bg-surface shadow-lg">
+        <ul id={listId} role="listbox" className="absolute z-20 mt-1 w-full min-w-72 overflow-hidden rounded-md border border-border bg-card shadow-lg">
           {items.map((product) => (
             <li key={product.id} role="option" aria-selected={false}>
-              <button type="button" className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left hover:bg-sunken" onMouseDown={(event) => event.preventDefault()} onClick={() => (onPick(product), setFocused(false))}>
+              <button type="button" className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left hover:bg-muted" onMouseDown={(event) => event.preventDefault()} onClick={() => (onPick(product), setFocused(false))}>
                 <span className="min-w-0">
                   <span className="block truncate font-medium">{product.name}</span>
-                  <span className="block text-xs text-muted">
+                  <span className="block text-xs text-muted-foreground">
                     {product.sku}
                     {product.trackStock ? ` · ${product.stockOnHand} ${product.unit} in stock` : ""}
                   </span>

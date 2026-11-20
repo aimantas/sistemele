@@ -30,7 +30,7 @@ export function ContactFormDialog({ open, onClose, contact, onSaved }: { open: b
             Cancel
           </Button>
           <Button
-            variant="primary"
+            variant="default"
             loading={save.isPending}
             onClick={() =>
               save.mutate(

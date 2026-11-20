@@ -112,23 +112,27 @@ export function sitePages(modules: readonly ServerModule[]) {
               ) : null}
               <form className="form" method="post" action="/api/public/crm/inquiries">
                 <label>
-                  Your name
+                  <span>Your name</span>
                   <input name="name" autoComplete="name" required maxLength={120} />
                 </label>
                 <label>
-                  Email
+                  <span>Email</span>
                   <input name="email" type="email" autoComplete="email" required maxLength={254} />
                 </label>
                 <label>
-                  Phone <span className="muted">(optional)</span>
+                  <span>
+                    Phone <span className="muted">(optional)</span>
+                  </span>
                   <input name="phone" type="tel" autoComplete="tel" maxLength={50} />
                 </label>
                 <label>
-                  Company <span className="muted">(optional)</span>
+                  <span>
+                    Company <span className="muted">(optional)</span>
+                  </span>
                   <input name="company" autoComplete="organization" maxLength={200} />
                 </label>
                 <label>
-                  What do you need?
+                  <span>What do you need?</span>
                   <textarea name="message" rows={6} required maxLength={5000} placeholder="What you need, how many, by when" />
                 </label>
                 <input className="trap" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />

@@ -49,14 +49,14 @@ export default function ProductsPage() {
         title="Products"
         description="Products and services with prices and stock. Pick them on quotes and invoices."
         actions={
-          <Button variant="primary" icon={<Plus />} onClick={() => setCreating(true)}>
+          <Button variant="default" icon={<Plus />} onClick={() => setCreating(true)}>
             New product
           </Button>
         }
       />
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative w-full sm:max-w-xs">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input aria-label="Search products" placeholder="Search name or SKU" className="pl-9" value={term} onChange={(event) => setTerm(event.target.value)} />
         </div>
         <Select aria-label="Status" className="w-auto" value={status} onChange={(event) => setParam("status", event.target.value === "archived" ? "archived" : null)}>
@@ -72,11 +72,11 @@ export default function ProductsPage() {
           type="button"
           aria-pressed={lowStock}
           onClick={() => setParam("lowStock", lowStock ? null : "1")}
-          className={`h-10 rounded-control border px-3 text-sm font-medium ${lowStock ? "border-brand bg-brand-soft text-brand" : "border-line-strong bg-surface text-ink-soft hover:bg-sunken"}`}
+          className={`h-10 rounded-md border px-3 text-sm font-medium ${lowStock ? "border-primary bg-primary/10 text-primary" : "border-input bg-card text-foreground/80 hover:bg-muted"}`}
         >
           Low stock only
         </button>
-        <p className="ml-auto text-sm text-muted">{products.data ? `${total} item${total === 1 ? "" : "s"}` : null}</p>
+        <p className="ml-auto text-sm text-muted-foreground">{products.data ? `${total} item${total === 1 ? "" : "s"}` : null}</p>
       </div>
 
       {products.error ? <ErrorState error={products.error} retry={() => products.refetch()} /> : null}
@@ -88,7 +88,7 @@ export default function ProductsPage() {
           description={lowStock && !q ? "Every tracked product is above its reorder point." : filtered ? "Try another search or filter." : "Add what you sell. Products then appear on quotes, invoices and, if you choose, the website."}
           action={
             filtered ? null : (
-              <Button variant="primary" icon={<Plus />} onClick={() => setCreating(true)}>
+              <Button variant="default" icon={<Plus />} onClick={() => setCreating(true)}>
                 New product
               </Button>
             )
@@ -110,20 +110,20 @@ export default function ProductsPage() {
             <tbody>
               {products.data.items.map((product) => (
                 <Tr key={product.id}>
-                  <Td className="hidden font-mono text-xs whitespace-nowrap text-ink-soft sm:table-cell">{product.sku}</Td>
+                  <Td className="hidden font-mono text-xs whitespace-nowrap text-foreground/80 sm:table-cell">{product.sku}</Td>
                   <Td>
-                    <Link to={`/app/catalog/products/${product.id}`} className="font-medium text-ink hover:text-brand hover:underline">
+                    <Link to={`/app/catalog/products/${product.id}`} className="font-medium text-foreground hover:text-primary hover:underline">
                       {product.name}
                     </Link>
-                    <p className="text-xs text-muted">
+                    <p className="text-xs text-muted-foreground">
                       <span className="sm:hidden">{product.sku} · </span>
                       {product.kind === "service" ? "Service" : "Product"}
                       {product.status === "archived" ? " · archived" : ""}
                     </p>
                   </Td>
                   <Td align="right">
-                    {product.priceCents === null ? <span className="text-muted">On request</span> : format.money(product.priceCents)}
-                    <p className="text-xs text-muted">/ {product.unit}</p>
+                    {product.priceCents === null ? <span className="text-muted-foreground">On request</span> : format.money(product.priceCents)}
+                    <p className="text-xs text-muted-foreground">/ {product.unit}</p>
                   </Td>
                   <Td>
                     <StockBadge product={product} />
@@ -135,7 +135,7 @@ export default function ProductsPage() {
                         Listed
                       </Badge>
                     ) : (
-                      <span className="text-muted">—</span>
+                      <span className="text-muted-foreground">—</span>
                     )}
                   </Td>
                 </Tr>
@@ -144,13 +144,13 @@ export default function ProductsPage() {
           </Table>
           {total > PAGE_SIZE ? (
             <div className="mt-4 flex items-center justify-end gap-2">
-              <Button size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
+              <Button variant="outline" size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
                 Previous
               </Button>
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 {offset + 1}–{Math.min(offset + PAGE_SIZE, total)} of {total}
               </span>
-              <Button size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
+              <Button variant="outline" size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
                 Next
               </Button>
             </div>

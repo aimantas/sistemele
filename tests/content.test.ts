@@ -261,8 +261,8 @@ describe("dashboard and agents", () => {
 describe("home page", () => {
   it("shows the starter home with a get-started guide and the latest posts", async () => {
     const home = await (await t.request("/")).text();
-    expect(home).toContain("<h1>Don’t ask your agent to reinvent the wheel.</h1>");
-    expect(home).toContain('<a class="button primary" href="/app/login">Open the admin panel</a>');
+    expect(home).toContain("<h1 id=\"lp-title\">Don’t ask your agent to reinvent the wheel.</h1>");
+    expect(home).toContain('<a class="button primary lg" href="/app/login">Open the admin panel</a>');
     expect(home).toContain('<h2 id="get-started">Get started</h2>');
     expect(home).toContain("Sign in at <a href=\"/app/login\">/app/login</a>");
     expect(home).toContain("http://localhost/mcp");
@@ -280,7 +280,7 @@ describe("home page", () => {
     const page = await draft({ type: "page", title: "Gates and frames, made to measure", slug: "home", summary: "Send a drawing; get a priced quote.", body: "Read [how ordering works](/about)." });
     expect(page.path).toBe("/");
     // A draft changes nothing.
-    expect(await (await t.request("/")).text()).toContain("<h1>Don’t ask your agent to reinvent the wheel.</h1>");
+    expect(await (await t.request("/")).text()).toContain("<h1 id=\"lp-title\">Don’t ask your agent to reinvent the wheel.</h1>");
 
     await publish(page.id);
     const home = await (await t.request("/")).text();
@@ -291,8 +291,8 @@ describe("home page", () => {
     expect(home).not.toContain("Get started");
     expect(home).toContain('<a class="button primary" href="/contact">Get in touch</a>');
     expect(home).toContain("<h2>From the blog</h2>");
-    // One link to "/" in the menu: the home page never becomes a second entry.
-    expect(home.match(/href="\/"/gu)?.length).toBe(2);
+    // Logo, menu and footer link to "/": the home page never becomes a second menu entry.
+    expect(home.match(/href="\/"/gu)?.length).toBe(3);
 
     const redirect = await t.request("/home");
     expect(redirect.status).toBe(301);
@@ -300,7 +300,7 @@ describe("home page", () => {
     expect(await (await t.request("/sitemap.xml")).text()).not.toContain("<loc>http://localhost/home</loc>");
 
     await act(page.id, "unpublish");
-    expect(await (await t.request("/")).text()).toContain("<h1>Don’t ask your agent to reinvent the wheel.</h1>");
+    expect(await (await t.request("/")).text()).toContain("<h1 id=\"lp-title\">Don’t ask your agent to reinvent the wheel.</h1>");
     expect((await t.request("/home")).status).toBe(404);
   });
 });

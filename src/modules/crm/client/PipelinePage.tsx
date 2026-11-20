@@ -82,7 +82,7 @@ export default function PipelinePage() {
               <option value="">Everyone's deals</option>
               <option value="me">My deals</option>
             </Select>
-            <ButtonLink to="/app/crm/stages" icon={<Settings2 />}>
+            <ButtonLink variant="outline" to="/app/crm/stages" icon={<Settings2 />}>
               Stages
             </ButtonLink>
           </>
@@ -98,11 +98,11 @@ export default function PipelinePage() {
                 <header className="grid gap-0.5 px-1 pb-3">
                   <div className="flex items-baseline justify-between gap-2">
                     <h2 className="text-sm font-semibold">
-                      {stage.label} <span className="font-normal text-muted">{column.length}</span>
+                      {stage.label} <span className="font-normal text-muted-foreground">{column.length}</span>
                     </h2>
-                    <span className="tabular text-xs text-muted">{format.money(total)}</span>
+                    <span className="tabular text-xs text-muted-foreground">{format.money(total)}</span>
                   </div>
-                  {stage.kind === "open" ? <p className="tabular text-xs text-muted">{format.vat(stage.probabilityBps)}</p> : null}
+                  {stage.kind === "open" ? <p className="tabular text-xs text-muted-foreground">{format.vat(stage.probabilityBps)}</p> : null}
                 </header>
                 <SortableContext items={column.map((deal) => deal.id)} strategy={verticalListSortingStrategy}>
                   <ul className="grid min-h-24 content-start gap-2">
@@ -133,7 +133,7 @@ export default function PipelinePage() {
 function Column({ id, label, highlighted, children }: { id: string; label: string; highlighted: boolean; children: React.ReactNode }) {
   const { setNodeRef } = useDroppable({ id });
   return (
-    <section ref={setNodeRef} aria-label={label} className={clsx("w-72 shrink-0 snap-start rounded-panel border p-3 transition-colors 2xl:w-auto 2xl:min-w-0 2xl:flex-1", highlighted ? "border-brand bg-brand-soft/50" : "border-line bg-sunken/50")}>
+    <section ref={setNodeRef} aria-label={label} className={clsx("w-72 shrink-0 snap-start rounded-xl border p-3 transition-colors 2xl:w-auto 2xl:min-w-0 2xl:flex-1", highlighted ? "border-primary bg-primary/5" : "border-border bg-muted/50")}>
       {children}
     </section>
   );
@@ -154,18 +154,18 @@ const stop = { onPointerDown: (event: React.PointerEvent) => event.stopPropagati
 function DealCardBody({ deal, overlay, onOpen }: { deal: Deal; overlay?: boolean; onOpen?: () => void }) {
   const format = useFormat();
   return (
-    <div className={clsx("cursor-grab rounded-control border border-line bg-surface p-3 active:cursor-grabbing", overlay && "rotate-2 shadow-xl")}>
-      <button type="button" className="block text-left text-sm font-medium hover:text-brand hover:underline" onClick={onOpen} {...stop}>
+    <div className={clsx("cursor-grab rounded-md border border-border bg-card p-3 active:cursor-grabbing", overlay && "rotate-2 shadow-xl")}>
+      <button type="button" className="block text-left text-sm font-medium hover:text-primary hover:underline" onClick={onOpen} {...stop}>
         {deal.title}
       </button>
-      <Link to={`/app/crm/contacts/${deal.contactId}`} className="text-xs text-muted hover:text-brand hover:underline" {...stop}>
+      <Link to={`/app/crm/contacts/${deal.contactId}`} className="text-xs text-muted-foreground hover:text-primary hover:underline" {...stop}>
         {deal.contactName}
       </Link>
       <div className="mt-2 flex items-center justify-between gap-2 text-xs">
         <span className="tabular font-semibold">{format.money(deal.valueCents)}</span>
-        <span className="truncate text-muted">{[deal.expectedCloseDate ? format.date(deal.expectedCloseDate) : null, deal.ownerName].filter(Boolean).join(" · ")}</span>
+        <span className="truncate text-muted-foreground">{[deal.expectedCloseDate ? format.date(deal.expectedCloseDate) : null, deal.ownerName].filter(Boolean).join(" · ")}</span>
       </div>
-      {deal.stageKind === "lost" && deal.lostReason ? <p className="mt-1 truncate text-xs text-danger">{deal.lostReason}</p> : null}
+      {deal.stageKind === "lost" && deal.lostReason ? <p className="mt-1 truncate text-xs text-destructive">{deal.lostReason}</p> : null}
     </div>
   );
 }
@@ -190,7 +190,7 @@ function DealDialog({ deal, stages, onClose }: { deal: Deal; stages: Stage[]; on
             Cancel
           </Button>
           <Button
-            variant="primary"
+            variant="default"
             loading={update.isPending}
             onClick={() => update.mutate({ title, valueCents: valueCents ?? 0, expectedCloseDate: closeDate || null, ownerId, stage, ...(lost ? { lostReason } : {}) }, { onSuccess: onClose })}
           >
@@ -227,7 +227,7 @@ function DealDialog({ deal, stages, onClose }: { deal: Deal; stages: Stage[]; on
           </Field>
         ) : null}
         <p className="text-sm sm:col-span-2">
-          <Link className="text-brand hover:underline" to={`/app/crm/contacts/${deal.contactId}`}>
+          <Link className="text-primary hover:underline" to={`/app/crm/contacts/${deal.contactId}`}>
             Open {deal.contactName}
           </Link>
         </p>
@@ -251,7 +251,7 @@ function LostDialog({ pending, loading, onClose, onConfirm }: { pending: Pending
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="danger" loading={loading} onClick={() => onConfirm(reason)}>
+          <Button variant="destructive" loading={loading} onClick={() => onConfirm(reason)}>
             Move to {pending.stage.label}
           </Button>
         </>

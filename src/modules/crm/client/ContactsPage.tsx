@@ -39,14 +39,14 @@ export default function ContactsPage() {
         title="Contacts"
         description="Customers, leads and suppliers. Website requests land here automatically."
         actions={
-          <Button variant="primary" icon={<Plus />} onClick={() => setCreating(true)}>
+          <Button variant="default" icon={<Plus />} onClick={() => setCreating(true)}>
             New contact
           </Button>
         }
       />
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative w-full max-w-sm">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input aria-label="Search contacts" placeholder="Search name, email, company, phone" className="pl-9" value={term} onChange={(event) => setTerm(event.target.value)} />
         </div>
         {tag ? (
@@ -54,7 +54,7 @@ export default function ContactsPage() {
             Tag: {tag} ✕
           </Button>
         ) : null}
-        <p className="ml-auto text-sm text-muted">{contacts.data ? `${total} contact${total === 1 ? "" : "s"}` : null}</p>
+        <p className="ml-auto text-sm text-muted-foreground">{contacts.data ? `${total} contact${total === 1 ? "" : "s"}` : null}</p>
       </div>
 
       {contacts.error ? <ErrorState error={contacts.error} retry={() => contacts.refetch()} /> : null}
@@ -66,7 +66,7 @@ export default function ContactsPage() {
           description={q || tag ? "Try another search." : "Add your first customer, or share your website's contact page."}
           action={
             q || tag ? null : (
-              <Button variant="primary" icon={<Plus />} onClick={() => setCreating(true)}>
+              <Button variant="default" icon={<Plus />} onClick={() => setCreating(true)}>
                 New contact
               </Button>
             )
@@ -89,14 +89,14 @@ export default function ContactsPage() {
               {contacts.data.items.map((contact) => (
                 <Tr key={contact.id}>
                   <Td>
-                    <Link to={`/app/crm/contacts/${contact.id}`} className="font-medium text-ink hover:text-brand hover:underline">
+                    <Link to={`/app/crm/contacts/${contact.id}`} className="font-medium text-foreground hover:text-primary hover:underline">
                       {contact.name}
                     </Link>
-                    <p className="text-xs text-muted md:hidden">{contact.email || contact.phone}</p>
-                    {contact.kind === "person" && contact.companyName ? <p className="text-xs text-muted">{contact.companyName}</p> : null}
+                    <p className="text-xs text-muted-foreground md:hidden">{contact.email || contact.phone}</p>
+                    {contact.kind === "person" && contact.companyName ? <p className="text-xs text-muted-foreground">{contact.companyName}</p> : null}
                   </Td>
-                  <Td className="hidden md:table-cell">{contact.email ? <a href={`mailto:${contact.email}`} className="hover:underline">{contact.email}</a> : <span className="text-muted">—</span>}</Td>
-                  <Td className="hidden lg:table-cell">{contact.phone || <span className="text-muted">—</span>}</Td>
+                  <Td className="hidden md:table-cell">{contact.email ? <a href={`mailto:${contact.email}`} className="hover:underline">{contact.email}</a> : <span className="text-muted-foreground">—</span>}</Td>
+                  <Td className="hidden lg:table-cell">{contact.phone || <span className="text-muted-foreground">—</span>}</Td>
                   <Td className="hidden sm:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {contact.tags.map((value) => (
@@ -106,20 +106,20 @@ export default function ContactsPage() {
                       ))}
                     </div>
                   </Td>
-                  <Td className="hidden whitespace-nowrap text-muted md:table-cell">{format.relative(contact.updatedAt)}</Td>
+                  <Td className="hidden whitespace-nowrap text-muted-foreground md:table-cell">{format.relative(contact.updatedAt)}</Td>
                 </Tr>
               ))}
             </tbody>
           </Table>
           {total > PAGE_SIZE ? (
             <div className="mt-4 flex items-center justify-end gap-2">
-              <Button size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
+              <Button variant="outline" size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
                 Previous
               </Button>
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 {offset + 1}–{Math.min(offset + PAGE_SIZE, total)} of {total}
               </span>
-              <Button size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
+              <Button variant="outline" size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
                 Next
               </Button>
             </div>

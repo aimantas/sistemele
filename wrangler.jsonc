@@ -15,7 +15,7 @@
     // The Worker decides: public pages are server-rendered, /app/* gets the SPA
     // shell, unknown paths get a real 404. Hashed build files skip the Worker.
     "not_found_handling": "none",
-    "run_worker_first": ["/*", "!/assets/*", "!/screenshots/*", "!/logos/*", "!/favicon.svg"]
+    "run_worker_first": ["/*", "!/assets/*", "!/screenshots/*", "!/logos/*", "!/fonts/*", "!/favicon.svg"]
   },
   "d1_databases": [
     {

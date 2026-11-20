@@ -44,7 +44,7 @@ UI kit) and extend it. `docs/extending.md` maps common needs to existing pieces.
 | `migrations/` | D1 migrations, one per module, applied in filename order. |
 | `seed/` | Local demo data (`npm run db:seed`). Fictional only. |
 | `tests/` | Vitest against a real in-memory D1 with all migrations (`tests/helpers.ts`). |
-| `docs/` | Guides: getting started, extending (best practices), architecture, modules, dashboard, AI agents, deployment, email, SEO, security. |
+| `docs/` | Guides: getting started, extending (best practices), architecture, modules, dashboard, design system, AI agents, deployment, email, SEO, security. |
 | `skills/sistemele/` | Installable agent skill for this project. |
 | `website/` | Marketing site for Sistemėlė itself (static, separate Worker). Delete it in your own project. |
 
@@ -102,7 +102,7 @@ Each recipe lists the files to touch. Follow the CRM module as the reference.
 - PATCH schemas use `patchSchema(createSchema)` from `src/shared/zod.ts` — Zod 4 keeps `.default()` inside `.partial()`, which would reset unsent fields.
 - Brand colours and logo come from Settings → Brand (`src/shared/branding.ts`); never hard-code colours in components.
 - Validation messages are sentences a customer understands ("Enter a valid email.").
-- UI copy: direct, short, says what happens next. One primary action per screen. Use the UI kit in `src/app/ui`; follow `DESIGN.md`.
+- UI copy: direct, short, says what happens next. One primary action per screen. Use the UI kit in `src/app/ui` (shadcn/ui; add pieces with `npx shadcn@latest add <name>`); token classes only; follow `DESIGN.md` and `docs/design-system.md`.
 - Query keys start with the module id (`["crm", …]`); invalidate `["metrics"]` after writes that change numbers.
 - Public pages ship no client JavaScript.
 - Slugs: `slugify` and `SLUG_PATTERN` from `src/shared/slug.ts`.

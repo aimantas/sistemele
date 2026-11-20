@@ -24,19 +24,19 @@ function MetricWidget({ config }: WidgetProps) {
   const format = useFormat();
   const metric = data?.items.find((item) => item.key === config.metric);
   if (isLoading) return <Spinner />;
-  if (!metric) return <p className="text-sm text-muted">This metric is not available. Remove the card or pick another.</p>;
+  if (!metric) return <p className="text-sm text-muted-foreground">This metric is not available. Remove the card or pick another.</p>;
   const value = metric.format === "money" ? format.money(metric.value) : metric.format === "percent" ? format.percent(metric.value) : format.number(metric.value);
   return (
     <div className="flex h-full flex-col justify-between gap-2">
-      <p className="text-sm font-medium text-ink-soft">{metric.label}</p>
+      <p className="text-sm font-medium text-foreground/80">{metric.label}</p>
       <p className="tabular text-3xl font-semibold tracking-tight">{value}</p>
-      {metric.hint ? <p className="text-sm text-muted">{metric.hint}</p> : <span />}
+      {metric.hint ? <p className="text-sm text-muted-foreground">{metric.hint}</p> : <span />}
     </div>
   );
 }
 
 function NoteWidget({ config }: WidgetProps) {
-  return <p className="text-sm whitespace-pre-line text-ink-soft">{String(config.text ?? "Empty note. Edit it in Customize.")}</p>;
+  return <p className="text-sm whitespace-pre-line text-foreground/80">{String(config.text ?? "Empty note. Edit it in Customize.")}</p>;
 }
 
 function QuickActionsWidget() {
@@ -44,12 +44,12 @@ function QuickActionsWidget() {
   return (
     <div className="grid gap-2 sm:grid-cols-2">
       {actions.map((action) => (
-        <Link key={action.to} to={action.to} className="flex items-center gap-2 rounded-control border border-line px-3 py-2 text-sm font-medium hover:border-line-strong hover:bg-paper">
-          <action.icon className="size-4 text-brand" />
+        <Link key={action.to} to={action.to} className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-medium hover:border-input hover:bg-background">
+          <action.icon className="size-4 text-primary" />
           {action.label}
         </Link>
       ))}
-      {actions.length === 0 ? <p className="text-sm text-muted">Enable a module to get quick actions.</p> : null}
+      {actions.length === 0 ? <p className="text-sm text-muted-foreground">Enable a module to get quick actions.</p> : null}
     </div>
   );
 }
@@ -69,13 +69,13 @@ function GettingStartedWidget() {
   const remaining = steps.filter((step) => !step.done).length;
   return (
     <div className="flex h-full flex-col gap-3">
-      <p className="text-sm text-ink-soft">{remaining === 0 ? "Setup complete. Remove this card in Customize." : `${remaining} of ${steps.length} setup steps left.`}</p>
+      <p className="text-sm text-foreground/80">{remaining === 0 ? "Setup complete. Remove this card in Customize." : `${remaining} of ${steps.length} setup steps left.`}</p>
       <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
         {steps.map((step) => (
           <li key={step.label}>
-            <Link to={step.to} className="flex items-center gap-2 rounded-control border border-line px-3 py-2 text-sm hover:border-line-strong hover:bg-paper">
-              {step.done ? <CheckCircle2 className="size-4 shrink-0 text-success" /> : <Circle className="size-4 shrink-0 text-muted" />}
-              <span className={step.done ? "text-muted line-through" : "font-medium"}>{step.label}</span>
+            <Link to={step.to} className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm hover:border-input hover:bg-background">
+              {step.done ? <CheckCircle2 className="size-4 shrink-0 text-success" /> : <Circle className="size-4 shrink-0 text-muted-foreground" />}
+              <span className={step.done ? "text-muted-foreground line-through" : "font-medium"}>{step.label}</span>
             </Link>
           </li>
         ))}

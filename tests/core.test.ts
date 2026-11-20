@@ -149,7 +149,7 @@ describe("public site and discovery", () => {
     const response = await t.request("/");
     const html = await response.text();
     expect(response.headers.get("content-type")).toContain("text/html");
-    expect(html).toContain("<h1>");
+    expect(html).toContain("<h1");
     expect(html).toContain('rel="canonical" href="http://localhost/"');
     expect(html).toContain('application/ld+json');
   });

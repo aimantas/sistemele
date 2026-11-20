@@ -150,7 +150,7 @@ export function NewProductDialog({ open, onClose, onSaved }: { open: boolean; on
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="primary" loading={create.isPending} onClick={submit}>
+          <Button variant="default" loading={create.isPending} onClick={submit}>
             Create product
           </Button>
         </>

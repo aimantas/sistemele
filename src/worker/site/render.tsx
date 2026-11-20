@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { config } from "../../../sistemele.config";
 import type { ModuleContext } from "@/modules/types.server";
-import { siteThemeCss } from "@/shared/branding";
+import { themeCss } from "@/shared/branding";
 import { getContext } from "../context";
 import { getBranding } from "../lib/settings";
 import { logoUrl } from "./brand";
@@ -54,6 +54,19 @@ export function prefersMarkdown(accept: string | undefined): boolean {
   return markdown > 0 && markdown >= html;
 }
 
+/**
+ * The visual direction, kept in the rendered HTML so any later edit can be
+ * checked against it (see DESIGN.md).
+ */
+const DIRECTION_CONTRACT = `<!--
+THESIS: Sistemėlė looks like the category standard executed at Linear and Resend craft: a calm product landing and a shadcn/ui admin panel; it refuses quirky themes and the dark neon dev-tool cliché.
+OWN-WORLD: shadcn/ui tokens on near-neutral cool greys, one brand colour (Settings → Brand, default forest green) for primary actions, links and focus; Inter; hairline borders, soft offset shadows, 10px radius; light and dark follow the system.
+STORY: A developer sees what the kit is, opens the admin panel or deploys their own, and learns what their agent gets.
+FIRST VIEWPORT: Centred motto, a short balanced lead, Open the admin panel (primary) and Deploy to Cloudflare, a one-line meta row, then the live dashboard screenshot rising into place over a soft card-to-background wash.
+FORM: category standard (user choice over the roll), seed 5542942a.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->`;
+
 export interface RenderPageOptions {
   meta: PageMeta;
   body: ReactNode;
@@ -83,7 +96,7 @@ export async function renderPage(c: Context<AppEnv>, options: RenderPageOptions)
       siteName={business.name}
       language={config.site.language}
       business={business}
-      themeCss={siteThemeCss(branding)}
+      themeCss={themeCss(branding)}
       logoUrl={await logoUrl(branding.logoSvg)}
       links={links}
       currentPath={new URL(c.req.url).pathname}
@@ -92,5 +105,5 @@ export async function renderPage(c: Context<AppEnv>, options: RenderPageOptions)
       {options.body}
     </Layout>,
   );
-  return c.body(`<!doctype html>${html}`, options.status ?? 200, { ...headers, "Content-Type": "text/html; charset=utf-8" });
+  return c.body(`<!doctype html>${html.replace("<body>", `<body>${DIRECTION_CONTRACT}`)}`, options.status ?? 200, { ...headers, "Content-Type": "text/html; charset=utf-8" });
 }

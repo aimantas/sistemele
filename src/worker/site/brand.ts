@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { dashboardThemeCss, type BrandInfo } from "@/shared/branding";
+import { themeCss, type BrandInfo } from "@/shared/branding";
 import { getContext } from "../context";
 import type { AppEnv } from "../env";
 import { sha256Hex } from "../lib/crypto";
@@ -34,7 +34,7 @@ export const brandRoutes = new Hono<AppEnv>()
     return c.body(logoSvg, 200, headers);
   })
   .get("/brand/theme", async (c) => {
-    const css = dashboardThemeCss(await getBranding(getContext(c).db));
+    const css = themeCss(await getBranding(getContext(c).db));
     const etag = `"${(await sha256Hex(css)).slice(0, 12)}"`;
     const headers = { "Content-Type": "text/css; charset=utf-8", "Cache-Control": "no-cache", ETag: etag };
     if (c.req.header("if-none-match") === etag) return c.body(null, 304, headers);
