@@ -1,4 +1,5 @@
 import { Hono, type Context, type MiddlewareHandler } from "hono";
+import { config } from "../../sistemele.config";
 import type { ModuleContext, ServerModule } from "@/modules/types.server";
 import { authRoutes } from "./auth/routes";
 import { userFromApiToken, userFromSession } from "./auth/sessions";
@@ -10,6 +11,7 @@ import { forbidden, handleError, unauthorized } from "./lib/errors";
 import { mcpRoutes } from "./mcp/routes";
 import { brandRoutes } from "./site/brand";
 import { discoveryRoutes } from "./site/discovery";
+import { docsRoutes } from "./site/docs/routes";
 import { renderNotFound, sitePages } from "./site/pages";
 import { setSiteNavigation } from "./site/render";
 
@@ -111,7 +113,7 @@ export function validateModules(modules: readonly ServerModule[]): void {
 export function createApp(modules: readonly ServerModule[]) {
   validateModules(modules);
   setSiteNavigation({
-    start: [{ label: "Home", href: "/" }, ...modules.flatMap((module) => module.siteLinks ?? [])],
+    start: [{ label: "Home", href: "/" }, ...(config.site.docs ? [{ label: "Docs", href: "/docs" }] : []), ...modules.flatMap((module) => module.siteLinks ?? [])],
     menus: modules.flatMap((module) => (module.siteMenu ? [(ctx: ModuleContext) => module.siteMenu!(ctx)] : [])),
     end: modules.some((m) => m.id === "crm") ? [{ label: "Contact", href: "/contact" }] : [],
   });
@@ -136,6 +138,8 @@ export function createApp(modules: readonly ServerModule[]) {
   app.route("/", brandRoutes);
   app.route("/", discoveryRoutes(modules));
   app.route("/", sitePages(modules));
+  // Before module routes: the content module serves pages at /<slug>.
+  if (config.site.docs) app.route("/", docsRoutes(modules));
   for (const module of modules) if (module.site) app.route("/", module.site);
 
   app.get("/app", serveApp);

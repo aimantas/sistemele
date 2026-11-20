@@ -114,6 +114,8 @@ The token's role limits what the agent can do. See [docs/ai-agents.md](docs/ai-a
 
 ## Documentation
 
+A running copy serves all of this, with diagrams, at `/docs` (live: [sistemele.aimantas.com/docs](https://sistemele.aimantas.com/docs)).
+
 | Guide | |
 | --- | --- |
 | [Getting started](docs/getting-started.md) | Local setup, demo data, first steps. |

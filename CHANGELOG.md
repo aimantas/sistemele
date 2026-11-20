@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Docs at `/docs`: AGENTS.md, the agent skill and its references, DESIGN.md and every guide in `docs/`, rendered from the repository with a sidebar, "On this page", previous/next and links to the source. The overview shows how the pieces fit (architecture diagram, the write path, module anatomy, the agent loop), the non-negotiables read from AGENTS.md, and a chart of MCP tools per module counted from the running code. Agents get the original Markdown with `Accept: text/markdown`; the pages are in the sitemap and llms.txt. `site.docs` in `sistemele.config.ts` turns it off; "docs" is now a reserved page address.
+
 - Design system: the admin panel and public site move to shadcn/ui tokens and components (`src/app/ui`, `components.json`, `cn()` in `src/lib/utils.ts`), Inter Variable (self-hosted) and a cool neutral palette, with light and dark modes from the system setting. Settings → Brand now overrides the shadcn tokens in both modes (a lighter brand colour is derived for dark), and the default surface is "cool". New `/app/design` page shows every token and component; new `docs/design-system.md`; `DESIGN.md` rewritten; `tests/tokens.test.ts` keeps the site's token copy equal to the panel's. Button variants are now shadcn names (`default`, `outline`, `secondary`, `ghost`, `destructive`, `link`); `buttonClass` became `buttonVariants`.
 - Starter home redesigned: large headline over the live dashboard, "Works with" logo strip, four-step get started, feature rows with light and dark screenshots, module index with MCP tool counts, agent section, deploy call to action; blog posts show as ruled rows; the mobile header keeps the menu on one scrolling line. The demo logo's wordmark follows dark mode.
 

@@ -27,7 +27,7 @@ export const ENTRY_TYPE_LABELS: Record<EntryType, { one: string; many: string }>
  * otherwise be shadowed or shadow something.
  */
 export const RESERVED_PAGE_SLUGS: readonly string[] = [
-  "api", "app", "assets", "blog", "brand", "contact", "favicon", "feed", "health", "i", "llms", "login", "mcp", "privacy", "products", "q", "robots", "search", "sitemap", "static",
+  "api", "app", "assets", "blog", "brand", "contact", "docs", "favicon", "feed", "fonts", "health", "i", "llms", "login", "logos", "mcp", "privacy", "products", "q", "robots", "screenshots", "search", "sitemap", "static",
 ];
 
 export function entryState(entry: { status: EntryStatus; publishedAt: string | null }, now = new Date().toISOString()): EntryState {

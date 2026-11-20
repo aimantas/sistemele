@@ -3,7 +3,9 @@ import type { ServerModule, SitemapEntry } from "@/modules/types.server";
 import { getContext } from "../context";
 import { appOrigin, isIndexable, type AppEnv } from "../env";
 import { allTools } from "../mcp/routes";
+import { config } from "../../../sistemele.config";
 import { siteContent } from "./content";
+import { DOCS } from "./docs/sources";
 
 const xmlEscape = (value: string) => value.replace(/[<>&'"]/gu, (char) => `&#${char.charCodeAt(0)};`);
 
@@ -15,7 +17,7 @@ export function discoveryRoutes(modules: readonly ServerModule[]) {
     .get("/sitemap.xml", async (c) => {
       const ctx = getContext(c);
       const origin = appOrigin(c.env);
-      const core: SitemapEntry[] = [{ path: "/", changefreq: "weekly", priority: 1 }, ...(hasCrm ? [{ path: "/contact", priority: 0.8 } as SitemapEntry] : []), { path: "/privacy", changefreq: "yearly", priority: 0.2 }];
+      const core: SitemapEntry[] = [{ path: "/", changefreq: "weekly", priority: 1 }, ...(hasCrm ? [{ path: "/contact", priority: 0.8 } as SitemapEntry] : []), { path: "/privacy", changefreq: "yearly", priority: 0.2 }, ...(config.site.docs ? [{ path: "/docs", changefreq: "weekly", priority: 0.7 } as SitemapEntry, ...DOCS.map((doc): SitemapEntry => ({ path: `/docs/${doc.slug}`, changefreq: "monthly", priority: 0.5 }))] : [])];
       const contributed = (await Promise.all(modules.map((module) => module.sitemap?.(ctx) ?? Promise.resolve([])))).flat();
       const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...core, ...contributed]
         .map(
@@ -51,6 +53,7 @@ export function discoveryRoutes(modules: readonly ServerModule[]) {
         ...(modules.some((m) => m.id === "catalog") ? [`- [Products](${origin}/products): public products with prices and availability`] : []),
         `- [Privacy policy](${origin}/privacy)`,
         "",
+        ...(config.site.docs ? ["## Docs", "", `- [Documentation](${origin}/docs): how to build on Sistemėlė`, ...DOCS.map((doc) => `- [${doc.title}](${origin}/docs/${doc.slug}): ${doc.summary}`), ""] : []),
         "Every public page also answers `Accept: text/markdown` with a Markdown version.",
         "",
         "## Agent access (MCP)",
