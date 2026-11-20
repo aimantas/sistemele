@@ -6,16 +6,18 @@ import { z } from "zod";
  * colours are derived so the palette stays consistent and readable.
  */
 
+/** Light-mode surfaces. Dark mode keeps its own neutral surfaces (src/app/styles.css). */
 export const SURFACES = {
-  warm: { label: "Warm paper", paper: "#f6f5f1", sunken: "#efeee9", line: "#e2e1dc", lineStrong: "#c4c3bc" },
-  cool: { label: "Cool grey", paper: "#f4f6f8", sunken: "#eceff3", line: "#dfe3e8", lineStrong: "#c3c9d1" },
-  white: { label: "Plain white", paper: "#fafafa", sunken: "#f1f1f1", line: "#e6e6e6", lineStrong: "#cccccc" },
+  cool: { label: "Cool grey", background: "#f8f9fb", muted: "#f1f3f6", sidebar: "#f4f5f8", border: "#e3e6eb", input: "#d3d8df" },
+  warm: { label: "Warm paper", background: "#f8f7f4", muted: "#f0efea", sidebar: "#f3f2ee", border: "#e6e4de", input: "#d6d3cb" },
+  white: { label: "Plain white", background: "#ffffff", muted: "#f4f4f5", sidebar: "#fafafa", border: "#e6e6e9", input: "#d4d4d8" },
 } as const;
 
+/** The base --radius; controls use it minus 2px, cards plus 4px (shadcn scale). */
 export const CORNERS = {
-  sharp: { label: "Sharp", control: "2px", panel: "4px" },
-  soft: { label: "Soft", control: "8px", panel: "12px" },
-  round: { label: "Round", control: "12px", panel: "18px" },
+  sharp: { label: "Sharp", radius: "0.25rem" },
+  soft: { label: "Soft", radius: "0.625rem" },
+  round: { label: "Round", radius: "1rem" },
 } as const;
 
 export const BRAND_PRESETS = [
@@ -31,7 +33,7 @@ const hexColor = z.string().trim().regex(/^#[0-9a-fA-F]{6}$/u, "Use a 6-digit he
 
 export const brandingSchema = z.object({
   brandColor: hexColor.default("#1f5f4a"),
-  surface: z.enum(["warm", "cool", "white"]).default("warm"),
+  surface: z.enum(["cool", "warm", "white"]).default("cool"),
   corners: z.enum(["sharp", "soft", "round"]).default("soft"),
   /** Sanitised SVG markup, or null for the default mark. Max 100 KB. */
   logoSvg: z.string().max(100_000, "The logo must be under 100 KB. Simplify or minify the SVG.").nullable().default(null),
@@ -65,6 +67,41 @@ export function mix(a: string, b: string, amount: number): string {
   return toHex([ar + (br - ar) * amount, ag + (bg - ag) * amount, ab + (bb - ab) * amount]);
 }
 
+function toHsl(hex: string): [number, number, number] {
+  const [r, g, b] = toRgb(hex).map((channel) => channel / 255);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  if (max === min) return [0, 0, l];
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  const h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [h * 60, s, l];
+}
+
+function fromHsl([h, s, l]: [number, number, number]): string {
+  const k = (n: number) => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  return toHex([f(0) * 255, f(8) * 255, f(4) * 255]);
+}
+
+/**
+ * The brand for dark surfaces: same hue and saturation, lighter until it reads
+ * as text and as an active fill (5:1 on the dark ground). Mixing with white
+ * would grey it out and make the primary button look disabled.
+ */
+export function brandForDark(brand: string): string {
+  const [h, s, l] = toHsl(brand);
+  let lightness = l;
+  let candidate = brand;
+  while (contrastRatio(candidate, DARK_SURFACE) < 5 && lightness < 0.9) {
+    lightness += 0.02;
+    candidate = fromHsl([h, s, lightness]);
+  }
+  return candidate;
+}
+
 function luminance(hex: string): number {
   const channel = (value: number) => {
     const c = value / 255;
@@ -80,49 +117,63 @@ export function contrastRatio(a: string, b: string): number {
 }
 
 export interface BrandTokens {
+  /** Light mode: the brand colour and the text colour on it. */
   brand: string;
   brandHover: string;
   brandSoft: string;
   brandInk: string;
-  paper: string;
-  sunken: string;
-  line: string;
-  lineStrong: string;
-  radiusControl: string;
-  radiusPanel: string;
+  /** Dark mode: the brand lightened for dark surfaces, and the text on it. */
+  brandDark: string;
+  brandDarkInk: string;
+  background: string;
+  muted: string;
+  sidebar: string;
+  border: string;
+  input: string;
+  radius: string;
   /** Contrast of the brand colour against white text and as text on white. */
   contrast: { onBrand: number; asText: number };
+}
+
+const DARK_SURFACE = "#0f1013";
+
+/** The text colour with the better contrast on `background`: white or near-black. */
+function inkOn(background: string): string {
+  return contrastRatio(background, "#ffffff") >= contrastRatio(background, "#111111") ? "#ffffff" : "#111111";
 }
 
 export function brandTokens(branding: Branding): BrandTokens {
   const brand = branding.brandColor;
   const surface = SURFACES[branding.surface];
-  const corners = CORNERS[branding.corners];
   const onWhite = contrastRatio(brand, "#ffffff");
   const brandInk = onWhite >= 4.5 || onWhite >= contrastRatio(brand, "#111111") ? "#ffffff" : "#111111";
+  // On dark surfaces the brand must read as text (links, focus) as well as a fill.
+  const brandDark = brandForDark(brand);
   return {
     brand,
     brandHover: mix(brand, "#000000", 0.18),
-    brandSoft: mix(brand, "#ffffff", 0.88),
+    brandSoft: mix(brand, "#ffffff", 0.9),
     brandInk,
-    paper: surface.paper,
-    sunken: surface.sunken,
-    line: surface.line,
-    lineStrong: surface.lineStrong,
-    radiusControl: corners.control,
-    radiusPanel: corners.panel,
+    brandDark,
+    brandDarkInk: inkOn(brandDark),
+    background: surface.background,
+    muted: surface.muted,
+    sidebar: surface.sidebar,
+    border: surface.border,
+    input: surface.input,
+    radius: CORNERS[branding.corners].radius,
     contrast: { onBrand: contrastRatio(brand, brandInk), asText: onWhite },
   };
 }
 
-/** CSS for the dashboard: overrides the Tailwind @theme variables. */
-export function dashboardThemeCss(branding: Branding): string {
+/**
+ * Theme overrides for the admin panel and the public site (same shadcn token
+ * names). Light values only apply in light mode, so dark mode keeps its own
+ * neutral surfaces; the brand colour is adjusted for each.
+ */
+export function themeCss(branding: Branding): string {
   const t = brandTokens(branding);
-  return `:root:root{--color-brand:${t.brand};--color-brand-hover:${t.brandHover};--color-brand-soft:${t.brandSoft};--color-brand-ink:${t.brandInk};--color-paper:${t.paper};--color-sunken:${t.sunken};--color-line:${t.line};--color-line-strong:${t.lineStrong};--radius-control:${t.radiusControl};--radius-panel:${t.radiusPanel};}`;
-}
-
-/** CSS for the public site: overrides the variables at the top of site/styles.css. */
-export function siteThemeCss(branding: Branding): string {
-  const t = brandTokens(branding);
-  return `:root{--brand:${t.brand};--brand-ink:${t.brandInk};--brand-soft:${t.brandSoft};--paper:${t.paper};--line:${t.line};--radius:${t.radiusPanel};}`;
+  const light = `--primary:${t.brand};--primary-foreground:${t.brandInk};--background:${t.background};--muted:${t.muted};--secondary:${t.muted};--accent:${t.muted};--sidebar:${t.sidebar};--sidebar-accent:${t.border};--border:${t.border};--sidebar-border:${t.border};--input:${t.input};`;
+  const dark = `--primary:${t.brandDark};--primary-foreground:${t.brandDarkInk};`;
+  return `:root:root{--radius:${t.radius};}@media (prefers-color-scheme: light){:root:root{${light}}}@media (prefers-color-scheme: dark){:root:root{${dark}}}`;
 }

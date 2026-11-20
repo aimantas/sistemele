@@ -46,14 +46,14 @@ export default function MovementsPage() {
             <tbody>
               {movements.data.map((movement) => (
                 <Tr key={movement.id}>
-                  <Td className="whitespace-nowrap text-ink-soft">
+                  <Td className="whitespace-nowrap text-foreground/80">
                     <time dateTime={movement.createdAt}>{format.dateTime(movement.createdAt)}</time>
                   </Td>
                   <Td>
-                    <Link to={`/app/catalog/products/${movement.productId}`} className="font-medium text-ink hover:text-brand hover:underline">
+                    <Link to={`/app/catalog/products/${movement.productId}`} className="font-medium text-foreground hover:text-primary hover:underline">
                       {movement.productName}
                     </Link>
-                    <p className="text-xs text-muted">
+                    <p className="text-xs text-muted-foreground">
                       {movement.productSku}
                       <span className="sm:hidden"> · {movement.reason}</span>
                     </p>
@@ -64,13 +64,13 @@ export default function MovementsPage() {
                   <Td align="right">
                     <SignedQuantity quantity={movement.quantity} unit={movement.unit} />
                   </Td>
-                  <Td className="hidden text-ink-soft md:table-cell">{movement.note || <span className="text-muted">—</span>}</Td>
-                  <Td className="hidden text-ink-soft lg:table-cell">{movement.createdByName ?? <span className="text-muted">System</span>}</Td>
+                  <Td className="hidden text-foreground/80 md:table-cell">{movement.note || <span className="text-muted-foreground">—</span>}</Td>
+                  <Td className="hidden text-foreground/80 lg:table-cell">{movement.createdByName ?? <span className="text-muted-foreground">System</span>}</Td>
                 </Tr>
               ))}
             </tbody>
           </Table>
-          {movements.data.length === LIMIT ? <p className="mt-3 text-sm text-muted">Showing the latest {LIMIT} movements.</p> : null}
+          {movements.data.length === LIMIT ? <p className="mt-3 text-sm text-muted-foreground">Showing the latest {LIMIT} movements.</p> : null}
         </>
       ) : null}
     </div>

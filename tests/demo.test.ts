@@ -68,7 +68,7 @@ describe("demo mode", () => {
     await resetDemoData(t.db);
     expect(await count("SELECT COUNT(*) AS n FROM contacts WHERE id = 'ct_demo_baltic'")).toBe(1);
     const home = await (await t.request("/")).text();
-    expect(home).toContain("<h1>Don’t ask your agent to reinvent the wheel.</h1>");
+    expect(home).toContain("<h1 id=\"lp-title\">Don’t ask your agent to reinvent the wheel.</h1>");
     expect(home).toContain("One click signs you in as the demo owner.");
   });
 });

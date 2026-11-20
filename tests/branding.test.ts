@@ -48,15 +48,16 @@ describe("brand settings", () => {
     expect(await svg.text()).toContain("<rect");
 
     const css = await (await t.request("/brand/theme")).text();
-    expect(css).toContain("--color-brand:#a3472b");
-    expect(css).toContain("--radius-control:2px");
+    expect(css).toContain("--primary:#a3472b");
+    expect(css).toContain("@media (prefers-color-scheme: dark)");
+    expect(css).toContain("--radius:0.25rem");
 
     const info = await json<{ logoUrl: string; brandColor: string }>(await t.request("/brand/info.json"));
     expect(info).toMatchObject({ brandColor: "#a3472b" });
     expect(info.logoUrl).toMatch(/^\/brand\/logo\.svg\?v=/u);
 
     const home = await (await t.request("/")).text();
-    expect(home).toContain("--brand:#a3472b");
+    expect(home).toContain("--primary:#a3472b");
     expect(home).toContain('class="brand-logo"');
   });
 

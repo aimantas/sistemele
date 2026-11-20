@@ -121,6 +121,7 @@ The token's role limits what the agent can do. See [docs/ai-agents.md](docs/ai-a
 | [Architecture](docs/architecture.md) | Request flow, module system, events, security model. |
 | [Modules](docs/modules.md) | Module contract and how to build one. |
 | [Dashboard](docs/dashboard.md) | Widgets, metrics, templates, AI customisation recipes. |
+| [Design system](docs/design-system.md) | shadcn/ui tokens and components, light and dark, brand settings, `/app/design`. |
 | [AI agents](docs/ai-agents.md) | MCP, API tokens, skill, agent workflows. |
 | [Deployment](docs/deployment.md) | Cloudflare, D1, secrets, domains, previews, CI. |
 | [Email](docs/email.md) | Resend setup, templates, delivery log. |

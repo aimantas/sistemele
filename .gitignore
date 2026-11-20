@@ -10,3 +10,6 @@ dist
 .DS_Store
 coverage
 .vite
+
+# Impeccable decision-page runtime state
+.impeccable/questions/

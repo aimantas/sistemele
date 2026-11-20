@@ -53,6 +53,9 @@ export function Layout({ meta, origin, siteName, language, business, themeCss, l
         {meta.modifiedTime ? <meta property="article:modified_time" content={meta.modifiedTime} /> : null}
         <meta name="twitter:card" content={meta.ogImage ? "summary_large_image" : "summary"} />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossOrigin="" />
+        <meta name="theme-color" content="#f8f9fb" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#0f1013" media="(prefers-color-scheme: dark)" />
         <link rel="alternate" type="text/markdown" href={canonical} />
         {(meta.alternates ?? []).map((alternate) => (
           <link key={alternate.href} rel="alternate" type={alternate.type} href={alternate.href} title={alternate.title} />
@@ -93,38 +96,40 @@ export function Layout({ meta, origin, siteName, language, business, themeCss, l
           <SiteBrandContext.Provider value={{ name: business.name, logoUrl }}>{children}</SiteBrandContext.Provider>
         </main>
         <footer className="site-footer">
-          <div className="wrap footer-grid">
-            <div>
-              <strong>{business.legalName || business.name}</strong>
-              {business.companyCode ? <p>Company code {business.companyCode}</p> : null}
-              {business.vatCode ? <p>VAT {business.vatCode}</p> : null}
+          <div className="wrap footer-main">
+            <div className="footer-brand">
+              {logoUrl ? <img src={logoUrl} alt="" height={24} className="brand-logo" /> : null}
+              <address>
+                <strong>{business.legalName || business.name}</strong>
+                {business.companyCode ? <span>Company code {business.companyCode}</span> : null}
+                {business.vatCode ? <span>VAT {business.vatCode}</span> : null}
+                {business.address ? <span>{business.address}</span> : null}
+                {business.email ? <a href={`mailto:${business.email}`}>{business.email}</a> : null}
+                {business.phone ? <a href={`tel:${business.phone.replace(/\s/gu, "")}`}>{business.phone}</a> : null}
+              </address>
             </div>
-            <div>
-              {business.address ? <p>{business.address}</p> : null}
-              {business.email ? (
-                <p>
-                  <a href={`mailto:${business.email}`}>{business.email}</a>
-                </p>
-              ) : null}
-              {business.phone ? (
-                <p>
-                  <a href={`tel:${business.phone.replace(/\s/gu, "")}`}>{business.phone}</a>
-                </p>
-              ) : null}
-            </div>
-            <div>
+            <nav aria-label="Footer">
+              <ul className="footer-links">
+                {links.map((link) => (
+                  <li key={link.href}>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+                <li>
+                  <a href="/privacy">Privacy policy</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div className="wrap footer-bar">
+            <p>
+              Runs on <a href={SISTEMELE_REPO}>Sistemėlė</a>
+            </p>
+            {demo ? (
               <p>
-                <a href="/privacy">Privacy policy</a>
+                <a href="/app/design">Design system</a> · Made by <a href={AUTHOR_URL}>aimantas.com</a>
               </p>
-              <p className="muted">
-                Runs on <a href={SISTEMELE_REPO}>Sistemėlė</a>
-              </p>
-              {demo ? (
-                <p className="muted">
-                  Made by <a href={AUTHOR_URL}>aimantas.com</a>
-                </p>
-              ) : null}
-            </div>
+            ) : null}
           </div>
         </footer>
       </body>

@@ -68,14 +68,14 @@ export default function InvoicesPage() {
       <PageHeader
         title="Invoices"
         actions={
-          <ButtonLink to="/app/invoices/new" variant="primary" icon={<Plus />}>
+          <ButtonLink to="/app/invoices/new" variant="default" icon={<Plus />}>
             New invoice
           </ButtonLink>
         }
       />
       <div className="mb-4 grid gap-3">
         <nav aria-label="Filter by status" className="-mx-1 overflow-x-auto px-1">
-          <ul className="flex gap-1 border-b border-line">
+          <ul className="flex gap-1 border-b border-border">
             {TABS.map((tab) => (
               <li key={tab.id}>
                 <button
@@ -84,7 +84,7 @@ export default function InvoicesPage() {
                   onClick={() => selectTab(tab.id)}
                   className={clsx(
                     "-mb-px h-10 border-b-2 px-3 text-sm font-medium whitespace-nowrap",
-                    activeTab === tab.id ? "border-brand text-brand" : "border-transparent text-ink-soft hover:text-ink",
+                    activeTab === tab.id ? "border-primary text-primary" : "border-transparent text-foreground/80 hover:text-foreground",
                   )}
                 >
                   {tab.label}
@@ -95,10 +95,10 @@ export default function InvoicesPage() {
         </nav>
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative w-full max-w-sm">
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input type="search" aria-label="Search invoices" placeholder="Search number or customer" className="pl-9" value={term} onChange={(event) => setTerm(event.target.value)} />
           </div>
-          <p className="ml-auto text-sm text-muted" aria-live="polite">
+          <p className="ml-auto text-sm text-muted-foreground" aria-live="polite">
             {invoices.data ? `${total} invoice${total === 1 ? "" : "s"}` : null}
           </p>
         </div>
@@ -113,7 +113,7 @@ export default function InvoicesPage() {
           description={q ? "Try another number or customer name." : activeTab === "all" ? "Create one from scratch or from an accepted quote." : undefined}
           action={
             !q && activeTab === "all" ? (
-              <ButtonLink to="/app/invoices/new" variant="primary" icon={<Plus />}>
+              <ButtonLink to="/app/invoices/new" variant="default" icon={<Plus />}>
                 New invoice
               </ButtonLink>
             ) : null
@@ -140,22 +140,22 @@ export default function InvoicesPage() {
               {invoices.data.items.map((invoice) => (
                 <Tr key={invoice.id}>
                   <Td>
-                    <Link to={`/app/invoices/${invoice.id}`} className="font-medium text-ink hover:text-brand hover:underline">
+                    <Link to={`/app/invoices/${invoice.id}`} className="font-medium text-foreground hover:text-primary hover:underline">
                       {invoice.number ?? "Draft"}
                     </Link>
-                    <p className="truncate text-xs text-muted md:hidden">{invoice.contactName}</p>
+                    <p className="truncate text-xs text-muted-foreground md:hidden">{invoice.contactName}</p>
                   </Td>
                   <Td className="hidden md:table-cell">{invoice.contactName}</Td>
-                  <Td className="hidden whitespace-nowrap text-ink-soft lg:table-cell">{invoice.issueDate ? format.date(invoice.issueDate) : <span className="text-muted">—</span>}</Td>
-                  <Td className={clsx("hidden whitespace-nowrap sm:table-cell", invoice.overdue ? "font-medium text-danger" : "text-ink-soft")}>
-                    {invoice.dueDate ? format.date(invoice.dueDate) : <span className="text-muted">—</span>}
+                  <Td className="hidden whitespace-nowrap text-foreground/80 lg:table-cell">{invoice.issueDate ? format.date(invoice.issueDate) : <span className="text-muted-foreground">—</span>}</Td>
+                  <Td className={clsx("hidden whitespace-nowrap sm:table-cell", invoice.overdue ? "font-medium text-destructive" : "text-foreground/80")}>
+                    {invoice.dueDate ? format.date(invoice.dueDate) : <span className="text-muted-foreground">—</span>}
                     {invoice.overdue ? <span className="block text-xs">{invoice.daysOverdue} days late</span> : null}
                   </Td>
                   <Td align="right" className="hidden lg:table-cell">
                     {format.money(invoice.totalCents, invoice.currency)}
                   </Td>
                   <Td align="right" className="font-medium">
-                    {invoice.status === "void" ? <span className="text-muted">—</span> : format.money(invoice.amountDueCents, invoice.currency)}
+                    {invoice.status === "void" ? <span className="text-muted-foreground">—</span> : format.money(invoice.amountDueCents, invoice.currency)}
                   </Td>
                   <Td>
                     <InvoiceStatusBadge invoice={invoice} />
@@ -166,13 +166,13 @@ export default function InvoicesPage() {
           </Table>
           {total > PAGE_SIZE ? (
             <div className="mt-4 flex items-center justify-end gap-2">
-              <Button size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
+              <Button variant="outline" size="sm" disabled={offset === 0} onClick={() => setParams((p) => (p.set("offset", String(Math.max(0, offset - PAGE_SIZE))), p))}>
                 Previous
               </Button>
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 {offset + 1}–{Math.min(offset + PAGE_SIZE, total)} of {total}
               </span>
-              <Button size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
+              <Button variant="outline" size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setParams((p) => (p.set("offset", String(offset + PAGE_SIZE)), p))}>
                 Next
               </Button>
             </div>

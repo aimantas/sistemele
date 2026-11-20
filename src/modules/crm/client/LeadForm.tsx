@@ -58,7 +58,7 @@ export function LeadFormDialog({ open, onClose, lead, onSaved }: { open: boolean
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="primary" loading={save.isPending} onClick={submit}>
+          <Button variant="default" loading={save.isPending} onClick={submit}>
             {lead ? "Save lead" : "Create lead"}
           </Button>
         </>

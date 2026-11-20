@@ -60,7 +60,7 @@ function StockDialogBody({ product, action, onClose }: { product: Product; actio
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="primary" loading={record.isPending} onClick={submit}>
+          <Button variant="default" loading={record.isPending} onClick={submit}>
             {action === "count" ? "Save count" : action === "adjust" ? "Save adjustment" : "Add to stock"}
           </Button>
         </>
@@ -73,8 +73,8 @@ function StockDialogBody({ product, action, onClose }: { product: Product; actio
           submit();
         }}
       >
-        <p className="text-sm text-ink-soft">
-          <span className="font-medium text-ink">{product.name}</span> · on hand <span className="tabular">{qty(product.stockOnHand)}</span>
+        <p className="text-sm text-foreground/80">
+          <span className="font-medium text-foreground">{product.name}</span> · on hand <span className="tabular">{qty(product.stockOnHand)}</span>
         </p>
         {action === "receive" ? (
           <fieldset className="grid gap-2">
@@ -86,7 +86,7 @@ function StockDialogBody({ product, action, onClose }: { product: Product; actio
                   ["return", "Customer return"],
                 ] as const
               ).map(([id, label]) => (
-                <button key={id} type="button" role="radio" aria-checked={reason === id} onClick={() => setReason(id)} className={`h-9 rounded-full border px-3 text-sm ${reason === id ? "border-brand bg-brand-soft text-brand" : "border-line text-ink-soft hover:border-line-strong"}`}>
+                <button key={id} type="button" role="radio" aria-checked={reason === id} onClick={() => setReason(id)} className={`h-9 rounded-full border px-3 text-sm ${reason === id ? "border-primary bg-primary/10 text-primary" : "border-border text-foreground/80 hover:border-input"}`}>
                   {label}
                 </button>
               ))}
@@ -100,9 +100,9 @@ function StockDialogBody({ product, action, onClose }: { product: Product; actio
           {(props) => <Input {...props} value={note} maxLength={500} onChange={(event) => setNote(event.target.value)} />}
         </Field>
         {after !== null && delta !== null ? (
-          <p className="rounded-control bg-sunken px-3 py-2 text-sm" aria-live="polite">
+          <p className="rounded-md bg-muted px-3 py-2 text-sm" aria-live="polite">
             Stock after: <span className="tabular font-semibold">{qty(after)}</span>
-            {action === "count" ? <span className="text-muted"> · difference {delta > 0 ? "+" : delta < 0 ? "−" : ""}{format.number(Math.abs(delta))}</span> : null}
+            {action === "count" ? <span className="text-muted-foreground"> · difference {delta > 0 ? "+" : delta < 0 ? "−" : ""}{format.number(Math.abs(delta))}</span> : null}
           </p>
         ) : null}
         <FormError error={record.error} />

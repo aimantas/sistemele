@@ -25,11 +25,11 @@ export function SettingsLayout() {
   return (
     <div>
       <PageHeader title="Settings" />
-      <nav aria-label="Settings" className="mb-6 flex gap-1 overflow-x-auto border-b border-line">
+      <nav aria-label="Settings" className="mb-6 flex gap-1 overflow-x-auto border-b border-border">
         {tabs
           .filter((tab) => !tab.admin || isAdmin)
           .map((tab) => (
-            <NavLink key={tab.to} to={tab.to} end={tab.end} className={({ isActive }) => clsx("-mb-px border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap", isActive ? "border-brand text-brand" : "border-transparent text-ink-soft hover:text-ink")}>
+            <NavLink key={tab.to} to={tab.to} end={tab.end} className={({ isActive }) => clsx("-mb-px border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap", isActive ? "border-primary text-primary" : "border-transparent text-foreground/80 hover:text-foreground")}>
               {tab.label}
             </NavLink>
           ))}
@@ -101,7 +101,7 @@ export function BusinessSettingsPage() {
       <FormError error={save.error} />
       {isAdmin ? (
         <div className="flex gap-2">
-          <Button type="submit" variant="primary" loading={save.isPending} disabled={!form}>
+          <Button type="submit" variant="default" loading={save.isPending} disabled={!form}>
             Save business details
           </Button>
           {form ? (
@@ -111,7 +111,7 @@ export function BusinessSettingsPage() {
           ) : null}
         </div>
       ) : (
-        <p className="text-sm text-muted">Only owners and admins can change business details.</p>
+        <p className="text-sm text-muted-foreground">Only owners and admins can change business details.</p>
       )}
     </form>
   );
@@ -152,8 +152,8 @@ export function TeamSettingsPage() {
   return (
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-ink-soft">Owners manage everything. Admins manage team and settings. Members work with records.</p>
-        <Button variant="primary" icon={<Plus />} onClick={() => setInviting(true)}>
+        <p className="text-foreground/80">Owners manage everything. Admins manage team and settings. Members work with records.</p>
+        <Button variant="default" icon={<Plus />} onClick={() => setInviting(true)}>
           Invite person
         </Button>
       </div>
@@ -174,7 +174,7 @@ export function TeamSettingsPage() {
               <Tr key={user.id}>
                 <Td>
                   <p className="font-medium">{user.name || user.email}</p>
-                  <p className="text-muted">{user.email}</p>
+                  <p className="text-muted-foreground">{user.email}</p>
                 </Td>
                 <Td>
                   <Select aria-label={`Role for ${user.email}`} className="w-32" value={user.role} disabled={user.id === me.id} onChange={(event) => update.mutate({ id: user.id, role: event.target.value as Role })}>
@@ -209,7 +209,7 @@ export function TeamSettingsPage() {
             <Button variant="ghost" onClick={() => setInviting(false)}>
               Cancel
             </Button>
-            <Button variant="primary" loading={create.isPending} onClick={() => create.mutate()}>
+            <Button variant="default" loading={create.isPending} onClick={() => create.mutate()}>
               Send invitation
             </Button>
           </>
@@ -279,11 +279,11 @@ export function ApiSettingsPage() {
     <div className="grid max-w-4xl gap-6">
       <Card className="p-5">
         <h2 className="text-lg font-semibold">Connect an AI agent</h2>
-        <p className="mt-1 text-ink-soft">
-          Agents use the same permissions as their token. Point any MCP client (Claude, Cursor, Codex) at <code className="rounded bg-sunken px-1 font-mono text-sm">{origin}/mcp</code>.
+        <p className="mt-1 text-foreground/80">
+          Agents use the same permissions as their token. Point any MCP client (Claude, Cursor, Codex) at <code className="rounded bg-muted px-1 font-mono text-sm">{origin}/mcp</code>.
         </p>
-        <pre className="mt-4 overflow-x-auto rounded-control bg-ink p-4 font-mono text-xs leading-relaxed text-white">{mcpConfig}</pre>
-        <p className="mt-3 text-sm text-muted">
+        <pre className="mt-4 overflow-x-auto rounded-md bg-foreground p-4 font-mono text-xs leading-relaxed text-white">{mcpConfig}</pre>
+        <p className="mt-3 text-sm text-muted-foreground">
           Claude Code: <code className="font-mono">claude mcp add --transport http sistemele {origin}/mcp --header "Authorization: Bearer sk_…"</code>
         </p>
       </Card>
@@ -311,16 +311,16 @@ export function ApiSettingsPage() {
               </Select>
             )}
           </Field>
-          <Button type="submit" variant="primary" icon={<KeyRound />} loading={create.isPending}>
+          <Button type="submit" variant="default" icon={<KeyRound />} loading={create.isPending}>
             Create token
           </Button>
         </form>
         {created ? (
-          <div className="mt-4 rounded-control border border-warning/40 bg-warning-soft p-3">
+          <div className="mt-4 rounded-md border border-warning/40 bg-warning/10 p-3">
             <p className="text-sm font-medium text-warning">Copy this token now. It will not be shown again.</p>
             <div className="mt-2 flex items-center gap-2">
-              <code className="min-w-0 flex-1 truncate rounded bg-surface px-2 py-1 font-mono text-sm">{created}</code>
-              <Button size="sm" icon={<Copy />} onClick={() => navigator.clipboard.writeText(created).then(() => toast("Copied"))}>
+              <code className="min-w-0 flex-1 truncate rounded bg-card px-2 py-1 font-mono text-sm">{created}</code>
+              <Button variant="outline" size="sm" icon={<Copy />} onClick={() => navigator.clipboard.writeText(created).then(() => toast("Copied"))}>
                 Copy
               </Button>
             </div>
@@ -343,7 +343,7 @@ export function ApiSettingsPage() {
               <Tr key={token.id}>
                 <Td>
                   <p className="font-medium">{token.name}</p>
-                  <p className="font-mono text-xs text-muted">{token.prefix}…</p>
+                  <p className="font-mono text-xs text-muted-foreground">{token.prefix}…</p>
                 </Td>
                 <Td>{token.role}</Td>
                 <Td>{format.relative(token.lastUsedAt)}</Td>
@@ -384,17 +384,17 @@ export function EmailSettingsPage() {
           {info?.emailConfigured ? <Badge tone="success">Connected</Badge> : <Badge tone="warning">Not connected</Badge>}
         </div>
         {info?.emailConfigured ? (
-          <p className="mt-1 text-ink-soft">Emails go out through Resend. Every attempt is listed below.</p>
+          <p className="mt-1 text-foreground/80">Emails go out through Resend. Every attempt is listed below.</p>
         ) : (
-          <div className="mt-2 grid gap-2 text-ink-soft">
+          <div className="mt-2 grid gap-2 text-foreground/80">
             <p>Emails are printed to the Worker log instead of being sent. To send real email:</p>
             <ol className="list-decimal space-y-1 pl-5 text-sm">
               <li>Create an API key at resend.com and verify your sending domain.</li>
               <li>
-                Run <code className="rounded bg-sunken px-1 font-mono">npx wrangler secret put RESEND_API_KEY</code>.
+                Run <code className="rounded bg-muted px-1 font-mono">npx wrangler secret put RESEND_API_KEY</code>.
               </li>
               <li>
-                Set <code className="rounded bg-sunken px-1 font-mono">EMAIL_FROM</code> in wrangler.jsonc to an address on that domain, then deploy.
+                Set <code className="rounded bg-muted px-1 font-mono">EMAIL_FROM</code> in wrangler.jsonc to an address on that domain, then deploy.
               </li>
             </ol>
           </div>
@@ -417,8 +417,8 @@ export function EmailSettingsPage() {
                 <Td>{item.to}</Td>
                 <Td>
                   <p>{item.subject}</p>
-                  <p className="font-mono text-xs text-muted">{item.template}</p>
-                  {item.error ? <p className="text-xs text-danger">{item.error}</p> : null}
+                  <p className="font-mono text-xs text-muted-foreground">{item.template}</p>
+                  {item.error ? <p className="text-xs text-destructive">{item.error}</p> : null}
                 </Td>
                 <Td>
                   <Badge tone={item.status === "sent" ? "success" : item.status === "failed" ? "danger" : "neutral"}>{item.status}</Badge>
@@ -455,7 +455,7 @@ export function AuditSettingsPage() {
             <Td>{item.actor}</Td>
             <Td>
               <p>{item.summary}</p>
-              <p className="font-mono text-xs text-muted">{item.action}</p>
+              <p className="font-mono text-xs text-muted-foreground">{item.action}</p>
             </Td>
           </Tr>
         ))}
@@ -468,8 +468,8 @@ export function ModulesSettingsPage() {
   const info = useAppInfo();
   return (
     <div className="grid max-w-3xl gap-4">
-      <p className="text-ink-soft">
-        Modules are switched on in <code className="rounded bg-sunken px-1 font-mono text-sm">sistemele.config.ts</code>. Ask your coding agent: “enable the invoices module” or “create a module for bookings”.
+      <p className="text-foreground/80">
+        Modules are switched on in <code className="rounded bg-muted px-1 font-mono text-sm">sistemele.config.ts</code>. Ask your coding agent: “enable the invoices module” or “create a module for bookings”.
       </p>
       <ul className="grid gap-2">
         {info?.modules.map((module) => (
@@ -477,7 +477,7 @@ export function ModulesSettingsPage() {
             <Card className="flex items-start justify-between gap-4 p-4">
               <div>
                 <p className="font-medium">{module.name}</p>
-                <p className="text-sm text-muted">{module.description}</p>
+                <p className="text-sm text-muted-foreground">{module.description}</p>
               </div>
               <Badge tone="success">On</Badge>
             </Card>

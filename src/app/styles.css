@@ -1,48 +1,169 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-/* Design tokens. Change the brand here; every component reads these names
-   (bg-brand, text-ink, border-line …). See DESIGN.md. */
-@theme {
-  --color-paper: #f6f5f1;
-  --color-surface: #ffffff;
-  --color-sunken: #efeee9;
-  --color-ink: #16191d;
-  --color-ink-soft: #424a54;
-  --color-muted: #646d77;
-  --color-line: #e2e1dc;
-  --color-line-strong: #c4c3bc;
-  --color-brand: #1f5f4a;
-  --color-brand-hover: #184c3b;
-  --color-brand-soft: #e5efe9;
-  --color-brand-ink: #ffffff;
-  --color-danger: #b42318;
-  --color-danger-soft: #fdf1ef;
-  --color-warning: #a15c07;
-  --color-warning-soft: #fdf5e6;
-  --color-success: #1d7348;
-  --color-success-soft: #e7f4ec;
-  --color-info: #2556a8;
-  --color-info-soft: #eaf1fb;
+/*
+ * Design tokens, shadcn/ui naming. One source of truth for the admin panel;
+ * the public site (src/worker/site/styles.css) uses the same variable names.
+ * Settings → Brand overrides --primary, the light surfaces and --radius at
+ * runtime through /brand/theme (src/shared/branding.ts). Components use the
+ * Tailwind names (bg-background, text-muted-foreground, border-border …),
+ * never raw colours. Reference: docs/design-system.md and /app/design.
+ */
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/inter-latin.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/inter-latin-ext.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(0.985 0.002 264);
+  --foreground: oklch(0.205 0.006 264);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0.006 264);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0.006 264);
+  /* Brand colour (Settings → Brand). Default: Forest. */
+  --primary: #1f5f4a;
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.962 0.003 264);
+  --secondary-foreground: oklch(0.205 0.006 264);
+  --muted: oklch(0.962 0.003 264);
+  --muted-foreground: oklch(0.51 0.012 264);
+  --accent: oklch(0.955 0.004 264);
+  --accent-foreground: oklch(0.205 0.006 264);
+  --destructive: oklch(0.545 0.2 27);
+  --border: oklch(0.915 0.004 264);
+  --input: oklch(0.88 0.006 264);
+  --ring: color-mix(in oklab, var(--primary) 55%, transparent);
+
+  /* Status colours beyond shadcn's set: text-safe on card and background. */
+  --success: oklch(0.5 0.12 155);
+  --warning: oklch(0.55 0.13 62);
+  --info: oklch(0.5 0.15 258);
+
+  --chart-1: var(--primary);
+  --chart-2: oklch(0.6 0.13 200);
+  --chart-3: oklch(0.65 0.14 75);
+  --chart-4: oklch(0.55 0.15 300);
+  --chart-5: oklch(0.6 0.16 25);
+
+  --sidebar: oklch(0.975 0.003 264);
+  --sidebar-foreground: oklch(0.205 0.006 264);
+  --sidebar-accent: oklch(0.935 0.005 264);
+  --sidebar-accent-foreground: oklch(0.205 0.006 264);
+  --sidebar-border: oklch(0.915 0.004 264);
+
+  --shadow-color: 220 15% 20%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.155 0.004 264);
+    --foreground: oklch(0.97 0.002 264);
+    --card: oklch(0.19 0.005 264);
+    --card-foreground: oklch(0.97 0.002 264);
+    --popover: oklch(0.21 0.005 264);
+    --popover-foreground: oklch(0.97 0.002 264);
+    --primary: #319574;
+    --primary-foreground: oklch(0.16 0.01 165);
+    --secondary: oklch(0.245 0.006 264);
+    --secondary-foreground: oklch(0.97 0.002 264);
+    --muted: oklch(0.235 0.006 264);
+    --muted-foreground: oklch(0.71 0.012 264);
+    --accent: oklch(0.255 0.007 264);
+    --accent-foreground: oklch(0.97 0.002 264);
+    --destructive: oklch(0.7 0.18 24);
+    --border: oklch(1 0 0 / 9%);
+    --input: oklch(1 0 0 / 15%);
+    --success: oklch(0.74 0.14 155);
+    --warning: oklch(0.8 0.13 75);
+    --info: oklch(0.74 0.12 250);
+    --sidebar: oklch(0.175 0.005 264);
+    --sidebar-foreground: oklch(0.97 0.002 264);
+    --sidebar-accent: oklch(0.255 0.007 264);
+    --sidebar-accent-foreground: oklch(0.97 0.002 264);
+    --sidebar-border: oklch(1 0 0 / 8%);
+    --shadow-color: 0 0% 0%;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
-  --radius-control: 8px;
-  --radius-panel: 12px;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-xs: 0 1px 2px 0 hsl(var(--shadow-color) / 0.05);
+  --shadow-sm: 0 1px 2px 0 hsl(var(--shadow-color) / 0.06), 0 1px 3px 0 hsl(var(--shadow-color) / 0.08);
+  --shadow-lg: 0 4px 6px -2px hsl(var(--shadow-color) / 0.06), 0 16px 32px -8px hsl(var(--shadow-color) / 0.16);
 }
 
 @layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
   html {
     -webkit-text-size-adjust: 100%;
   }
   body {
-    @apply bg-paper text-ink antialiased;
+    @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.5;
+    font-feature-settings: "cv11", "ss01";
   }
   :focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--color-brand) 40%, transparent);
+    outline: 2px solid var(--ring);
     outline-offset: 2px;
   }
   h1,
@@ -68,27 +189,27 @@
 /* Rendered Markdown (content editor preview). Mirrors .prose on the public site. */
 @layer components {
   .prose {
-    @apply text-ink-soft;
+    @apply text-foreground/80;
     line-height: 1.65;
   }
   .prose > * + * {
     margin-top: 0.9em;
   }
   .prose h2 {
-    @apply text-ink;
+    @apply text-foreground;
     margin-top: 1.5em;
     font-size: 1.25rem;
     font-weight: 600;
   }
   .prose h3,
   .prose h4 {
-    @apply text-ink;
+    @apply text-foreground;
     margin-top: 1.3em;
     font-size: 1.0625rem;
     font-weight: 600;
   }
   .prose a {
-    @apply text-brand underline underline-offset-2;
+    @apply text-primary underline underline-offset-2;
   }
   .prose ul {
     @apply list-disc pl-6;
@@ -100,23 +221,23 @@
     margin-top: 0.3em;
   }
   .prose blockquote {
-    @apply border-l-3 border-line-strong pl-4;
+    @apply border-l-2 border-input pl-4;
   }
   .prose code {
-    @apply rounded bg-sunken px-1 py-0.5 text-[0.9em];
+    @apply rounded bg-muted px-1 py-0.5 text-[0.9em];
     font-family: var(--font-mono);
   }
   .prose pre {
-    @apply overflow-x-auto rounded-control bg-sunken px-4 py-3;
+    @apply overflow-x-auto rounded-md bg-muted px-4 py-3;
   }
   .prose pre code {
     @apply bg-transparent p-0;
   }
   .prose hr {
-    @apply border-line;
+    @apply border-border;
     margin: 1.5em 0;
   }
   .prose img {
-    @apply rounded-control;
+    @apply rounded-md;
   }
 }

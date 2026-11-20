@@ -40,7 +40,7 @@ export default function QuoteEditorPage() {
         <PageHeader back={<BackLink to={`/app/quotes/${quote.data.id}`} label={`Quote ${quote.data.number}`} />} title={`Edit quote ${quote.data.number}`} />
         <Card className="p-5">
           <p>Only drafts can be edited. Open the quote and choose Revise to return it to draft; the customer link stops working until you send it again.</p>
-          <ButtonLink to={`/app/quotes/${quote.data.id}`} className="mt-4">
+          <ButtonLink variant="outline" to={`/app/quotes/${quote.data.id}`} className="mt-4">
             Open quote
           </ButtonLink>
         </Card>
@@ -71,7 +71,7 @@ function fromQuote(quote: QuoteDetail): FormState {
 
 function BackLink({ to, label }: { to: string; label: string }) {
   return (
-    <Link to={to} className="inline-flex items-center gap-1 text-muted hover:text-ink">
+    <Link to={to} className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
       <ArrowLeft className="size-4" /> {label}
     </Link>
   );
@@ -109,7 +109,7 @@ function QuoteForm({ quote, initial, defaultVat }: { quote?: QuoteDetail; initia
             <ButtonLink to={cancelTo} variant="ghost">
               Cancel
             </ButtonLink>
-            <Button type="submit" variant="primary" loading={save.isPending}>
+            <Button type="submit" variant="default" loading={save.isPending}>
               Save draft
             </Button>
           </>
@@ -156,7 +156,7 @@ function QuoteForm({ quote, initial, defaultVat }: { quote?: QuoteDetail; initia
           <ButtonLink to={cancelTo} variant="ghost">
             Cancel
           </ButtonLink>
-          <Button type="submit" variant="primary" loading={save.isPending}>
+          <Button type="submit" variant="default" loading={save.isPending}>
             Save draft
           </Button>
         </div>

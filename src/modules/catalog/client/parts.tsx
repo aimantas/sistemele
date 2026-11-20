@@ -41,7 +41,7 @@ export function ReasonBadge({ reason }: { reason: MovementReason }) {
 export function SignedQuantity({ quantity, unit }: { quantity: number; unit: string }) {
   const format = useFormat();
   return (
-    <span className={`tabular font-medium whitespace-nowrap ${quantity > 0 ? "text-success" : "text-danger"}`}>
+    <span className={`tabular font-medium whitespace-nowrap ${quantity > 0 ? "text-success" : "text-destructive"}`}>
       {quantity > 0 ? "+" : "−"}
       {format.number(Math.abs(quantity))} {unit}
     </span>

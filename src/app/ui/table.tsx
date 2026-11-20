@@ -1,23 +1,38 @@
-import { clsx } from "clsx";
-import type { HTMLAttributes, ReactNode, TdHTMLAttributes, ThHTMLAttributes } from "react";
+import type { ComponentProps, ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
-/** Plain, accessible table. Wrap wide tables so they scroll on phones. */
-export function Table({ className, children }: { className?: string; children: ReactNode }) {
+/** shadcn/ui table in a bordered card that scrolls sideways on phones. */
+export function Table({ className, children, ...props }: ComponentProps<"table"> & { children: ReactNode }) {
   return (
-    <div className={clsx("overflow-x-auto rounded-panel border border-line bg-surface", className)}>
-      <table className="w-full border-collapse text-left text-sm">{children}</table>
+    <div data-slot="table-container" className={cn("relative w-full overflow-x-auto rounded-xl border bg-card shadow-xs", className)}>
+      <table data-slot="table" className="w-full caption-bottom text-left text-sm" {...props}>
+        {children}
+      </table>
     </div>
   );
 }
 
-export function Th({ className, align, ...props }: ThHTMLAttributes<HTMLTableCellElement> & { align?: "right" }) {
-  return <th scope="col" className={clsx("border-b border-line bg-sunken/60 px-4 py-2.5 text-xs font-semibold tracking-wide text-muted uppercase", align === "right" && "text-right", className)} {...props} />;
+export function TableHeader({ className, ...props }: ComponentProps<"thead">) {
+  return <thead data-slot="table-header" className={cn("[&_tr]:border-b", className)} {...props} />;
 }
 
-export function Td({ className, align, ...props }: TdHTMLAttributes<HTMLTableCellElement> & { align?: "right" }) {
-  return <td className={clsx("border-b border-line px-4 py-3 align-top", align === "right" && "text-right tabular whitespace-nowrap", className)} {...props} />;
+export function TableBody({ className, ...props }: ComponentProps<"tbody">) {
+  return <tbody data-slot="table-body" className={cn("[&_tr:last-child]:border-0", className)} {...props} />;
 }
 
-export function Tr({ className, ...props }: HTMLAttributes<HTMLTableRowElement>) {
-  return <tr className={clsx("last:[&>td]:border-b-0 hover:bg-paper/60", className)} {...props} />;
+export function TableRow({ className, ...props }: ComponentProps<"tr">) {
+  return <tr data-slot="table-row" className={cn("border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted", className)} {...props} />;
 }
+
+export function TableHead({ className, align, ...props }: ComponentProps<"th"> & { align?: "right" }) {
+  return <th data-slot="table-head" scope="col" className={cn("h-10 border-b bg-muted/40 px-4 text-xs font-medium whitespace-nowrap text-muted-foreground", align === "right" && "text-right", className)} {...props} />;
+}
+
+export function TableCell({ className, align, ...props }: ComponentProps<"td"> & { align?: "right" }) {
+  return <td data-slot="table-cell" className={cn("px-4 py-3 align-middle", align === "right" && "tabular text-right whitespace-nowrap", className)} {...props} />;
+}
+
+/** Short names used across the modules. */
+export const Th = TableHead;
+export const Td = TableCell;
+export const Tr = TableRow;

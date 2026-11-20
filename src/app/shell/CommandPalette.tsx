@@ -44,11 +44,11 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       ref={dialogRef}
       onClose={onClose}
       onClick={(event) => event.target === dialogRef.current && onClose()}
-      className="mx-auto mt-[12vh] w-[calc(100%-2rem)] max-w-xl rounded-panel border border-line bg-surface p-0 text-ink shadow-2xl backdrop:bg-ink/40"
+      className="mx-auto mt-[12vh] w-[calc(100%-2rem)] max-w-xl rounded-xl border bg-popover p-0 text-popover-foreground shadow-lg backdrop:bg-black/50"
       aria-label="Search"
     >
-      <div className="flex items-center gap-2 border-b border-line px-4">
-        <Search className="size-4 text-muted" />
+      <div className="flex items-center gap-2 border-b border-border px-4">
+        <Search className="size-4 text-muted-foreground" />
         <input
           autoFocus
           value={term}
@@ -75,16 +75,16 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       <ul className="max-h-[50vh] overflow-y-auto p-2" role="listbox">
         {items.map((item, index) => (
           <li key={item.key} role="option" aria-selected={index === cursor}>
-            <button type="button" onMouseEnter={() => setCursor(index)} onClick={() => go(item.to)} className={clsx("flex w-full items-center gap-3 rounded-control px-3 py-2 text-left", index === cursor && "bg-sunken")}>
+            <button type="button" onMouseEnter={() => setCursor(index)} onClick={() => go(item.to)} className={clsx("flex w-full items-center gap-3 rounded-md px-3 py-2 text-left", index === cursor && "bg-accent")}>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-medium">{item.label}</span>
-                <span className="block truncate text-xs text-muted">{item.hint}</span>
+                <span className="block truncate text-xs text-muted-foreground">{item.hint}</span>
               </span>
-              <ArrowRight className="size-4 text-muted" />
+              <ArrowRight className="size-4 text-muted-foreground" />
             </button>
           </li>
         ))}
-        {items.length === 0 ? <li className="px-3 py-6 text-center text-sm text-muted">{debounced.length >= 2 && !results.isFetching ? "Nothing found." : "Type at least two letters."}</li> : null}
+        {items.length === 0 ? <li className="px-3 py-6 text-center text-sm text-muted-foreground">{debounced.length >= 2 && !results.isFetching ? "Nothing found." : "Type at least two letters."}</li> : null}
       </ul>
     </dialog>
   );

@@ -4,14 +4,14 @@ import { AppShell } from "./shell/AppShell";
 import { BrandSettingsPage } from "./pages/BrandSettingsPage";
 import { LoginPage, VerifyPage } from "./pages/LoginPage";
 import { ApiSettingsPage, AuditSettingsPage, BusinessSettingsPage, EmailSettingsPage, ModulesSettingsPage, SettingsLayout, TeamSettingsPage } from "./pages/SettingsPages";
-import { buttonClass } from "./ui";
+import { buttonVariants } from "./ui";
 
 function NotFound() {
   return (
     <div className="py-16 text-center">
       <h1 className="text-2xl font-semibold">Page not found</h1>
-      <p className="mt-2 text-ink-soft">This screen does not exist or its module is switched off.</p>
-      <Link className={buttonClass("primary", "md", "mt-6")} to="/app">
+      <p className="mt-2 text-foreground/80">This screen does not exist or its module is switched off.</p>
+      <Link className={buttonVariants({ className: "mt-6" })} to="/app">
         Back to the dashboard
       </Link>
     </div>
@@ -22,6 +22,8 @@ function NotFound() {
 export const router = createBrowserRouter([
   { path: "/app/login", element: <LoginPage /> },
   { path: "/app/login/verify", element: <VerifyPage /> },
+  // Public: the live design system reference (no sign-in; served noindex like all of /app).
+  { path: "/app/design", lazy: () => import("./pages/DesignSystemPage").then((m) => ({ Component: m.default })) },
   {
     path: "/app",
     element: <AppShell />,

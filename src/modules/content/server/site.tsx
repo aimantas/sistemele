@@ -70,20 +70,16 @@ export async function contentHome(ctx: ModuleContext): Promise<HomeContribution>
               <h2>From the blog</h2>
               <a href="/blog">All posts</a>
             </div>
-            <ul className="grid" style={{ listStyle: "none", padding: 0 }}>
+            <ul className="post-rows">
               {posts.items.map((post) => (
-                <li key={post.id} className="card">
-                  <p className="small muted" style={{ margin: 0 }}>
-                    <time dateTime={post.publishedAt ?? undefined}>{date(post.publishedAt)}</time>
-                  </p>
-                  <a href={post.path}>
-                    <h3 style={{ margin: 0 }}>{post.title}</h3>
-                  </a>
-                  {post.teaser ? (
-                    <p className="small muted" style={{ margin: 0 }}>
-                      {post.teaser}
-                    </p>
-                  ) : null}
+                <li key={post.id}>
+                  <time dateTime={post.publishedAt ?? undefined}>{date(post.publishedAt)}</time>
+                  <div>
+                    <a href={post.path}>
+                      <h3>{post.title}</h3>
+                    </a>
+                    {post.teaser ? <p>{post.teaser}</p> : null}
+                  </div>
                 </li>
               ))}
             </ul>

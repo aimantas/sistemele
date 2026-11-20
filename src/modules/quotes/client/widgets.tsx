@@ -13,7 +13,7 @@ export function AwaitingQuotesWidget() {
   const quotes = useQuotes({ status: "awaiting", limit: 10 });
   if (quotes.error) return <ErrorState error={quotes.error} retry={() => quotes.refetch()} />;
   if (!quotes.data) return <Spinner />;
-  if (quotes.data.items.length === 0) return <p className="text-sm text-muted">No quotes waiting for an answer.</p>;
+  if (quotes.data.items.length === 0) return <p className="text-sm text-muted-foreground">No quotes waiting for an answer.</p>;
   const today = todayDate(config.timezone);
   return (
     <ul className="grid gap-1">
@@ -22,18 +22,18 @@ export function AwaitingQuotesWidget() {
         const left = daysBetween(today, quote.validUntil);
         const expiry =
           quote.status === "expired" ? (
-            <span className="font-medium text-danger">expired</span>
+            <span className="font-medium text-destructive">expired</span>
           ) : left <= 3 ? (
             <span className="font-medium text-warning">{left === 0 ? "expires today" : `expires in ${plural(left, "day")}`}</span>
           ) : null;
         return (
           <li key={quote.id}>
-            <Link to={`/app/quotes/${quote.id}`} className="flex items-start justify-between gap-3 rounded-control px-1 py-1.5 hover:bg-paper">
+            <Link to={`/app/quotes/${quote.id}`} className="flex items-start justify-between gap-3 rounded-md px-1 py-1.5 hover:bg-background">
               <span className="min-w-0">
                 <span className="block truncate text-sm font-medium">
                   {quote.number} · {quote.contactName}
                 </span>
-                <span className="block truncate text-xs text-muted">
+                <span className="block truncate text-xs text-muted-foreground">
                   {waiting === 0 ? "sent today" : `waiting ${plural(waiting, "day")}`}
                   {expiry ? <> · {expiry}</> : null}
                 </span>
@@ -45,7 +45,7 @@ export function AwaitingQuotesWidget() {
       })}
       {quotes.data.total > quotes.data.items.length ? (
         <li>
-          <Link to="/app/quotes?status=sent" className="block px-1 py-1.5 text-sm font-medium text-brand hover:underline">
+          <Link to="/app/quotes?status=sent" className="block px-1 py-1.5 text-sm font-medium text-primary hover:underline">
             {plural(quotes.data.total - quotes.data.items.length, "more quote")} waiting
           </Link>
         </li>

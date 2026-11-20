@@ -40,15 +40,15 @@ export function LoginPage() {
   if (request.isSuccess) {
     return (
       <AuthFrame>
-        <MailCheck className="mb-4 size-8 text-brand" />
+        <MailCheck className="mb-4 size-8 text-primary" />
         <h1 className="text-2xl font-semibold">Check your email</h1>
-        <p className="mt-2 text-ink-soft">
+        <p className="mt-2 text-foreground/80">
           If <strong>{email}</strong> has access, a sign-in link is on its way. It works once, for 15 minutes.
         </p>
         {request.data.devLink ? (
-          <div className="mt-6 rounded-control border border-dashed border-warning/50 bg-warning-soft p-3 text-sm">
+          <div className="mt-6 rounded-md border border-dashed border-warning/50 bg-warning/10 p-3 text-sm">
             <p className="font-medium text-warning">Local development: email is not configured.</p>
-            <a className="mt-1 block font-medium break-all text-brand underline" href={request.data.devLink}>
+            <a className="mt-1 block font-medium break-all text-primary underline" href={request.data.devLink}>
               Open the sign-in link
             </a>
           </div>
@@ -63,7 +63,7 @@ export function LoginPage() {
   return (
     <AuthFrame>
       <h1 className="text-2xl font-semibold">Sign in</h1>
-      <p className="mt-2 text-ink-soft">We email you a one-time link. No password to remember.</p>
+      <p className="mt-2 text-foreground/80">We email you a one-time link. No password to remember.</p>
       <form
         className="mt-6 grid gap-4"
         onSubmit={(event) => {
@@ -75,7 +75,7 @@ export function LoginPage() {
           {(props) => <Input {...props} type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} />}
         </Field>
         {request.error && !fieldError(request.error, "email") ? <FormError error={request.error} /> : null}
-        <Button type="submit" variant="primary" loading={request.isPending}>
+        <Button type="submit" variant="default" loading={request.isPending}>
           Email me a sign-in link
         </Button>
       </form>
@@ -90,8 +90,8 @@ function DemoLogin() {
   return (
     <AuthFrame>
       <h1 className="text-2xl font-semibold">Try the demo</h1>
-      <p className="mt-2 text-ink-soft">A sample business with customers, products, quotes, invoices and a website. Change anything: the data resets every hour, and no email is sent.</p>
-      <Button variant="primary" className="mt-6 w-full" loading={open.isPending || open.isSuccess} onClick={() => open.mutate()}>
+      <p className="mt-2 text-foreground/80">A sample business with customers, products, quotes, invoices and a website. Change anything: the data resets every hour, and no email is sent.</p>
+      <Button variant="default" className="mt-6 w-full" loading={open.isPending || open.isSuccess} onClick={() => open.mutate()}>
         Open the demo
       </Button>
       <FormError error={open.error} />
@@ -124,7 +124,7 @@ export function VerifyPage() {
         <>
           <h1 className="text-2xl font-semibold">This link does not work</h1>
           <FormError error={verify.error ?? new Error("The link is incomplete. Request a new one.")} />
-          <Button variant="primary" className="mt-6" onClick={() => navigate("/app/login")}>
+          <Button variant="default" className="mt-6" onClick={() => navigate("/app/login")}>
             Request a new link
           </Button>
         </>

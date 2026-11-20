@@ -31,22 +31,22 @@ export default function StagesPage() {
     <div className="max-w-3xl">
       <PageHeader
         back={
-          <Link to="/app/crm/pipeline" className="inline-flex items-center gap-1 text-muted hover:text-ink">
+          <Link to="/app/crm/pipeline" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" /> Pipeline
           </Link>
         }
         title="Stages"
         actions={
           canEdit ? (
-            <Button variant="primary" icon={<Plus />} onClick={() => setEditing("new")}>
+            <Button variant="default" icon={<Plus />} onClick={() => setEditing("new")}>
               Add stage
             </Button>
           ) : null
         }
       />
-      {!canEdit ? <p className="mb-4 text-sm text-muted">Owners and admins change stages.</p> : null}
+      {!canEdit ? <p className="mb-4 text-sm text-muted-foreground">Owners and admins change stages.</p> : null}
       <Card>
-        <ol className="divide-y divide-line">
+        <ol className="divide-y divide-border">
           {stages.data.map((stage) => {
             const index = open.findIndex((item) => item.id === stage.id);
             return (
@@ -56,7 +56,7 @@ export default function StagesPage() {
                     {stage.label}
                     {stage.kind !== "open" && stage.label.toLowerCase() !== stage.kind ? <Badge tone={stageTone(stage.kind)}>{stage.kind}</Badge> : null}
                   </p>
-                  <p className="tabular text-sm text-muted">
+                  <p className="tabular text-sm text-muted-foreground">
                     {format.vat(stage.probabilityBps)} win chance · {stage.dealCount} deal{stage.dealCount === 1 ? "" : "s"} · {format.money(stage.valueCents)}
                   </p>
                 </div>
@@ -109,7 +109,7 @@ function StageDialog({ stage, onClose }: { stage?: Stage; onClose: () => void })
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="primary" loading={save.isPending} onClick={() => save.mutate({ label, probabilityBps: Math.round(Number(percent) * 100) }, { onSuccess: onClose })}>
+          <Button variant="default" loading={save.isPending} onClick={() => save.mutate({ label, probabilityBps: Math.round(Number(percent) * 100) }, { onSuccess: onClose })}>
             {stage ? "Save stage" : "Add stage"}
           </Button>
         </>
@@ -142,7 +142,7 @@ function DeleteStageDialog({ stage, stages, onClose }: { stage: Stage; stages: S
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="danger" loading={remove.isPending} onClick={() => remove.mutate({ id: stage.id, moveTo: stage.dealCount ? moveTo : undefined }, { onSuccess: onClose })}>
+          <Button variant="destructive" loading={remove.isPending} onClick={() => remove.mutate({ id: stage.id, moveTo: stage.dealCount ? moveTo : undefined }, { onSuccess: onClose })}>
             Remove stage
           </Button>
         </>
@@ -162,7 +162,7 @@ function DeleteStageDialog({ stage, stages, onClose }: { stage: Stage; stages: S
             )}
           </Field>
         ) : (
-          <p className="text-ink-soft">The stage has no deals. Its history in the audit log stays.</p>
+          <p className="text-foreground/80">The stage has no deals. Its history in the audit log stays.</p>
         )}
         <FormError error={remove.error} />
       </div>

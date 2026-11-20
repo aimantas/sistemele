@@ -32,7 +32,7 @@ export default function LeadDetailPage() {
     <div>
       <PageHeader
         back={
-          <Link to="/app/crm/leads" className="inline-flex items-center gap-1 text-muted hover:text-ink">
+          <Link to="/app/crm/leads" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" /> Leads
           </Link>
         }
@@ -45,18 +45,18 @@ export default function LeadDetailPage() {
         actions={
           isOpen ? (
             <>
-              <Button icon={<Pencil />} onClick={() => setEditing(true)}>
+              <Button variant="outline" icon={<Pencil />} onClick={() => setEditing(true)}>
                 Edit
               </Button>
               <Button variant="ghost" icon={<XCircle />} onClick={() => setDisqualifying(true)}>
                 Disqualify
               </Button>
-              <Button variant="primary" icon={<ArrowRightLeft />} onClick={() => setConverting(true)}>
+              <Button variant="default" icon={<ArrowRightLeft />} onClick={() => setConverting(true)}>
                 Convert
               </Button>
             </>
           ) : lead.status === "disqualified" ? (
-            <Button icon={<RotateCcw />} loading={save.isPending} onClick={() => save.mutate({ status: "new" })}>
+            <Button variant="outline" icon={<RotateCcw />} loading={save.isPending} onClick={() => save.mutate({ status: "new" })}>
               Reopen
             </Button>
           ) : null
@@ -71,13 +71,13 @@ export default function LeadDetailPage() {
             <div className="p-5">
               <DetailList
                 items={[
-                  { label: "Email", value: lead.email ? <a className="text-brand hover:underline" href={`mailto:${lead.email}`}>{lead.email}</a> : "" },
-                  { label: "Phone", value: lead.phone ? <a className="text-brand hover:underline" href={`tel:${lead.phone.replace(/\s/gu, "")}`}>{lead.phone}</a> : "" },
+                  { label: "Email", value: lead.email ? <a className="text-primary hover:underline" href={`mailto:${lead.email}`}>{lead.email}</a> : "" },
+                  { label: "Phone", value: lead.phone ? <a className="text-primary hover:underline" href={`tel:${lead.phone.replace(/\s/gu, "")}`}>{lead.phone}</a> : "" },
                   { label: "Company", value: lead.company },
                   { label: "Created", value: <CreatedAt value={lead.createdAt} /> },
                 ]}
               />
-              {lead.message ? <p className="mt-4 border-t border-line pt-4 whitespace-pre-line text-ink-soft">{lead.message}</p> : null}
+              {lead.message ? <p className="mt-4 border-t border-border pt-4 whitespace-pre-line text-foreground/80">{lead.message}</p> : null}
             </div>
           </Card>
           <Timeline target={{ leadId: lead.id }} activities={activities} emptyText="Log calls, emails and meetings here. Logging one marks a new lead contacted." />
@@ -108,7 +108,7 @@ function WorkCard({ lead }: { lead: Lead }) {
     <Card>
       <CardHeader title="Work this lead" />
       <div className="grid gap-4 p-5">
-        <div role="radiogroup" aria-label="Status" className="grid grid-cols-3 overflow-hidden rounded-control border border-line">
+        <div role="radiogroup" aria-label="Status" className="grid grid-cols-3 overflow-hidden rounded-md border border-border">
           {WORK_STEPS.map((step) => (
             <button
               key={step.id}
@@ -117,7 +117,7 @@ function WorkCard({ lead }: { lead: Lead }) {
               aria-checked={lead.status === step.id}
               disabled={save.isPending}
               onClick={() => lead.status !== step.id && save.mutate({ status: step.id })}
-              className={`h-9 border-l border-line text-sm font-medium first:border-l-0 ${lead.status === step.id ? "bg-brand text-brand-ink" : "text-ink-soft hover:bg-paper"}`}
+              className={`h-9 border-l border-border text-sm font-medium first:border-l-0 ${lead.status === step.id ? "bg-primary text-primary-foreground" : "text-foreground/80 hover:bg-background"}`}
             >
               {step.label}
             </button>
@@ -143,7 +143,7 @@ function OutcomeCard({ detail }: { detail: LeadDetail }) {
     return (
       <Card>
         <CardHeader title="Disqualified" />
-        <p className="px-5 py-4 whitespace-pre-line text-ink-soft">{lead.disqualifyReason}</p>
+        <p className="px-5 py-4 whitespace-pre-line text-foreground/80">{lead.disqualifyReason}</p>
       </Card>
     );
   }
@@ -153,8 +153,8 @@ function OutcomeCard({ detail }: { detail: LeadDetail }) {
       <div className="p-5">
         <DetailList
           items={[
-            { label: "Contact", value: lead.contactId ? <Link className="text-brand hover:underline" to={`/app/crm/contacts/${lead.contactId}`}>{lead.contactName}</Link> : "" },
-            { label: "Deal", value: lead.dealId ? <Link className="text-brand hover:underline" to="/app/crm/pipeline">{lead.dealTitle}</Link> : "" },
+            { label: "Contact", value: lead.contactId ? <Link className="text-primary hover:underline" to={`/app/crm/contacts/${lead.contactId}`}>{lead.contactName}</Link> : "" },
+            { label: "Deal", value: lead.dealId ? <Link className="text-primary hover:underline" to="/app/crm/pipeline">{lead.dealTitle}</Link> : "" },
             { label: "Converted", value: format.date(lead.convertedAt) },
             { label: "Owner", value: lead.ownerName ?? "" },
           ]}
@@ -186,7 +186,7 @@ function ConvertDialog({ detail, open, onClose }: { detail: LeadDetail; open: bo
             Cancel
           </Button>
           <Button
-            variant="primary"
+            variant="default"
             loading={convert.isPending}
             onClick={() =>
               convert.mutate(
@@ -201,14 +201,14 @@ function ConvertDialog({ detail, open, onClose }: { detail: LeadDetail; open: bo
       }
     >
       <div className="grid gap-4">
-        <p className="text-ink-soft">
+        <p className="text-foreground/80">
           {matchingContact ? (
             <>
-              Adds to the existing contact <strong className="text-ink">{matchingContact.name}</strong> (same email).
+              Adds to the existing contact <strong className="text-foreground">{matchingContact.name}</strong> (same email).
             </>
           ) : (
             <>
-              Creates the contact <strong className="text-ink">{lead.company || lead.name}</strong>.
+              Creates the contact <strong className="text-foreground">{lead.company || lead.name}</strong>.
             </>
           )}{" "}
           The timeline moves with it.
@@ -256,14 +256,14 @@ function DisqualifyDialog({ lead, open, onClose }: { lead: Lead; open: boolean; 
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="danger" loading={save.isPending} onClick={() => save.mutate({ status: "disqualified", disqualifyReason: reason }, { onSuccess: () => (onClose(), setReason("")) })}>
+          <Button variant="destructive" loading={save.isPending} onClick={() => save.mutate({ status: "disqualified", disqualifyReason: reason }, { onSuccess: () => (onClose(), setReason("")) })}>
             Disqualify lead
           </Button>
         </>
       }
     >
       <div className="grid gap-3">
-        <p className="text-ink-soft">The lead leaves the open list. Reopen it any time.</p>
+        <p className="text-foreground/80">The lead leaves the open list. Reopen it any time.</p>
         <Field label="Reason" error={fieldError(save.error, "disqualifyReason")}>
           {(props) => <Textarea {...props} rows={3} value={reason} onChange={(event) => setReason(event.target.value)} placeholder="No budget, wrong fit, spam …" />}
         </Field>

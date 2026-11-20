@@ -19,5 +19,5 @@
     "noUncheckedSideEffectImports": true,
     "paths": { "@/*": ["./src/*"] }
   },
-  "include": ["src/app", "src/shared", "src/modules/*/client", "src/modules/*/shared", "src/modules/client.ts", "src/modules/types.client.ts", "sistemele.config.ts"]
+  "include": ["src/app", "src/lib", "src/shared", "src/modules/*/client", "src/modules/*/shared", "src/modules/client.ts", "src/modules/types.client.ts", "sistemele.config.ts"]
 }

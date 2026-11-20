@@ -58,13 +58,13 @@ export default function QuotesPage() {
       <PageHeader
         title="Quotes"
         actions={
-          <ButtonLink to="/app/quotes/new" variant="primary" icon={<Plus />}>
+          <ButtonLink to="/app/quotes/new" variant="default" icon={<Plus />}>
             New quote
           </ButtonLink>
         }
       />
       <div className="mb-4 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-        <div className="flex w-max gap-1 border-b border-line" role="group" aria-label="Filter by status">
+        <div className="flex w-max gap-1 border-b border-border" role="group" aria-label="Filter by status">
           {TABS.map((tab) => {
             const active = (status ?? "all") === tab.id;
             return (
@@ -73,7 +73,7 @@ export default function QuotesPage() {
                 type="button"
                 aria-pressed={active}
                 onClick={() => setStatus(tab.id)}
-                className={clsx("-mb-px h-10 border-b-2 px-3 text-sm font-medium whitespace-nowrap", active ? "border-brand text-brand" : "border-transparent text-ink-soft hover:text-ink")}
+                className={clsx("-mb-px h-10 border-b-2 px-3 text-sm font-medium whitespace-nowrap", active ? "border-primary text-primary" : "border-transparent text-foreground/80 hover:text-foreground")}
               >
                 {tab.label}
               </button>
@@ -83,10 +83,10 @@ export default function QuotesPage() {
       </div>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative w-full max-w-sm">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input type="search" aria-label="Search quotes" placeholder="Search number or contact" className="pl-9" value={term} onChange={(event) => setTerm(event.target.value)} />
         </div>
-        <p className="ml-auto text-sm text-muted" aria-live="polite">
+        <p className="ml-auto text-sm text-muted-foreground" aria-live="polite">
           {quotes.data ? `${total} quote${total === 1 ? "" : "s"}` : null}
         </p>
       </div>
@@ -100,7 +100,7 @@ export default function QuotesPage() {
           description={filtered ? "Try another status or search." : "Price a job for a contact, send it, and the customer accepts online."}
           action={
             filtered ? null : (
-              <ButtonLink to="/app/quotes/new" variant="primary" icon={<Plus />}>
+              <ButtonLink to="/app/quotes/new" variant="default" icon={<Plus />}>
                 New quote
               </ButtonLink>
             )
@@ -124,20 +124,20 @@ export default function QuotesPage() {
               {quotes.data.items.map((quote) => (
                 <Tr key={quote.id}>
                   <Td>
-                    <Link to={`/app/quotes/${quote.id}`} className="font-medium whitespace-nowrap text-ink hover:text-brand hover:underline">
+                    <Link to={`/app/quotes/${quote.id}`} className="font-medium whitespace-nowrap text-foreground hover:text-primary hover:underline">
                       {quote.number}
                     </Link>
-                    <p className="truncate text-xs text-muted sm:hidden">{quote.contactName}</p>
+                    <p className="truncate text-xs text-muted-foreground sm:hidden">{quote.contactName}</p>
                   </Td>
                   <Td className="hidden sm:table-cell">
                     <span className="block max-w-xs truncate">{quote.contactName}</span>
-                    {quote.dealTitle ? <span className="block max-w-xs truncate text-xs text-muted">{quote.dealTitle}</span> : null}
+                    {quote.dealTitle ? <span className="block max-w-xs truncate text-xs text-muted-foreground">{quote.dealTitle}</span> : null}
                   </Td>
                   <Td>
                     <QuoteStatusBadge status={quote.status} />
                   </Td>
-                  <Td className="hidden whitespace-nowrap text-ink-soft md:table-cell">{format.date(quote.issueDate)}</Td>
-                  <Td className={clsx("hidden whitespace-nowrap lg:table-cell", quote.status === "expired" ? "text-warning" : "text-ink-soft")}>{format.date(quote.validUntil)}</Td>
+                  <Td className="hidden whitespace-nowrap text-foreground/80 md:table-cell">{format.date(quote.issueDate)}</Td>
+                  <Td className={clsx("hidden whitespace-nowrap lg:table-cell", quote.status === "expired" ? "text-warning" : "text-foreground/80")}>{format.date(quote.validUntil)}</Td>
                   <Td align="right" className="font-medium">
                     {formatMoney(quote.totalCents, quote.currency, format.locale)}
                   </Td>
@@ -147,13 +147,13 @@ export default function QuotesPage() {
           </Table>
           {total > PAGE_SIZE ? (
             <div className="mt-4 flex items-center justify-end gap-2">
-              <Button size="sm" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}>
+              <Button variant="outline" size="sm" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}>
                 Previous
               </Button>
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 {offset + 1}–{Math.min(offset + PAGE_SIZE, total)} of {total}
               </span>
-              <Button size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setOffset(offset + PAGE_SIZE)}>
+              <Button variant="outline" size="sm" disabled={offset + PAGE_SIZE >= total} onClick={() => setOffset(offset + PAGE_SIZE)}>
                 Next
               </Button>
             </div>

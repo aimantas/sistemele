@@ -26,7 +26,7 @@ export default function ContactDetailPage() {
     <div>
       <PageHeader
         back={
-          <Link to="/app/crm/contacts" className="inline-flex items-center gap-1 text-muted hover:text-ink">
+          <Link to="/app/crm/contacts" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" /> Contacts
           </Link>
         }
@@ -34,7 +34,7 @@ export default function ContactDetailPage() {
         description={[contact.kind === "company" ? "Company" : contact.companyName ? `Person at ${contact.companyName}` : "Person", contact.source === "website" ? "from the website" : null].filter(Boolean).join(" · ")}
         actions={
           <>
-            <Button icon={<Pencil />} onClick={() => setEditing(true)}>
+            <Button variant="outline" icon={<Pencil />} onClick={() => setEditing(true)}>
               Edit
             </Button>
             <Button variant="ghost" icon={<Archive />} onClick={() => setArchiving(true)}>
@@ -50,8 +50,8 @@ export default function ContactDetailPage() {
             <div className="p-5">
               <DetailList
                 items={[
-                  { label: "Email", value: contact.email ? <a className="text-brand hover:underline" href={`mailto:${contact.email}`}>{contact.email}</a> : "" },
-                  { label: "Phone", value: contact.phone ? <a className="text-brand hover:underline" href={`tel:${contact.phone.replace(/\s/gu, "")}`}>{contact.phone}</a> : "" },
+                  { label: "Email", value: contact.email ? <a className="text-primary hover:underline" href={`mailto:${contact.email}`}>{contact.email}</a> : "" },
+                  { label: "Phone", value: contact.phone ? <a className="text-primary hover:underline" href={`tel:${contact.phone.replace(/\s/gu, "")}`}>{contact.phone}</a> : "" },
                   { label: "Company code", value: contact.companyCode },
                   { label: "VAT code", value: contact.vatCode },
                   { label: "Address", value: [contact.address, [contact.postalCode, contact.city].filter(Boolean).join(" "), contact.country].filter(Boolean).join(", ") },
@@ -60,7 +60,7 @@ export default function ContactDetailPage() {
                   { label: "Created", value: format.date(contact.createdAt) },
                 ]}
               />
-              {contact.notes ? <p className="mt-4 border-t border-line pt-4 whitespace-pre-line text-ink-soft">{contact.notes}</p> : null}
+              {contact.notes ? <p className="mt-4 border-t border-border pt-4 whitespace-pre-line text-foreground/80">{contact.notes}</p> : null}
             </div>
           </Card>
           <Timeline target={{ contactId: contact.id }} activities={activities} emptyText="Nothing here yet. Notes, tasks, quotes and invoices appear on this timeline." />
@@ -70,31 +70,31 @@ export default function ContactDetailPage() {
             <CardHeader
               title="Deals"
               actions={
-                <Button size="sm" icon={<Plus />} onClick={() => setAddingDeal(true)}>
+                <Button variant="outline" size="sm" icon={<Plus />} onClick={() => setAddingDeal(true)}>
                   Deal
                 </Button>
               }
             />
-            <ul className="divide-y divide-line">
+            <ul className="divide-y divide-border">
               {deals.map((deal) => (
                 <li key={deal.id} className="flex items-start justify-between gap-3 px-5 py-3">
                   <div className="min-w-0">
                     <p className="truncate font-medium">{deal.title}</p>
-                    <p className="tabular text-sm text-muted">{format.money(deal.valueCents)}</p>
+                    <p className="tabular text-sm text-muted-foreground">{format.money(deal.valueCents)}</p>
                   </div>
                   <Badge tone={stageTone(deal.stageKind)}>{deal.stageLabel}</Badge>
                 </li>
               ))}
-              {deals.length === 0 ? <li className="px-5 py-4 text-sm text-muted">No deals yet.</li> : null}
+              {deals.length === 0 ? <li className="px-5 py-4 text-sm text-muted-foreground">No deals yet.</li> : null}
             </ul>
           </Card>
           {leads.length ? (
             <Card>
               <CardHeader title="Leads" />
-              <ul className="divide-y divide-line">
+              <ul className="divide-y divide-border">
                 {leads.map((lead) => (
                   <li key={lead.id} className="flex items-start justify-between gap-3 px-5 py-3">
-                    <Link to={`/app/crm/leads/${lead.id}`} className="min-w-0 truncate font-medium hover:text-brand hover:underline">
+                    <Link to={`/app/crm/leads/${lead.id}`} className="min-w-0 truncate font-medium hover:text-primary hover:underline">
                       {lead.name}
                     </Link>
                     <LeadStatusBadge status={lead.status} />
@@ -136,7 +136,7 @@ export function NewDealDialog({ contactId, open, onClose }: { contactId: string;
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="primary" loading={create.isPending} onClick={() => create.mutate({ contactId, title, valueCents: valueCents ?? 0, stage: stage || undefined }, { onSuccess: () => (onClose(), setTitle(""), setValueCents(null)) })}>
+          <Button variant="default" loading={create.isPending} onClick={() => create.mutate({ contactId, title, valueCents: valueCents ?? 0, stage: stage || undefined }, { onSuccess: () => (onClose(), setTitle(""), setValueCents(null)) })}>
             Create deal
           </Button>
         </>

@@ -17,7 +17,7 @@ export default function InvoiceEditorPage() {
   const business = useBusiness();
 
   const back = (
-    <Link to={id ? `/app/invoices/${id}` : "/app/invoices"} className="inline-flex items-center gap-1 text-muted hover:text-ink">
+    <Link to={id ? `/app/invoices/${id}` : "/app/invoices"} className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
       <ArrowLeft className="size-4" /> {id ? "Invoice" : "Invoices"}
     </Link>
   );
@@ -34,7 +34,7 @@ export default function InvoiceEditorPage() {
           title="Issued invoices cannot be edited"
           description="Void it and create a new invoice to correct it."
           action={
-            <ButtonLink to={`/app/invoices/${id}`} variant="primary">
+            <ButtonLink to={`/app/invoices/${id}`} variant="default">
               Back to the invoice
             </ButtonLink>
           }
@@ -99,7 +99,7 @@ function InvoiceForm({ back, invoice, initialContactId, defaultVatRateBps, payme
           <ButtonLink to={invoice ? `/app/invoices/${invoice.id}` : "/app/invoices"} variant="ghost">
             Cancel
           </ButtonLink>
-          <Button type="submit" variant="primary" loading={save.isPending}>
+          <Button type="submit" variant="default" loading={save.isPending}>
             Save draft
           </Button>
         </div>

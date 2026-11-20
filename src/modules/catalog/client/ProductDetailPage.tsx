@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { fieldError } from "@/app/lib/api";
 import { useFormat } from "@/app/lib/format";
-import { Badge, Button, buttonClass, Card, CardHeader, ConfirmDialog, ErrorState, FormError, PageHeader, Spinner, useToast } from "@/app/ui";
+import { Badge, Button, buttonVariants, Card, CardHeader, ConfirmDialog, ErrorState, FormError, PageHeader, Spinner, useToast } from "@/app/ui";
 import type { Movement, Product } from "../shared/schema";
 import { useProduct, useSetProductStatus, useUpdateProduct } from "./api";
 import { ReasonBadge, SignedQuantity, StockBadge } from "./parts";
@@ -30,7 +30,7 @@ function ProductScreen({ product, movements }: { product: Product; movements: Mo
     <div>
       <PageHeader
         back={
-          <Link to="/app/catalog/products" className="inline-flex items-center gap-1 text-muted hover:text-ink">
+          <Link to="/app/catalog/products" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" /> Products
           </Link>
         }
@@ -44,12 +44,12 @@ function ProductScreen({ product, movements }: { product: Product; movements: Mo
         actions={
           <>
             {product.isPublic && !archived ? (
-              <a href={`/products/${product.slug}`} target="_blank" rel="noreferrer" className={buttonClass("ghost")}>
+              <a href={`/products/${product.slug}`} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "ghost" })}>
                 <ExternalLink /> View on website
               </a>
             ) : null}
             {archived ? (
-              <Button icon={<ArchiveRestore />} loading={setStatus.isPending} onClick={() => setStatus.mutate("restore", { onSuccess: () => toast("Product restored.") })}>
+              <Button variant="outline" icon={<ArchiveRestore />} loading={setStatus.isPending} onClick={() => setStatus.mutate("restore", { onSuccess: () => toast("Product restored.") })}>
                 Restore
               </Button>
             ) : (
@@ -117,7 +117,7 @@ function DetailsForm({ product }: { product: Product }) {
           <FormError error={update.error} />
         </div>
         <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
-          <Button type="submit" variant="primary" loading={update.isPending} disabled={!dirty}>
+          <Button type="submit" variant="default" loading={update.isPending} disabled={!dirty}>
             Save changes
           </Button>
           {dirty ? (
@@ -137,7 +137,7 @@ function StockCard({ product, onAction }: { product: Product; onAction: (action:
     return (
       <Card>
         <CardHeader title="Stock" />
-        <p className="px-5 py-4 text-sm text-muted">Stock is not tracked for this {product.kind}. Turn on “Track stock” in Details to count it and let invoices deduct it.</p>
+        <p className="px-5 py-4 text-sm text-muted-foreground">Stock is not tracked for this {product.kind}. Turn on “Track stock” in Details to count it and let invoices deduct it.</p>
       </Card>
     );
   }
@@ -147,21 +147,21 @@ function StockCard({ product, onAction }: { product: Product; onAction: (action:
       <div className="grid gap-4 p-5">
         <div className="flex items-baseline justify-between gap-3">
           <p>
-            <span className="tabular text-3xl font-semibold tracking-tight">{format.number(product.stockOnHand)}</span> <span className="text-ink-soft">{product.unit} on hand</span>
+            <span className="tabular text-3xl font-semibold tracking-tight">{format.number(product.stockOnHand)}</span> <span className="text-foreground/80">{product.unit} on hand</span>
           </p>
-          <p className="text-right text-sm text-muted">
+          <p className="text-right text-sm text-muted-foreground">
             Reorder at <span className="tabular">{format.number(product.reorderPoint)}</span>
           </p>
         </div>
-        {product.costCents !== null ? <p className="text-sm text-muted">Value at cost: {format.money(Math.round(Math.max(product.stockOnHand, 0) * product.costCents))}</p> : null}
+        {product.costCents !== null ? <p className="text-sm text-muted-foreground">Value at cost: {format.money(Math.round(Math.max(product.stockOnHand, 0) * product.costCents))}</p> : null}
         <div className="grid grid-cols-3 gap-2">
-          <Button size="sm" icon={<PackagePlus />} onClick={() => onAction("receive")}>
+          <Button variant="outline" size="sm" icon={<PackagePlus />} onClick={() => onAction("receive")}>
             Receive
           </Button>
-          <Button size="sm" icon={<SlidersHorizontal />} onClick={() => onAction("adjust")}>
+          <Button variant="outline" size="sm" icon={<SlidersHorizontal />} onClick={() => onAction("adjust")}>
             Adjust
           </Button>
-          <Button size="sm" icon={<PackageCheck />} onClick={() => onAction("count")}>
+          <Button variant="outline" size="sm" icon={<PackageCheck />} onClick={() => onAction("count")}>
             Count
           </Button>
         </div>
@@ -178,16 +178,16 @@ function HistoryCard({ product, movements }: { product: Product; movements: Move
         title="Stock history"
         actions={
           movements.length ? (
-            <Link to={`/app/catalog/movements?productId=${product.id}`} className="text-sm text-brand hover:underline">
+            <Link to={`/app/catalog/movements?productId=${product.id}`} className="text-sm text-primary hover:underline">
               All
             </Link>
           ) : null
         }
       />
       {movements.length === 0 ? (
-        <p className="px-5 py-4 text-sm text-muted">No movements yet. Receive stock to start the history; invoices add sales automatically.</p>
+        <p className="px-5 py-4 text-sm text-muted-foreground">No movements yet. Receive stock to start the history; invoices add sales automatically.</p>
       ) : (
-        <ol className="divide-y divide-line">
+        <ol className="divide-y divide-border">
           {movements.map((movement) => (
             <li key={movement.id} className="grid gap-1 px-5 py-3">
               <div className="flex items-center justify-between gap-3">
@@ -196,12 +196,12 @@ function HistoryCard({ product, movements }: { product: Product; movements: Move
                   <SignedQuantity quantity={movement.quantity} unit={product.unit} />
                 </span>
                 {movement.balanceAfter !== undefined ? (
-                  <span className="tabular text-sm text-muted" title="Stock after this movement">
+                  <span className="tabular text-sm text-muted-foreground" title="Stock after this movement">
                     → {format.number(movement.balanceAfter)}
                   </span>
                 ) : null}
               </div>
-              <p className="text-xs text-muted">
+              <p className="text-xs text-muted-foreground">
                 <time dateTime={movement.createdAt}>{format.dateTime(movement.createdAt)}</time>
                 {movement.createdByName ? ` · ${movement.createdByName}` : ""}
                 {movement.note ? ` · ${movement.note}` : ""}
