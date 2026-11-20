@@ -235,7 +235,7 @@ export default function ItemsPage() {
         <Field label="Name" className="min-w-64 flex-1" error={fieldError(create.error, "name")}>
           {(props) => <Input {...props} value={name} onChange={(event) => setName(event.target.value)} />}
         </Field>
-        <Button type="submit" variant="primary" icon={<Plus />} loading={create.isPending}>
+        <Button type="submit" icon={<Plus />} loading={create.isPending}>
           Add item
         </Button>
       </form>
@@ -279,12 +279,12 @@ import { useItems } from "./api";
 export function RecentItemsWidget() {
   const items = useItems();
   if (!items.data) return <Spinner />;
-  if (items.data.items.length === 0) return <p className="text-sm text-muted">Nothing yet.</p>;
+  if (items.data.items.length === 0) return <p className="text-sm text-muted-foreground">Nothing yet.</p>;
   return (
     <ul className="grid gap-1">
       {items.data.items.slice(0, 6).map((item) => (
         <li key={item.id}>
-          <Link to="/app/${id}" className="block truncate rounded-control px-1 py-1.5 text-sm hover:bg-paper">
+          <Link to="/app/${id}" className="block truncate rounded-md px-1 py-1.5 text-sm hover:bg-accent">
             {item.name}
           </Link>
         </li>
