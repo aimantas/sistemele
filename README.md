@@ -2,25 +2,6 @@
 
 **Don't ask your agent to reinvent the wheel.**
 
-A practical starter kit and admin panel for AI-native projects, on
-Cloudflare Workers. Sign-in, roles, audit log, CRM with a leads inbox and your
-own pipeline stages, catalog and stock, quotes, invoices, website pages and a
-blog, a drag-and-drop dashboard and an MCP endpoint are already built, tested
-and documented. Your agent builds only what is specific to the business.
-
-One Worker, one D1 database, MIT licensed. *Sistemėlė* is Lithuanian for "a little system".
-
-![Dashboard with KPI cards, pipeline, open tasks and low stock (demo data)](docs/images/dashboard.jpg)
-
-```text
-Browser ─┬─ /            server-rendered public site (SEO, no client JS)
-         ├─ /app/*       React dashboard (drag-and-drop, per-user layouts)
-         ├─ /api/*       JSON API (sessions or API tokens, roles, audit)
-         └─ /mcp         Model Context Protocol for AI agents
-                │
-        Cloudflare Worker (Hono) ── D1 (SQLite) · Resend (email) · static assets
-```
-
 ## Start in two minutes
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/aimantas/sistemele)
@@ -41,6 +22,27 @@ npm run dev          # http://localhost:5173 and http://localhost:5173/app
 
 Sign in at `/app/login` with `owner@example.com`. Locally, the sign-in link is
 shown on screen and printed in the terminal.
+
+## What it is
+
+A practical starter kit and admin panel for AI-native projects, on
+Cloudflare Workers. Sign-in, roles, audit log, CRM with a leads inbox and your
+own pipeline stages, catalog and stock, quotes, invoices, website pages and a
+blog, a drag-and-drop dashboard and an MCP endpoint are already built, tested
+and documented. Your agent builds only what is specific to the business.
+
+One Worker, one D1 database, MIT licensed. *Sistemėlė* is Lithuanian for "a little system".
+
+![Dashboard with KPI cards, pipeline, open tasks and low stock (demo data)](docs/images/dashboard.jpg)
+
+```text
+Browser ─┬─ /            server-rendered public site (SEO, no client JS)
+         ├─ /app/*       React dashboard (drag-and-drop, per-user layouts)
+         ├─ /api/*       JSON API (sessions or API tokens, roles, audit)
+         └─ /mcp         Model Context Protocol for AI agents
+                │
+        Cloudflare Worker (Hono) ── D1 (SQLite) · Resend (email) · static assets
+```
 
 ## Give your agent the setup
 
