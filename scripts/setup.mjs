@@ -28,7 +28,8 @@ DEMO_MODE=
 
 `;
 if (!existsSync(".dev.vars")) {
-  writeFileSync(".dev.vars", LOCAL_VARS + readFileSync(".dev.vars.example", "utf8"));
+  // Secrets live here: readable by you only.
+  writeFileSync(".dev.vars", LOCAL_VARS + readFileSync(".dev.vars.example", "utf8"), { mode: 0o600 });
   console.log("Created .dev.vars (local values + secrets from .dev.vars.example)");
 } else {
   console.log(".dev.vars already exists — kept as is");
@@ -39,7 +40,7 @@ if (admin) {
     process.exit(1);
   }
   const vars = readFileSync(".dev.vars", "utf8").replace(/^ADMIN_EMAILS=.*$/mu, `ADMIN_EMAILS=${admin}`);
-  writeFileSync(".dev.vars", vars);
+  writeFileSync(".dev.vars", vars, { mode: 0o600 });
   console.log(`ADMIN_EMAILS set to ${admin}`);
 }
 

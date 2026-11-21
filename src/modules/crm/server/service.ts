@@ -320,6 +320,7 @@ export async function addActivity(ctx: ModuleContext, raw: ActivityInput): Promi
   if (dealId) contactId ??= (await getDeal(ctx, dealId)).contactId;
   if (contactId) await getContact(ctx, contactId);
   const activity = await insertActivity(ctx, { contactId, dealId, leadId: lead?.id ?? null, kind: input.kind, body: input.body, dueAt: input.dueAt || null });
+  await ctx.audit({ action: "activity.added", entityType: "activity", entityId: activity.id, summary: `Logged a ${input.kind}`, data: { contactId, dealId, leadId: lead?.id ?? null } });
   if (lead?.status === "new" && (CONTACT_ACTIVITY_KINDS as readonly string[]).includes(input.kind)) {
     await ctx.db.run(`UPDATE leads SET status = 'contacted', updated_at = ${NOW} WHERE id = ? AND status = 'new'`, [lead.id]);
     await insertActivity(ctx, { contactId: null, dealId: null, leadId: lead.id, kind: "system", body: "Status: New → Contacted." });
@@ -352,4 +353,5 @@ export async function completeTask(ctx: ModuleContext, id: string): Promise<void
   ctx.requireRole("member");
   const result = await ctx.db.run(`UPDATE activities SET done_at = ${NOW} WHERE id = ? AND kind = 'task' AND done_at IS NULL`, [id]);
   if (!result.meta.changes) throw notFound("Open task");
+  await ctx.audit({ action: "task.completed", entityType: "activity", entityId: id, summary: "Completed a task" });
 }

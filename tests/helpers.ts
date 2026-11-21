@@ -107,7 +107,11 @@ export async function createTestApp(options: { modules?: ServerModule[]; env?: P
     settle: async () => {
       await Promise.all(pending.splice(0));
     },
-    dispose: () => mf.dispose(),
+    // Work scheduled with waitUntil finishes before the database goes away.
+    dispose: async () => {
+      await Promise.allSettled(pending.splice(0));
+      await mf.dispose();
+    },
   };
 }
 

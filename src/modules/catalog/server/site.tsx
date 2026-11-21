@@ -3,7 +3,7 @@ import { config } from "../../../../sistemele.config";
 import { documentTotals, formatMoney, formatPercentBps } from "@/shared/money";
 import type { ModuleContext } from "@/modules/types.server";
 import { getContext } from "@/worker/context";
-import { appOrigin, type AppEnv } from "@/worker/env";
+import { appOrigin, isDemoVisitorRecord, type AppEnv } from "@/worker/env";
 import { renderPage } from "@/worker/site/render";
 import { breadcrumbJsonLd } from "@/worker/site/seo";
 import type { Product } from "../shared/schema";
@@ -101,7 +101,7 @@ export const catalogSite = new Hono<AppEnv>()
         admin: { label: "Catalog → Products", href: "/app/catalog/products" },
         files: [{ path: "src/modules/catalog/server/site.tsx", note: "/products and product pages: layout, prices, structured data" }],
       },
-      meta: { title: "Products", description, path: "/products", jsonLd: [breadcrumbJsonLd(origin, [{ name: "Home", path: "/" }, { name: "Products", path: "/products" }])] },
+      meta: { title: "Products", description, path: "/products", noindex: products.some((product) => isDemoVisitorRecord(c.env, product.id)), jsonLd: [breadcrumbJsonLd(origin, [{ name: "Home", path: "/" }, { name: "Products", path: "/products" }])] },
       markdown,
       body: (
         <section className="section">
@@ -204,6 +204,7 @@ export const catalogSite = new Hono<AppEnv>()
       },
       meta: {
         title: product.name,
+        noindex: isDemoVisitorRecord(c.env, product.id),
         description,
         path,
         ogType: "product",

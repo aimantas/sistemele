@@ -33,7 +33,10 @@ function contextMiddleware(modules: readonly ServerModule[]): MiddlewareHandler<
     let user = null;
     if (isApi(c.req.path) || c.req.path === "/mcp") {
       const db = new Db(c.env.DB);
-      user = (await userFromApiToken(db, c.req.header("authorization"))) ?? (await userFromSession(c, db));
+      // A request that sends an Authorization header is judged by it alone: an
+      // invalid token never falls back to the session cookie.
+      const authorization = c.req.header("authorization");
+      user = authorization ? await userFromApiToken(db, authorization) : await userFromSession(c, db);
     }
     c.set("user", user);
     c.set("moduleContext", createModuleContext({ env: c.env, user, modules, waitUntil: waitUntilFor(c) }));
@@ -48,7 +51,7 @@ function contextMiddleware(modules: readonly ServerModule[]): MiddlewareHandler<
 const csrfGuard: MiddlewareHandler<AppEnv> = async (c, next) => {
   const method = c.req.method;
   if (method === "GET" || method === "HEAD" || method === "OPTIONS") return next();
-  if (c.req.header("authorization")?.startsWith("Bearer ")) return next();
+  if (c.get("user")?.via === "token") return next();
   const origin = c.req.header("origin");
   const allowed = new Set([appOrigin(c.env), new URL(c.req.url).origin]);
   const sameSite = c.req.header("sec-fetch-site");
@@ -66,7 +69,12 @@ const requireSignedIn: MiddlewareHandler<AppEnv> = async (c, next) => {
  * cookies and emails then use the address the request came to.
  */
 const appUrlFallback: MiddlewareHandler<AppEnv> = async (c, next) => {
-  if (!c.env.APP_URL?.trim()) c.env = { ...c.env, APP_URL: new URL(c.req.url).origin };
+  if (!c.env.APP_URL?.trim()) {
+    const url = new URL(c.req.url);
+    const local = url.hostname === "localhost" || url.hostname === "127.0.0.1" || url.hostname.endsWith(".localhost");
+    // Deployed copies are always https, even if a request arrives over http: links and the Secure cookie depend on it.
+    c.env = { ...c.env, APP_URL: local ? url.origin : `https://${url.host}` };
+  }
   await next();
 };
 

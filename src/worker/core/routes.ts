@@ -10,7 +10,7 @@ import type { ServerModule } from "@/modules/types.server";
 import { getContext } from "../context";
 import { renderEmail } from "../email/layout";
 import { emailConfigured } from "../email/send";
-import { appOrigin, type AppEnv } from "../env";
+import { appOrigin, isDemo, type AppEnv } from "../env";
 import { randomToken, sha256Hex } from "../lib/crypto";
 import { badRequest, conflict, forbidden, notFound } from "../lib/errors";
 import { parseJsonColumn } from "../lib/db";
@@ -65,6 +65,7 @@ export function coreRoutes(modules: readonly ServerModule[]) {
       const user = ctx.requireRole("member");
       const { name } = await readJson(c, z.object({ name: z.string().trim().min(1).max(120) }));
       await ctx.db.run("UPDATE users SET name = ? WHERE id = ?", [name, user.id]);
+      await ctx.audit({ action: "user.renamed", entityType: "user", entityId: user.id, summary: `Changed their name to ${name}` });
       return c.json({ user: { ...user, name } });
     })
 
@@ -111,14 +112,19 @@ export function coreRoutes(modules: readonly ServerModule[]) {
       if (target.id === actor.id && (input.status === "disabled" || (input.role && input.role !== actor.role))) {
         throw badRequest("You cannot disable or demote yourself. Ask another owner.");
       }
-      if (target.role === "owner" && (input.role && input.role !== "owner" || input.status === "disabled")) {
+      const removesOwner = target.role === "owner" && ((input.role && input.role !== "owner") || input.status === "disabled");
+      if (removesOwner) {
         const owners = await ctx.db.value<number>("SELECT COUNT(*) FROM users WHERE role = 'owner' AND status = 'active'");
         if ((owners ?? 0) <= 1) throw badRequest("Keep at least one active owner.");
       }
-      await ctx.db.batch([
-        ctx.db.prepare("UPDATE users SET name = COALESCE(?, name), role = COALESCE(?, role), status = COALESCE(?, status) WHERE id = ?", [input.name ?? null, input.role ?? null, input.status ?? null, target.id]),
-        ...(input.status === "disabled" ? [ctx.db.prepare("DELETE FROM sessions WHERE user_id = ?", [target.id])] : []),
+      // The last-owner rule is also part of the UPDATE itself, so two owners
+      // removing each other at the same moment cannot leave none.
+      const keepsAnOwner = removesOwner ? " AND (SELECT COUNT(*) FROM users WHERE role = 'owner' AND status = 'active' AND id <> ?) >= 1" : "";
+      const [update] = await ctx.db.batch([
+        ctx.db.prepare(`UPDATE users SET name = COALESCE(?, name), role = COALESCE(?, role), status = COALESCE(?, status) WHERE id = ?${keepsAnOwner}`, [input.name ?? null, input.role ?? null, input.status ?? null, target.id, ...(removesOwner ? [target.id] : [])]),
+        ...(input.status === "disabled" ? [ctx.db.prepare("DELETE FROM sessions WHERE user_id = ? AND EXISTS (SELECT 1 FROM users WHERE id = ? AND status = 'disabled')", [target.id, target.id])] : []),
       ]);
+      if (removesOwner && !update?.meta.changes) throw badRequest("Keep at least one active owner.");
       await ctx.audit({ action: "user.updated", entityType: "user", entityId: target.id, summary: `Updated ${target.email}`, data: input });
       return c.json({ ok: true });
     })
@@ -132,6 +138,8 @@ export function coreRoutes(modules: readonly ServerModule[]) {
     .put("/settings/business", async (c) => {
       const ctx = getContext(c);
       const actor = ctx.requireRole("admin");
+      // The public demo is shared by every visitor and shown on its public site: settings stay as seeded.
+      if (isDemo(c.env)) throw forbidden("Settings are read-only in the demo. Run your own copy to change them.");
       const business = await readJson(c, businessProfileSchema);
       await putSetting(ctx.db, "business", business, actor.id);
       await ctx.audit({ action: "settings.updated", entityType: "settings", entityId: "business", summary: "Updated business details" });
@@ -148,6 +156,8 @@ export function coreRoutes(modules: readonly ServerModule[]) {
     .put("/settings/branding", async (c) => {
       const ctx = getContext(c);
       const actor = ctx.requireRole("admin");
+      // The public demo is shared by every visitor and shown on its public site: settings stay as seeded.
+      if (isDemo(c.env)) throw forbidden("Settings are read-only in the demo. Run your own copy to change them.");
       const input = await readJson(c, brandingSchema);
       const branding = { ...input, logoSvg: input.logoSvg?.trim() ? sanitizeSvg(input.logoSvg) : null };
       await putSetting(ctx.db, "branding", branding, actor.id);

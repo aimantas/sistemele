@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getContext } from "@/worker/context";
 import type { AppEnv } from "@/worker/env";
 import { AppError, badRequest } from "@/worker/lib/errors";
-import { enforceRateLimit } from "@/worker/lib/rate-limit";
+import { clientAddressKey, enforceRateLimit } from "@/worker/lib/rate-limit";
 import { readQuery } from "@/worker/lib/validate";
 import { quoteListStatuses } from "../shared/schema";
 import * as quotes from "./service";
@@ -60,7 +60,7 @@ function answer(status: "accepted" | "declined") {
     const ctx = getContext(c);
     const token = c.req.param("token") ?? "";
     const form = isFormPost(c);
-    const ip = c.req.header("cf-connecting-ip") ?? "local";
+    const ip = clientAddressKey(c.req.header("cf-connecting-ip"));
     const back = `/q/${encodeURIComponent(token)}`;
     try {
       await enforceRateLimit(ctx.db, `quote-answer:${ip}`, 20, 3600);

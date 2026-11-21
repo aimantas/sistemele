@@ -71,13 +71,13 @@ point a preview at production data:
 "env": {
   "preview": {
     "name": "sistemele-preview",
-    "vars": { "APP_URL": "https://sistemele-preview.<account>.workers.dev", "APP_ENV": "preview", "ADMIN_EMAILS": "you@example.com", "EMAIL_FROM": "…", "APP_NAME": "Sistemėlė (preview)" },
+    "vars": { "APP_URL": "https://sistemele-preview.<account>.workers.dev", "APP_ENV": "preview", "EMAIL_FROM": "…", "APP_NAME": "Sistemėlė (preview)" },
     "d1_databases": [{ "binding": "DB", "database_name": "sistemele-preview", "database_id": "…", "migrations_dir": "migrations" }]
   }
 }
 ```
 
-Deploy with `npx wrangler deploy --env preview` (after `CLOUDFLARE_ENV=preview npx vite build`).
+Set its secrets with `npx wrangler secret put ADMIN_EMAILS --env preview` (never in committed `vars`), then deploy with `npx wrangler deploy --env preview` (after `CLOUDFLARE_ENV=preview npx vite build`).
 `robots.txt` disallows everything outside production.
 
 ## Public demo
@@ -101,7 +101,9 @@ npm run db:seed:demo      # demo data now (the trigger reloads it every hour)
 npm run deploy:demo       # CLOUDFLARE_ENV=demo build, then wrangler deploy
 ```
 
-`db:seed:demo` only ever targets `--remote --env demo`. For your own demo, copy the block with your domain and a new database (`npx wrangler d1 create <name>`), or remove it.
+`db:seed:demo` only ever targets `--remote --env demo`. For your own demo, copy the block with your domain and a **new** database (`npx wrangler d1 create <name>`), or remove it. Never give the demo your production `database_id`: the hourly reset empties every table.
+
+Safeguards: demo mode needs both `DEMO_MODE=1` and `APP_ENV=demo`, and the reset only runs on a database that already holds demo data (the seed's `demo_data` marker or its demo records, written by `db:seed:demo`).
 
 ## Continuous deployment
 
@@ -110,11 +112,14 @@ dashboard (Worker → Settings → Builds). Build command `npm run build`, deplo
 command `npx wrangler deploy`. Pushes to `main` deploy; other branches can get
 preview URLs.
 
-Option B — **GitHub Actions**: `.github/workflows/ci.yml` already runs checks.
-Add a deploy job with `cloudflare/wrangler-action` and a `CLOUDFLARE_API_TOKEN`
-secret scoped to Workers and D1.
+Option B — **GitHub Actions**: add a workflow that runs `npm ci` and
+`npm run check` on `pull_request` (never `pull_request_target`, which exposes
+secrets to forks), then a deploy job on `main` with `cloudflare/wrangler-action`
+and a `CLOUDFLARE_API_TOKEN` secret scoped to Workers and D1.
 
-Run remote migrations as a separate, deliberate step.
+`npm run deploy` applies pending migrations, then deploys. Review every new
+migration before it reaches `main`: it runs against production on the next
+deploy.
 
 ## Backups
 
