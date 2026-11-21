@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Starter home: every screenshot opens full size in a lightbox (the browser's popover; no JavaScript, Esc or a click outside closes it), and a "More screens" gallery adds quotes, products, the website editor, brand settings, developer mode and the docs. The "Works with" strip sits in the first viewport. Settings → Brand shows a square logo at a sensible size.
+
 - Security review fixes (details and accepted limits in `docs/security.md`, regression tests in `tests/security.test.ts`):
   - Deployed Workers never log email bodies (sign-in and document links); subjects lose control characters.
   - Sign-in answers equally fast for known and unknown addresses; IPv6 rate limits by /64; rate-limit and sign-in token tables are pruned.

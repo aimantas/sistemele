@@ -62,7 +62,7 @@ export function BrandSettingsPage() {
           </div>
           <div className="flex flex-wrap items-center gap-4">
             <div className="grid h-20 w-56 place-items-center rounded-md border border-dashed border-input bg-card p-3">
-              {logoPreview ? <img src={logoPreview} alt="Logo preview" className="max-h-full max-w-full" /> : <span className="text-sm text-muted-foreground">No logo yet</span>}
+              {logoPreview ? <img src={logoPreview} alt="Logo preview" className="h-14 w-auto max-w-full object-contain" /> : <span className="text-sm text-muted-foreground">No logo yet</span>}
             </div>
             {isAdmin ? (
               <div className="flex flex-wrap gap-2">
