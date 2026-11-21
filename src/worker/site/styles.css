@@ -253,16 +253,18 @@ code { font-family: var(--font-mono); font-size: 0.875em; }
 .lp-meta a { color: var(--foreground); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
 .lp-meta a:hover { text-decoration: underline; }
 .lp-meta .lp-logo { width: 14px; height: 14px; }
-.lp-hero-shot { margin-top: clamp(48px, 7vw, 80px); position: relative; }
+.lp-hero-shot { margin-top: clamp(40px, 5vw, 64px); position: relative; }
 @media (prefers-reduced-motion: no-preference) {
   .lp-hero-shot .browser { animation: lp-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
   @keyframes lp-rise { from { transform: translateY(32px); } }
 }
 .lp-hero-shot .browser { box-shadow: 0 2px 4px -2px hsl(var(--shadow-color) / 0.08), 0 40px 80px -24px hsl(var(--shadow-color) / 0.3); -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
-.lp-strip { padding: 8px 0 clamp(48px, 6vw, 72px); }
-.lp-strip h2 { font-size: 0.875rem; font-weight: 500; letter-spacing: 0; color: var(--muted-foreground); text-align: center; margin: 0 0 20px; }
-.lp-logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 32px; }
+/* "Works with" strip, in the first viewport under the actions */
+.lp-works { margin-top: clamp(28px, 4vw, 40px); }
+.lp-works h2 { font-size: 0.8125rem; font-weight: 500; letter-spacing: 0; color: var(--muted-foreground); text-align: center; margin: 0 0 14px; }
+.lp-logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 28px; max-width: 980px; }
 .lp-logos li { display: inline-flex; align-items: center; gap: 8px; font-size: 0.9375rem; font-weight: 550; color: var(--muted-foreground); }
+@media (max-width: 640px) { .lp-logos { gap: 8px 18px; } .lp-logos li { font-size: 0.875rem; } }
 .lp-logos .lp-logo { filter: grayscale(1); opacity: 0.85; }
 .lp-steps { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 0; margin-top: 8px; }
 .lp-steps li { padding: 4px 24px 8px 0; }

@@ -224,22 +224,19 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
               <Logo name="github" /> aimantas/sistemele
             </a>
           </p>
+          <div className="lp-works">
+            <h2 id="lp-works">Works with the agents and services you already use</h2>
+            <ul className="plain lp-logos" aria-labelledby="lp-works">
+              {worksWith.map((item) => (
+                <li key={item.label}>
+                  <Logo name={item.logo} /> {item.label}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
         <div className="wrap lp-hero-shot">
           <Screenshot shot={shots.dashboard} eager />
-        </div>
-      </section>
-
-      <section className="lp-strip" aria-labelledby="lp-works">
-        <div className="wrap">
-          <h2 id="lp-works">Works with the agents and services you already use</h2>
-          <ul className="plain lp-logos">
-            {worksWith.map((item) => (
-              <li key={item.label}>
-                <Logo name={item.logo} /> {item.label}
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 
