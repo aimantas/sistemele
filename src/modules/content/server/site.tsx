@@ -3,7 +3,7 @@ import { config } from "../../../../sistemele.config";
 import { formatDate } from "@/shared/dates";
 import { SLUG_PATTERN } from "@/shared/slug";
 import { getContext } from "@/worker/context";
-import { appOrigin, type AppEnv } from "@/worker/env";
+import { appOrigin, isDemoVisitorRecord, type AppEnv } from "@/worker/env";
 import { renderPage } from "@/worker/site/render";
 import { breadcrumbJsonLd } from "@/worker/site/seo";
 import { excerpt, Markdown, markdownText } from "../shared/markdown";
@@ -38,7 +38,10 @@ function describe(entry: Entry, fallback: string): string {
  * live posts follow. Nothing is added while neither exists.
  */
 export async function contentHome(ctx: ModuleContext): Promise<HomeContribution> {
-  const [page, posts] = await Promise.all([getLiveEntry(ctx, "page", HOME_SLUG), listLivePosts(ctx, { limit: 3, offset: 0 })]);
+  const [livePage, livePosts] = await Promise.all([getLiveEntry(ctx, "page", HOME_SLUG), listLivePosts(ctx, { limit: 12, offset: 0 })]);
+  // On the public demo, only the seed content shapes the home page; what visitors publish stays on its own (noindex) pages.
+  const page = livePage && !isDemoVisitorRecord(ctx.env, livePage.id) ? livePage : null;
+  const posts = { ...livePosts, items: livePosts.items.filter((post) => !isDemoVisitorRecord(ctx.env, post.id)).slice(0, 3) };
   const origin = appOrigin(ctx.env);
   const date = (value: string | null) => formatDate(value, ctx.locale);
   const sections: HomeSection[] = [];
@@ -103,7 +106,7 @@ export const contentSite = new Hono<AppEnv>()
     const origin = appOrigin(c.env);
     const business = await ctx.business();
     const posts = await listLivePosts(ctx, { limit: 20, offset: 0 });
-    const items = posts.items.map((post) =>
+    const items = posts.items.filter((post) => !isDemoVisitorRecord(c.env, post.id)).map((post) =>
       [
         "    <item>",
         `      <title>${xml(post.title)}</title>`,
@@ -164,7 +167,7 @@ export const contentSite = new Hono<AppEnv>()
         description: `Posts from ${business.name}, newest first.`,
         path,
         // An empty blog is a thin page: keep it out of search results until the first post.
-        noindex: posts.total === 0,
+        noindex: posts.total === 0 || posts.items.some((post) => isDemoVisitorRecord(c.env, post.id)),
         alternates: [feedLink(origin, business.name)],
         jsonLd: [breadcrumbJsonLd(origin, [{ name: "Home", path: "/" }, { name: "Blog", path: "/blog" }])],
       },
@@ -241,6 +244,7 @@ export const contentSite = new Hono<AppEnv>()
         title: post.title,
         description,
         path: post.path,
+        noindex: isDemoVisitorRecord(c.env, post.id),
         ogType: "article",
         ogImage: image,
         publishedTime: publishedAt,
@@ -281,7 +285,7 @@ export const contentSite = new Hono<AppEnv>()
             </p>
             {image ? <img className="entry-image" src={image} alt={post.imageAlt} /> : null}
             <div className="prose">
-              <Markdown source={post.body} />
+              <Markdown source={post.body} ugc={isDemoVisitorRecord(c.env, post.id)} />
             </div>
             <p>
               <a href="/blog">All posts</a>
@@ -317,6 +321,7 @@ export const contentSite = new Hono<AppEnv>()
         title: page.title,
         description: describe(page, `${page.title}. ${business.name}.`),
         path: page.path,
+        noindex: isDemoVisitorRecord(c.env, page.id),
         ogImage: image,
         jsonLd: [
           breadcrumbJsonLd(origin, [
@@ -332,7 +337,7 @@ export const contentSite = new Hono<AppEnv>()
             <h1>{page.title}</h1>
             {image ? <img className="entry-image" src={image} alt={page.imageAlt} /> : null}
             <div className="prose">
-              <Markdown source={page.body} />
+              <Markdown source={page.body} ugc={isDemoVisitorRecord(c.env, page.id)} />
             </div>
           </div>
         </section>

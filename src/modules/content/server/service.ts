@@ -1,3 +1,4 @@
+import { isDemoVisitorRecord } from "@/worker/env";
 import type { Page, SearchResult } from "@/shared/api";
 import { roleAtLeast, type SessionUser } from "@/shared/auth";
 import { nowIso } from "@/shared/dates";
@@ -303,16 +304,20 @@ export async function listLivePosts(ctx: ModuleContext, options: { limit: number
 /** Header links: live pages with a menu position (not the home page, which is "Home"), then "Blog" once a post is live. */
 export async function siteMenu(ctx: ModuleContext): Promise<SiteLink[]> {
   const [pages, hasPosts] = await Promise.all([
-    ctx.db.all<{ title: string; slug: string }>(`SELECT title, slug FROM content_entries WHERE type = 'page' AND slug <> '${HOME_SLUG}' AND menu_order IS NOT NULL AND ${live()} ORDER BY menu_order, title COLLATE NOCASE`),
+    ctx.db.all<{ id: string; title: string; slug: string }>(`SELECT id, title, slug FROM content_entries WHERE type = 'page' AND slug <> '${HOME_SLUG}' AND menu_order IS NOT NULL AND ${live()} ORDER BY menu_order, title COLLATE NOCASE`),
     ctx.db.value<number>(`SELECT EXISTS (SELECT 1 FROM content_entries WHERE type = 'post' AND ${live()})`),
   ]);
-  return [...pages.map((page) => ({ label: page.title, href: entryPath("page", page.slug) })), ...(hasPosts ? [{ label: "Blog", href: "/blog" }] : [])];
+  // Public demo: pages visitors publish never join the site menu.
+  const menuPages = pages.filter((page) => !isDemoVisitorRecord(ctx.env, page.id));
+  return [...menuPages.map((page) => ({ label: page.title, href: entryPath("page", page.slug) })), ...(hasPosts ? [{ label: "Blog", href: "/blog" }] : [])];
 }
 
 export async function sitemapEntries(ctx: ModuleContext): Promise<SitemapEntry[]> {
-  const rows = await ctx.db.all<{ type: EntryType; slug: string; updatedAt: string; publishedAt: string }>(
-    `SELECT type, slug, updated_at AS updatedAt, published_at AS publishedAt FROM content_entries WHERE ${live()} ORDER BY type, published_at DESC`,
+  const all = await ctx.db.all<{ id: string; type: EntryType; slug: string; updatedAt: string; publishedAt: string }>(
+    `SELECT id, type, slug, updated_at AS updatedAt, published_at AS publishedAt FROM content_entries WHERE ${live()} ORDER BY type, published_at DESC`,
   );
+  // Public demo: what visitors publish is noindex and stays out of the sitemap.
+  const rows = all.filter((row) => !isDemoVisitorRecord(ctx.env, row.id));
   const posts = rows.filter((row) => row.type === "post");
   const latest = posts.reduce((max, post) => (post.publishedAt > max ? post.publishedAt : max), "");
   return [

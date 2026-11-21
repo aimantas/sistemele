@@ -8,6 +8,11 @@ import { useBrandInfo } from "../lib/brand";
 import { useSession } from "../lib/session";
 import { Button, Field, FormError, Input, Spinner } from "../ui";
 
+/** Where to go after sign-in: only a path inside the admin panel, never another site. */
+function safeNext(next: string | null): string {
+  return next && /^\/app(\/|\?|$)/u.test(next) && !/[\\]|\/\//u.test(next) ? next : "/app";
+}
+
 function AuthFrame({ children }: { children: React.ReactNode }) {
   const brand = useBrandInfo();
   return (
@@ -28,7 +33,7 @@ export function LoginPage() {
   const [email, setEmail] = useState("");
   const request = useMutation({ mutationFn: (value: string) => api.post<{ ok: true; devLink?: string }>("/api/auth/link", { email: value }) });
 
-  if (user) return <Navigate to={params.get("next") ?? "/app"} replace />;
+  if (user) return <Navigate to={safeNext(params.get("next"))} replace />;
   if (demo) return <DemoLogin />;
 
   if (request.isSuccess) {

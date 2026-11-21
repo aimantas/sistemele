@@ -7,7 +7,7 @@ with `fetch` — no SDK. Every attempt is written to `email_log`
 
 | Situation | Result |
 | --- | --- |
-| `RESEND_API_KEY` missing | Email printed to the Worker log, status `logged`. Local sign-in links also appear on the sign-in screen. |
+| `RESEND_API_KEY` missing | Not sent, status `logged`. In development the email is printed to the terminal and local sign-in links also appear on the sign-in screen; a deployed Worker logs only that it was not sent (bodies hold sign-in and document links). |
 | Resend accepts | Status `sent`, provider id stored. |
 | Resend rejects / network error | Status `failed` with the error. The calling action still succeeds unless the caller decides otherwise. |
 

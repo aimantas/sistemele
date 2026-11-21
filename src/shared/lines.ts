@@ -17,7 +17,19 @@ export const lineInputSchema = z.object({
 export type LineInput = z.input<typeof lineInputSchema>;
 export type Line = z.output<typeof lineInputSchema>;
 
-export const linesSchema = z.array(lineInputSchema).min(1, "Add at least one line.").max(200);
+/**
+ * Largest document before discounts and VAT: 100 billion in cents. Keeps every
+ * total far inside JavaScript's safe integers (lines alone allow ~2e17).
+ */
+export const MAX_DOCUMENT_CENTS = 10_000_000_000_000;
+
+export function withinDocumentLimit(lines: ReadonlyArray<{ quantity: number; unitPriceCents: number }>): boolean {
+  return lines.reduce((sum, line) => sum + line.quantity * line.unitPriceCents, 0) <= MAX_DOCUMENT_CENTS;
+}
+
+export const DOCUMENT_TOO_LARGE = "The total is too large for one document. Split it into several.";
+
+export const linesSchema = z.array(lineInputSchema).min(1, "Add at least one line.").max(200).refine(withinDocumentLimit, DOCUMENT_TOO_LARGE);
 
 export interface StoredLine extends Line {
   id: string;

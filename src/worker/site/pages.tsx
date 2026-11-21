@@ -130,6 +130,11 @@ export function sitePages(modules: readonly ServerModule[]) {
             <div className="wrap narrow">
               <h1>{content.title}</h1>
               <p className="lead">{content.lead}</p>
+              {isDemo(c.env) ? (
+                <p className="notice" role="note">
+                  This is a public demo: anyone who opens the demo can read what you send here, until the hourly reset. Use made-up details.
+                </p>
+              ) : null}
               {sent ? (
                 <p className="notice success" role="status">
                   {content.success}

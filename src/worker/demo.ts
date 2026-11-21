@@ -5,7 +5,10 @@ import { isDemo, type Env } from "./env";
  * resetDemoData(): every table is emptied (users and sessions too, so
  * visitors start fresh) and the fictional data in seed/*.sql is loaded again.
  * Seed dates are relative to "now", so the demo always looks current.
- * Only runs when DEMO_MODE is on; see docs/deployment.md.
+ * Only runs in demo mode (DEMO_MODE and APP_ENV=demo) and only on a database
+ * that already holds demo data (the seed's `demo_data` setting or its demo records), so a
+ * production database is never wiped by a misconfigured trigger.
+ * See docs/deployment.md.
  */
 
 const seedFiles = import.meta.glob("../../seed/*.sql", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
@@ -67,6 +70,14 @@ export async function resetDemoData(db: D1Database): Promise<{ tables: number; s
 /** Cron Trigger handler: resets the demo; does nothing outside demo mode. */
 export async function scheduledDemoReset(env: Env): Promise<void> {
   if (!isDemo(env)) return;
+  // The seed's marker, or its records (databases seeded before the marker existed).
+  const marker = await env.DB.prepare("SELECT 1 AS ok WHERE EXISTS (SELECT 1 FROM settings WHERE key = 'demo_data') OR EXISTS (SELECT 1 FROM products WHERE id LIKE 'prd\\_demo\\_%' ESCAPE '\\')")
+    .first<{ ok: number }>()
+    .catch(() => null);
+  if (!marker) {
+    console.error("Demo reset skipped: this database has no demo data marker. Load it once with npm run db:seed:demo.");
+    return;
+  }
   const result = await resetDemoData(env.DB);
   console.info(`Demo reset: ${result.tables} tables emptied, ${result.statements} seed statements loaded.`);
 }

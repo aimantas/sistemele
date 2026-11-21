@@ -4,7 +4,8 @@ import { formatMoney } from "@/shared/money";
 import type { StockLine } from "@/modules/events";
 import type { ModuleContext } from "@/modules/types.server";
 import { likePattern, placeholders, type SqlValue } from "@/worker/lib/db";
-import { badRequest, conflict, notFound } from "@/worker/lib/errors";
+import { roleAtLeast } from "@/shared/auth";
+import { badRequest, conflict, forbidden, notFound } from "@/worker/lib/errors";
 import {
   MOVEMENT_REASON_LABELS,
   movementInputSchema,
@@ -141,9 +142,22 @@ async function uniqueSlug(ctx: ModuleContext, base: string): Promise<string> {
   for (let n = 2; ; n++) if (!taken.has(`${base}-${n}`)) return `${base}-${n}`;
 }
 
+/** Fields the public website shows for a public product. */
+const PUBLIC_FIELDS = new Set<string>(["name", "description", "kind", "unit", "priceCents", "vatRateBps", "imageUrl", "isPublic"]);
+
+/**
+ * What the public site shows is published by owners and admins, as in the
+ * content module: members keep products off the website or ask an admin.
+ */
+function requirePublisher(ctx: ModuleContext): void {
+  const user = ctx.requireRole("member");
+  if (!roleAtLeast(user.role, "admin")) throw forbidden("Only owners and admins can change what the public website shows. Turn off “Show on the website”, or ask an admin.");
+}
+
 export async function createProduct(ctx: ModuleContext, raw: ProductInput): Promise<Product> {
   ctx.requireRole("member");
   const input = productInputSchema.parse(raw);
+  if (input.isPublic) requirePublisher(ctx);
   await assertSkuFree(ctx, input.sku);
   const vatRateBps = input.vatRateBps ?? (await ctx.business()).defaultVatRateBps;
   const trackStock = input.trackStock ?? input.kind === "product";
@@ -194,6 +208,8 @@ export async function updateProduct(ctx: ModuleContext, id: string, raw: Product
     changed.push(field);
   }
   if (!sets.length) return before;
+  const shownPublicly = before.isPublic || (changed.includes("isPublic") && patch.isPublic === true);
+  if (shownPublicly && changed.some((field) => PUBLIC_FIELDS.has(field))) requirePublisher(ctx);
   try {
     await ctx.db.run(`UPDATE products SET ${sets.join(", ")}, updated_at = ${NOW} WHERE id = ?`, [...params, id]);
   } catch (error) {

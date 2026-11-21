@@ -388,6 +388,13 @@ export async function issueInvoice(ctx: ModuleContext, id: string, raw: IssueInp
   const issueDate = input.issueDate ?? today(ctx);
   const dueDate = input.dueDate ?? (record.dueDate && record.dueDate >= issueDate ? record.dueDate : addDays(issueDate, business.paymentTermsDays));
   if (dueDate < issueDate) throw unprocessable("The due date cannot be before the issue date.", { dueDate: "Pick a date on or after the issue date." });
+  // Gap-free numbers must also run in date order: no future dates, no reaching
+  // back into an old (or another) year, nothing before the last issued invoice.
+  const now = today(ctx);
+  if (issueDate > now) throw unprocessable("The issue date cannot be in the future.", { issueDate: "Use today or an earlier date." });
+  if (issueDate < addDays(now, -31)) throw unprocessable("The issue date can be at most 31 days ago.", { issueDate: "Use a date within the last 31 days." });
+  const lastIssued = await ctx.db.value<string | null>("SELECT MAX(issue_date) FROM invoices WHERE status <> 'draft' AND issue_date IS NOT NULL AND substr(issue_date, 1, 4) = ?", [issueDate.slice(0, 4)]);
+  if (lastIssued && issueDate < lastIssued) throw unprocessable(`The issue date cannot be before ${lastIssued}, the date of the last issued invoice, so numbers stay in date order.`, { issueDate: `Use ${lastIssued} or later.` });
 
   const statements = [
     // Aborts the whole batch (NOT NULL violation) unless the invoice is still a

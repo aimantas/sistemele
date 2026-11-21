@@ -31,9 +31,22 @@ export function isDevelopment(env: Pick<Env, "APP_ENV">): boolean {
   return env.APP_ENV === "development";
 }
 
-/** Public demo: anyone can open the dashboard as the demo owner; data is reset by the Cron Trigger. */
-export function isDemo(env: Pick<Env, "DEMO_MODE">): boolean {
-  return env.DEMO_MODE === "1" || env.DEMO_MODE === "true";
+/**
+ * Public demo: anyone can open the dashboard as the demo owner; data is reset
+ * by the Cron Trigger. Needs both DEMO_MODE and APP_ENV=demo, so one stray
+ * variable on a production Worker can never open it up or wipe it.
+ */
+export function isDemo(env: Pick<Env, "DEMO_MODE" | "APP_ENV">): boolean {
+  return (env.DEMO_MODE === "1" || env.DEMO_MODE === "true") && env.APP_ENV === "demo";
+}
+
+/**
+ * True for records a demo visitor created (seed records carry "_demo_" in
+ * their id). Their public pages are noindex, left out of the sitemap and
+ * their links are nofollow, so the public demo cannot host spam.
+ */
+export function isDemoVisitorRecord(env: Pick<Env, "DEMO_MODE" | "APP_ENV">, id: string): boolean {
+  return isDemo(env) && !/^[a-z]+_demo_/u.test(id);
 }
 
 /** Public pages may be indexed: production, or any environment with ALLOW_INDEXING=1. */

@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 import { getContext } from "@/worker/context";
 import type { AppEnv } from "@/worker/env";
-import { enforceRateLimit } from "@/worker/lib/rate-limit";
+import { clientAddressKey, enforceRateLimit } from "@/worker/lib/rate-limit";
 import { readJson, readQuery } from "@/worker/lib/validate";
 import { verifyTurnstile } from "@/worker/lib/turnstile";
 import { DEAL_STATUSES, inquirySchema, LEAD_FILTERS } from "../shared/schema";
@@ -77,14 +77,16 @@ export const crmApi = new Hono<AppEnv>()
 export const crmPublicApi = new Hono<AppEnv>().post("/inquiries", async (c) => {
   const ctx = getContext(c);
   const isForm = (c.req.header("content-type") ?? "").includes("application/x-www-form-urlencoded") || (c.req.header("content-type") ?? "").includes("multipart/form-data");
-  const ip = c.req.header("cf-connecting-ip") ?? "local";
+  const address = c.req.header("cf-connecting-ip");
   try {
-    await enforceRateLimit(ctx.db, `inquiry:${ip}`, 5, 3600);
+    await enforceRateLimit(ctx.db, `inquiry:${clientAddressKey(address)}`, 5, 3600);
     const raw = isForm ? Object.fromEntries((await c.req.formData()).entries()) : await readJson(c, z.record(z.string(), z.unknown()));
     const input = inquirySchema.parse({ ...raw, turnstileToken: raw["cf-turnstile-response"] ?? raw.turnstileToken });
-    await verifyTurnstile(c.env, input.turnstileToken, ip);
-    const result = await leads.createInquiry(ctx, input);
-    return isForm ? c.redirect("/contact?sent=1", 303) : c.json({ ok: true, reference: result.leadId }, 201);
+    await verifyTurnstile(c.env, input.turnstileToken, address ?? "");
+    await leads.createInquiry(ctx, input);
+    // The same answer for a new or an existing lead: the response never says
+    // whether an email address is already in the CRM.
+    return isForm ? c.redirect("/contact?sent=1", 303) : c.json({ ok: true }, 201);
   } catch (error) {
     if (!isForm) throw error;
     const code = error instanceof Error && "code" in error && error.code === "rate_limited" ? "rate_limited" : "invalid";

@@ -7,7 +7,8 @@ import type { AuditEntry, ModuleContext, ServerModule } from "@/modules/types.se
 import { sendEmail } from "./email/send";
 import type { AppEnv, Env } from "./env";
 import { Db } from "./lib/db";
-import { forbidden, unauthorized } from "./lib/errors";
+import { forbidden, tooManyRequests, unauthorized } from "./lib/errors";
+import { consumeRateLimit } from "./lib/rate-limit";
 import { getBusinessProfile } from "./lib/settings";
 
 export interface ContextInput {
@@ -72,7 +73,19 @@ export function createModuleContext(input: ContextInput): ModuleContext {
       return businessCache;
     },
 
-    sendEmail(email) {
+    async sendEmail(email) {
+      // A cap per person (and one for email no one signed in triggered, such
+      // as website-form notifications) keeps a leaked token or a scripted
+      // form from turning the business's domain into a spam relay. Sign-in
+      // links have their own per-address limits.
+      if (!email.template.startsWith("auth.")) {
+        const key = input.user ? `email:user:${input.user.id}` : "email:system";
+        if (!(await consumeRateLimit(db, key, input.user ? 100 : 300, 3600))) {
+          if (input.user) throw tooManyRequests("You have sent a lot of email in the last hour. Try again later.");
+          console.warn(`[email:${email.template}] not sent: the hourly limit for automatic emails was reached`);
+          return { status: "failed" as const, id: "" };
+        }
+      }
       return sendEmail(input.env, db, email);
     },
 

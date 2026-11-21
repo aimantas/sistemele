@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { lineInputSchema, type PartySnapshot, type StoredLine } from "@/shared/lines";
+import { DOCUMENT_TOO_LARGE, lineInputSchema, withinDocumentLimit, type PartySnapshot, type StoredLine } from "@/shared/lines";
 import type { VatGroup } from "@/shared/money";
 
 /** Quote shapes shared by the API, MCP tools and the dashboard screens. */
@@ -35,7 +35,7 @@ const isoDate = z.iso.date("Use the YYYY-MM-DD format.");
 
 /** A quote line. `vatRateBps` may be left out: the business default rate is used. */
 export const quoteLineInputSchema = lineInputSchema.extend({ vatRateBps: z.number().int().min(0).max(10_000).optional() });
-export const quoteLinesSchema = z.array(quoteLineInputSchema).min(1, "Add at least one line.").max(200);
+export const quoteLinesSchema = z.array(quoteLineInputSchema).min(1, "Add at least one line.").max(200).refine(withinDocumentLimit, DOCUMENT_TOO_LARGE);
 
 /** Create input. Totals are never accepted: the server prices every line. */
 export const quoteInputSchema = z.object({

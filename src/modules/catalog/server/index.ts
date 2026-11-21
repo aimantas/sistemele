@@ -1,3 +1,4 @@
+import { isDemoVisitorRecord } from "@/worker/env";
 import type { ServerModule } from "@/modules/types.server";
 import { catalogApi } from "./routes";
 import { deductInvoiceStock, listPublicProducts, lowStockSummary, reverseInvoiceStock, searchProducts, stockValue } from "./service";
@@ -52,7 +53,8 @@ export const catalogModule: ServerModule = {
   search: (term, ctx) => searchProducts(ctx, term),
 
   async sitemap(ctx) {
-    const products = await listPublicProducts(ctx);
+    // Public demo: products visitors make public stay out of the sitemap.
+    const products = (await listPublicProducts(ctx)).filter((product) => !isDemoVisitorRecord(ctx.env, product.id));
     const latest = products.reduce((max, product) => (product.updatedAt > max ? product.updatedAt : max), "");
     return [
       { path: "/products", changefreq: "weekly", priority: 0.8, ...(latest ? { lastmod: latest } : {}) },

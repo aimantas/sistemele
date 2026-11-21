@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Security review fixes (details and accepted limits in `docs/security.md`, regression tests in `tests/security.test.ts`):
+  - Deployed Workers never log email bodies (sign-in and document links); subjects lose control characters.
+  - Sign-in answers equally fast for known and unknown addresses; IPv6 rate limits by /64; rate-limit and sign-in token tables are pruned.
+  - An invalid `Authorization` header never falls back to the session cookie, and only valid API tokens skip the CSRF check. MCP batches are capped at 20; email sending is capped per person and for automatic emails.
+  - Demo mode needs `APP_ENV=demo`; the hourly reset only wipes a database that holds demo data. In the demo, settings are read-only, visitor-published pages, posts and products are noindex, off the sitemap, menu and home page with `nofollow ugc` links, and the contact form says messages are public.
+  - Invoice issue dates must be in date order (not future, not over 31 days back, not before the last issued invoice). Document totals are capped to safe integers.
+  - Only owners and admins can change what a public product shows. The contact form no longer returns a lead id. Activity, task and name changes are audited. The last-owner rule is atomic. SVG logos with namespaced elements, encoded attributes, `@import` or CDATA are refused. Sign-in only redirects inside `/app`.
+  - Deployed copies without `APP_URL` always build https links. `npm run setup` writes `.dev.vars` readable by you only. Patched `undici` and `sharp` under the test-only `miniflare` (npm audit: 0).
+
 - Developer mode in the admin panel: a switch in the sidebar (owners and admins, or `?dev=1`) shows a developer panel on every page with ready-to-copy briefs for a coding agent, a box that turns your own feedback into a brief or a prefilled GitHub issue, the files behind the page and its MCP tools. Notes live in each module's `client/dev.ts` (scaffolded by `npm run module:new`) and `src/app/dev/core-pages.ts`; `tests/dev-panel.test.ts` keeps them in step with routes, files and tools. `REPOSITORY_URL` in `src/shared/project.ts` sets the repository the links point to.
 
 - New Sistemėlė mark: a wheel of six modules around a hub on the brand tile, one module tinted. It is the favicon and the demo logo; brand rules (clear space, sizes, do's and don'ts) are on `/app/design#brand`, in DESIGN.md and `docs/design-system.md`. Square logos from Settings → Brand are now treated as marks: the header, admin panel, sign-in page and quotes and invoices set the business name beside them in Inter (`logoIsMark`, `BrandLockup`).

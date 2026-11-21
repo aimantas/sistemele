@@ -19,8 +19,9 @@ afterAll(() => t.dispose());
 describe("lead to cash", () => {
   it("runs the whole flow and keeps every module consistent", async () => {
     // Website request → lead → qualified → converted into a contact and a deal
-    const inquiry = await json<{ reference: string }>(await t.request("/api/public/crm/inquiries", { method: "POST", json: { name: "Rasa", email: "rasa@buyer.test", company: "Buyer UAB", message: "10 brackets please" } }));
-    const leadId = inquiry.reference;
+    const inquiry = await json<{ ok: boolean; reference?: string }>(await t.request("/api/public/crm/inquiries", { method: "POST", json: { name: "Rasa", email: "rasa@buyer.test", company: "Buyer UAB", message: "10 brackets please" } }));
+    expect(inquiry).toEqual({ ok: true });
+    const leadId = (await t.db.prepare("SELECT id FROM leads WHERE email = 'rasa@buyer.test'").first<{ id: string }>())!.id;
     await t.request(`/api/crm/leads/${leadId}`, { method: "PATCH", cookie: owner, json: { status: "qualified" } });
     const converted = await json<{ contact: { id: string }; deal: { id: string; stage: string } }>(await t.request(`/api/crm/leads/${leadId}/convert`, { method: "POST", cookie: owner, json: { dealTitle: "Brackets" } }));
     const contactId = converted.contact.id;

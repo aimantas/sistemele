@@ -495,7 +495,12 @@ export function excerpt(text: string, max = 160): string {
 
 // React
 
-function renderInline(nodes: Inline[], key: string): ReactNode[] {
+interface RenderOptions {
+  /** Links get rel="nofollow ugc": text written by people the site does not vouch for (public demo visitors). */
+  ugc?: boolean;
+}
+
+function renderInline(nodes: Inline[], key: string, opts: RenderOptions): ReactNode[] {
   return nodes.map((node, index) => {
     const k = `${key}.${index}`;
     switch (node.type) {
@@ -506,15 +511,15 @@ function renderInline(nodes: Inline[], key: string): ReactNode[] {
       case "code":
         return <code key={k}>{node.text}</code>;
       case "strong":
-        return <strong key={k}>{renderInline(node.children, k)}</strong>;
+        return <strong key={k}>{renderInline(node.children, k, opts)}</strong>;
       case "em":
-        return <em key={k}>{renderInline(node.children, k)}</em>;
+        return <em key={k}>{renderInline(node.children, k, opts)}</em>;
       case "del":
-        return <del key={k}>{renderInline(node.children, k)}</del>;
+        return <del key={k}>{renderInline(node.children, k, opts)}</del>;
       case "link":
         return (
-          <a key={k} href={node.href} title={node.title}>
-            {renderInline(node.children, k)}
+          <a key={k} href={node.href} title={node.title} rel={opts.ugc ? "nofollow ugc noopener" : undefined}>
+            {renderInline(node.children, k, opts)}
           </a>
         );
       case "image":
@@ -523,7 +528,7 @@ function renderInline(nodes: Inline[], key: string): ReactNode[] {
   });
 }
 
-function renderBlocks(blocks: Block[], key: string, ids: Set<string>): ReactNode[] {
+function renderBlocks(blocks: Block[], key: string, ids: Set<string>, opts: RenderOptions): ReactNode[] {
   return blocks.map((block, index) => {
     const k = `${key}.${index}`;
     switch (block.type) {
@@ -535,17 +540,17 @@ function renderBlocks(blocks: Block[], key: string, ids: Set<string>): ReactNode
         ids.add(id);
         return (
           <Tag key={k} id={id}>
-            {renderInline(block.children, k)}
+            {renderInline(block.children, k, opts)}
           </Tag>
         );
       }
       case "paragraph":
-        return <p key={k}>{renderInline(block.children, k)}</p>;
+        return <p key={k}>{renderInline(block.children, k, opts)}</p>;
       case "list": {
         const items = block.items.map((item, itemIndex) => {
           const itemKey = `${k}.${itemIndex}`;
           // Tight lists put the text straight in <li>, without paragraph spacing.
-          const content = block.loose ? renderBlocks(item, itemKey, ids) : item.map((child, childIndex) => (child.type === "paragraph" ? renderInline(child.children, `${itemKey}.${childIndex}`) : renderBlocks([child], `${itemKey}.${childIndex}`, ids)));
+          const content = block.loose ? renderBlocks(item, itemKey, ids, opts) : item.map((child, childIndex) => (child.type === "paragraph" ? renderInline(child.children, `${itemKey}.${childIndex}`, opts) : renderBlocks([child], `${itemKey}.${childIndex}`, ids, opts)));
           return <li key={itemKey}>{content}</li>;
         });
         return block.ordered ? (
@@ -557,7 +562,7 @@ function renderBlocks(blocks: Block[], key: string, ids: Set<string>): ReactNode
         );
       }
       case "quote":
-        return <blockquote key={k}>{renderBlocks(block.children, k, ids)}</blockquote>;
+        return <blockquote key={k}>{renderBlocks(block.children, k, ids, opts)}</blockquote>;
       case "code":
         return (
           <pre key={k}>
@@ -571,7 +576,7 @@ function renderBlocks(blocks: Block[], key: string, ids: Set<string>): ReactNode
 }
 
 /** Renders Markdown as React elements. Wrap it in an element with the `prose` class for spacing. */
-export function Markdown({ source }: { source: string }) {
+export function Markdown({ source, ugc = false }: { source: string; ugc?: boolean }) {
   // "main" is the skip-link target of the public layout; never reuse it as a heading id.
-  return <>{renderBlocks(parseMarkdown(source), "md", new Set(["main"]))}</>;
+  return <>{renderBlocks(parseMarkdown(source), "md", new Set(["main"]), { ugc })}</>;
 }

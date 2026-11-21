@@ -11,7 +11,7 @@ export async function verifyTurnstile(env: Pick<Env, "TURNSTILE_SECRET_KEY">, to
   const body = new FormData();
   body.append("secret", env.TURNSTILE_SECRET_KEY);
   body.append("response", token);
-  if (ip !== "local") body.append("remoteip", ip);
+  if (ip && ip !== "local") body.append("remoteip", ip);
   const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body });
   const result = (await response.json().catch(() => ({ success: false }))) as { success?: boolean };
   if (!result.success) throw badRequest("Confirm you are human and send again.");

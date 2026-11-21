@@ -105,6 +105,8 @@ export function mcpRoutes(modules: readonly ServerModule[]) {
         return c.json({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error" } }, 400);
       }
       const messages = (Array.isArray(payload) ? payload : [payload]) as JsonRpcRequest[];
+      // One HTTP request runs at most 20 calls, so a batch cannot fan out into thousands of writes or emails.
+      if (messages.length > 20) return c.json({ jsonrpc: "2.0", id: null, error: { code: -32600, message: "Send at most 20 messages in one batch." } }, 400);
       const responses = (await Promise.all(messages.map((message) => handle(message, ctx, tools, c.env.APP_NAME)))).filter(
         (response): response is JsonRpcResponse => response !== null,
       );

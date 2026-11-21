@@ -6,7 +6,7 @@ import { renderEmail } from "../email/layout";
 import { appOrigin, isDemo, isDevelopment, type AppEnv, type Env } from "../env";
 import { randomToken, sha256Hex } from "../lib/crypto";
 import { badRequest, notFound, unauthorized } from "../lib/errors";
-import { enforceRateLimit } from "../lib/rate-limit";
+import { clientAddressKey, enforceRateLimit } from "../lib/rate-limit";
 import { readJson } from "../lib/validate";
 import { createSession, destroySession } from "./sessions";
 
@@ -39,9 +39,9 @@ export const authRoutes = new Hono<AppEnv>()
     if (isDemo(c.env)) throw badRequest("This is a demo. Use Open the demo to sign in.");
     const ctx = getContext(c);
     const { email } = await readJson(c, requestSchema);
-    const ip = c.req.header("cf-connecting-ip") ?? "local";
+    const ip = clientAddressKey(c.req.header("cf-connecting-ip"));
     await enforceRateLimit(ctx.db, `login:ip:${ip}`, 20, 900);
-    await enforceRateLimit(ctx.db, `login:email:${email}`, 5, 900);
+    await enforceRateLimit(ctx.db, `login:email:${(await sha256Hex(email)).slice(0, 32)}`, 5, 900);
 
     const user = await ctx.db.first<{ id: string; status: string }>("SELECT id, status FROM users WHERE email = ?", [email]);
     const allowed = user ? user.status === "active" : adminEmails(c.env).includes(email);
@@ -49,21 +49,30 @@ export const authRoutes = new Hono<AppEnv>()
 
     if (allowed) {
       const token = randomToken();
-      await ctx.db.run("INSERT INTO login_tokens (token_hash, email, expires_at) VALUES (?, ?, ?)", [
-        await sha256Hex(token),
-        email,
-        new Date(Date.now() + LINK_MINUTES * 60_000).toISOString(),
-      ]);
       const url = `${appOrigin(c.env)}/app/login/verify?token=${encodeURIComponent(token)}`;
-      const content = renderEmail({
-        preheader: `Your sign-in link for ${c.env.APP_NAME}. It works once, for ${LINK_MINUTES} minutes.`,
-        heading: `Sign in to ${c.env.APP_NAME}`,
-        paragraphs: [`Use the button below to sign in. The link works once and expires in ${LINK_MINUTES} minutes.`, "If you did not ask to sign in, ignore this email."],
-        action: { label: "Sign in", url },
-        footer: `${c.env.APP_NAME} · ${appOrigin(c.env)}`,
-      });
-      await ctx.sendEmail({ to: email, subject: `Sign in to ${c.env.APP_NAME}`, template: "auth.sign_in_link", ...content });
-      if (canShowDevLink(c.env, c.req.url)) devLink = url;
+      const showDevLink = canShowDevLink(c.env, c.req.url);
+      const work = (async () => {
+        await ctx.db.run("INSERT INTO login_tokens (token_hash, email, expires_at) VALUES (?, ?, ?)", [
+          await sha256Hex(token),
+          email,
+          new Date(Date.now() + LINK_MINUTES * 60_000).toISOString(),
+        ]);
+        await ctx.db.run("DELETE FROM login_tokens WHERE expires_at < ?", [new Date(Date.now() - 86_400_000).toISOString()]);
+        const content = renderEmail({
+          preheader: `Your sign-in link for ${c.env.APP_NAME}. It works once, for ${LINK_MINUTES} minutes.`,
+          heading: `Sign in to ${c.env.APP_NAME}`,
+          paragraphs: [`Use the button below to sign in. The link works once and expires in ${LINK_MINUTES} minutes.`, "If you did not ask to sign in, ignore this email."],
+          action: { label: "Sign in", url },
+          footer: `${c.env.APP_NAME} · ${appOrigin(c.env)}`,
+        });
+        await ctx.sendEmail({ to: email, subject: `Sign in to ${c.env.APP_NAME}`, template: "auth.sign_in_link", ...content });
+      })();
+      // Known and unknown addresses answer equally fast: the token and email
+      // are written after the response (in local development, before it).
+      if (showDevLink) {
+        await work;
+        devLink = url;
+      } else ctx.waitUntil(work);
     }
 
     // Same answer whether or not the address exists, so emails cannot be probed.
@@ -98,7 +107,7 @@ export const authRoutes = new Hono<AppEnv>()
   .post("/demo", async (c) => {
     if (!isDemo(c.env)) throw notFound("Page");
     const ctx = getContext(c);
-    await enforceRateLimit(ctx.db, `demo:ip:${c.req.header("cf-connecting-ip") ?? "local"}`, 30, 900);
+    await enforceRateLimit(ctx.db, `demo:ip:${clientAddressKey(c.req.header("cf-connecting-ip"))}`, 30, 900);
     let user = await ctx.db.first<{ id: string }>("SELECT id FROM users WHERE email = ?", [DEMO_EMAIL]);
     if (!user) {
       const id = newId("usr");

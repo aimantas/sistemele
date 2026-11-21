@@ -12,6 +12,20 @@ export function sanitizeSvg(input: string): string {
   if (!/^<svg[\s>]/iu.test(svg) || !/<\/svg>$/iu.test(svg)) {
     throw badRequest("Paste a complete SVG that starts with <svg and ends with </svg>.", { logoSvg: "Paste a complete SVG that starts with <svg and ends with </svg>." });
   }
+  // Refuse what stripping cannot handle reliably: namespaced elements
+  // (<s:script>), namespaced attributes other than xmlns:* and xlink:href,
+  // character references inside attributes (&#106;avascript:), CSS @import
+  // and CDATA sections. Plain logos from design tools never need them.
+  const unsafe =
+    /<\/?[\w.-]+:[\w.-]+/u.test(svg) ||
+    /\s(?!xmlns:|xlink:href\b|xml:)[\w.-]+:[\w.-]+\s*=/u.test(svg) ||
+    /=\s*("|')[^"']*&(#|[a-z]+;)[^"']*\1/iu.test(svg) ||
+    /@import/iu.test(svg) ||
+    /<!\[CDATA\[/u.test(svg);
+  if (unsafe) {
+    const message = "This SVG uses features a logo does not need (namespaced elements, encoded attributes, @import or CDATA). Export it again as plain SVG.";
+    throw badRequest(message, { logoSvg: message });
+  }
   svg = svg
     .replace(/<script\b[\s\S]*?<\/script\s*>/giu, "")
     .replace(/<script\b[^>]*\/>/giu, "")
