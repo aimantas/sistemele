@@ -1,4 +1,4 @@
-import { BookOpen, Plug, Sparkles, Terminal, type LucideIcon } from "lucide-react";
+import { BookOpen, Maximize2, Plug, Sparkles, Terminal, X, type LucideIcon } from "lucide-react";
 import { Fragment, type ReactNode } from "react";
 import type { HomeSection, ServerModule } from "@/modules/types.server";
 import { coreTools } from "../mcp/core-tools";
@@ -48,6 +48,16 @@ const shots = {
   pipeline: { name: "pipeline", width: 2704, height: 854, alt: "The pipeline board with Qualified, Proposal, Negotiation, Won and Lost columns and their totals" },
   invoice: { name: "invoice", width: 1336, height: 1200, alt: "An invoice with seller, buyer, line items, VAT and totals" },
 } satisfies Record<string, Shot>;
+
+/** More screens, shown as a gallery; each opens full size. */
+const gallery: Array<{ shot: Shot; title: string; text: string }> = [
+  { shot: { name: "quote", width: 1921, height: 1201, alt: "A sent quote with its document, status and accept or decline actions" }, title: "Quotes", text: "Send a link; the customer accepts or declines online." },
+  { shot: { name: "products", width: 1920, height: 1200, alt: "The products list with prices, stock levels and which products are on the website" }, title: "Products and stock", text: "Prices with VAT, stock levels and what to reorder." },
+  { shot: { name: "editor", width: 1920, height: 1200, alt: "The post editor with Markdown text, publishing and address settings" }, title: "Website editor", text: "Pages and posts in Markdown: drafts, scheduling, publishing." },
+  { shot: { name: "brand", width: 1920, height: 1200, alt: "Brand settings with the logo, brand colour presets and a live preview" }, title: "Brand settings", text: "Logo, colour, background and corners, no code." },
+  { shot: { name: "devmode", width: 1920, height: 1200, alt: "The leads page with the developer panel open, showing starter prompts for a coding agent" }, title: "Developer mode", text: "Starter prompts and the files behind every page, for your agent." },
+  { shot: { name: "docs", width: 1920, height: 1200, alt: "The documentation page with an architecture diagram and the sidebar of guides" }, title: "Docs at /docs", text: "AGENTS.md, the agent skill and every guide, with diagrams." },
+];
 
 const agentTools: Array<{ title: string; text: ReactNode; markdown: string; icon: LucideIcon }> = [
   { title: "AGENTS.md and a README per module", text: "Rules, a map of the code and recipes, so an agent extends the kit instead of rebuilding it.", markdown: "Rules, a map of the code and recipes, so an agent extends the kit instead of rebuilding it.", icon: BookOpen },
@@ -112,16 +122,37 @@ function Logo({ name }: { name: string }) {
   return <img className={MONO_LOGOS.has(name) ? "lp-logo mono" : "lp-logo"} src={`/logos/${name}.svg`} width={18} height={18} alt="" />;
 }
 
+/**
+ * A screenshot in a browser frame that opens full size in a lightbox. The
+ * lightbox is the browser's own popover (popovertarget): no JavaScript, Esc
+ * or a click outside closes it, and its image only loads when opened.
+ */
 function Screenshot({ shot, eager }: { shot: Shot; eager?: boolean }) {
+  const id = `shot-${shot.name}`;
+  const src = `/screenshots/${shot.name}.webp`;
   return (
-    <a className="browser" href={`/screenshots/${shot.name}.webp`}>
-      <span className="browser-bar" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
-      <img src={`/screenshots/${shot.name}.webp`} width={shot.width} height={shot.height} alt={shot.alt} loading={eager ? "eager" : "lazy"} decoding="async" {...(eager ? { fetchPriority: "high" as const } : {})} />
-    </a>
+    <>
+      <button type="button" className="browser zoomable" popoverTarget={id} aria-haspopup="dialog" aria-label={`${shot.alt}. Open full size`}>
+        <span className="browser-bar" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </span>
+        <img src={src} width={shot.width} height={shot.height} alt="" loading={eager ? "eager" : "lazy"} decoding="async" {...(eager ? { fetchPriority: "high" as const } : {})} />
+        <span className="zoom-hint" aria-hidden="true">
+          <Maximize2 size={16} />
+        </span>
+      </button>
+      <div id={id} popover="auto" className="lightbox" role="dialog" aria-label={shot.alt}>
+        <figure>
+          <img src={src} width={shot.width} height={shot.height} alt={shot.alt} loading="lazy" decoding="async" />
+          <figcaption>{shot.alt}</figcaption>
+        </figure>
+        <button type="button" className="lightbox-close" popoverTarget={id} popoverTargetAction="hide" aria-label="Close">
+          <X size={20} />
+        </button>
+      </div>
+    </>
   );
 }
 
@@ -182,6 +213,10 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
     "- Leads inbox: website messages arrive as leads, with owners, sources and follow-up dates; convert into a contact and a deal in one step.",
     "- Pipeline with your own stages and win chances; weighted pipeline value.",
     "- Quotes customers accept online become gap-free invoices with VAT and payments.",
+    "",
+    "### More screens",
+    "",
+    ...[...Object.values(shots), ...gallery.map((item) => item.shot)].map((shot) => `- ![${shot.alt}](${origin}/screenshots/${shot.name}.webp)`),
     "",
     `## What's inside (${toolCount} MCP tools)`,
     "",
@@ -287,6 +322,22 @@ export function starterHome({ businessName, origin, demo, modules, sections }: {
                 <strong>Quotes to invoices.</strong> Accepted online, invoiced with gap-free numbers, VAT per rate and payments.
               </figcaption>
             </figure>
+          </div>
+          <div className="lp-gallery">
+            <div className="lp-wide-copy">
+              <h3 id="more-screens">More screens</h3>
+              <p className="muted">Click any screen to see it full size.</p>
+            </div>
+            <ul className="plain lp-gallery-grid" aria-labelledby="more-screens">
+              {gallery.map((item) => (
+                <li key={item.shot.name}>
+                  <Screenshot shot={item.shot} />
+                  <p>
+                    <strong>{item.title}.</strong> {item.text}
+                  </p>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

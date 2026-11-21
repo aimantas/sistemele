@@ -238,6 +238,38 @@ code { font-family: var(--font-mono); font-size: 0.875em; }
 .browser-bar { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--border); background: var(--muted); }
 .browser-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--input); }
 .browser img { width: 100%; height: auto; }
+
+/* Screenshots open full size in a lightbox: the browser's popover, no JavaScript */
+.zoomable { position: relative; width: 100%; padding: 0; font: inherit; color: inherit; text-align: left; cursor: zoom-in; }
+.zoomable:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+.zoom-hint { position: absolute; right: 12px; bottom: 12px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 999px; border: 1px solid var(--border); background: color-mix(in oklab, var(--card) 90%, transparent); color: var(--foreground); box-shadow: var(--shadow-sm); opacity: 0; transition: opacity 0.15s; }
+.zoomable:hover .zoom-hint, .zoomable:focus-visible .zoom-hint { opacity: 1; }
+@media (hover: none) { .zoom-hint { opacity: 1; } }
+/* The hero frame fades out at the bottom, so its hint sits at the top. */
+.lp-hero-shot .zoom-hint { top: 44px; bottom: auto; }
+.lightbox { margin: auto; padding: 0; border: 0; background: transparent; overflow: visible; max-width: min(96vw, 1680px); max-height: 96dvh; }
+.lightbox::backdrop { background: oklch(0.14 0.01 264 / 0.86); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.lightbox figure { margin: 0; display: grid; justify-items: center; gap: 12px; }
+.lightbox img { display: block; width: auto; height: auto; max-width: min(96vw, 1680px); max-height: calc(96dvh - 56px); border-radius: calc(var(--radius) + 2px); background: var(--card); box-shadow: 0 24px 80px -12px oklch(0 0 0 / 0.6); }
+.lightbox figcaption { max-width: 72ch; color: oklch(0.93 0.004 264); font-size: 0.875rem; text-align: center; }
+.lightbox-close { position: fixed; top: 16px; right: 16px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; border: 1px solid oklch(1 0 0 / 20%); background: oklch(0.22 0.01 264 / 0.8); color: oklch(0.97 0 0); cursor: pointer; }
+.lightbox-close:hover { background: oklch(0.3 0.01 264 / 0.9); }
+.lightbox-close:focus-visible { outline: 2px solid oklch(0.97 0 0); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox:popover-open { animation: lightbox-in 0.18s ease-out; }
+  @keyframes lightbox-in { from { opacity: 0; transform: scale(0.985); } }
+}
+
+/* "More screens" gallery */
+.lp-gallery { margin-top: clamp(56px, 7vw, 88px); }
+.lp-gallery .lp-wide-copy p { margin: 0; }
+.lp-gallery-grid { display: grid; gap: 28px 24px; }
+@media (min-width: 600px) { .lp-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 960px) { .lp-gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.lp-gallery-grid .browser-bar { padding: 7px 10px; }
+.lp-gallery-grid .browser-bar i { width: 7px; height: 7px; }
+.lp-gallery-grid p { margin: 12px 0 0; font-size: 0.9375rem; color: var(--muted-foreground); }
+.lp-gallery-grid strong { color: var(--foreground); font-weight: 600; }
 .icon-badge { display: inline-grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: calc(var(--radius) - 2px); border: 1px solid var(--border); background: var(--card); color: var(--foreground); box-shadow: var(--shadow-xs); }
 
 /* Starter landing (starter-home.tsx) */
